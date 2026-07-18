@@ -16,6 +16,14 @@
   --whistle-red: #e5533c;
   --scoreboard: #ffd25e;
 
+  /* Card stat symbols — one accent per stat so the row reads at a glance */
+  --stat-vibe: var(--gold-bright);
+  --stat-legacy: #7fb8ff;
+  --stat-value: var(--turf-bright);
+  --stat-flex: #ffab5e;
+  --stat-squad: #4dd0c7;
+  --stat-chaos: #c084fc;
+
   --background: var(--pitch-900);
   --foreground: var(--chalk);
 }
