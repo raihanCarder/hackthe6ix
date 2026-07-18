@@ -18,9 +18,12 @@ import { loadSearch } from "./searches";
 
 const PACK_SIZE = 5;
 
-export const openPackSchema = z.object({ searchId: z.string().min(1) });
+export const openPackSchema = z.object({
+  searchId: z.string().min(1),
+  scope: z.enum(["trip", "global"]).default("trip"),
+});
 
-export async function openPack(user: User, searchId: string) {
+export async function openPack(user: User, searchId: string, scope: "trip" | "global" = "trip") {
   const search = await loadSearch(searchId, user.id);
 
   const { eligible } = applyHardConstraints(search.pool, search.trip, DEFAULT_ENGINE_CONFIG);
@@ -41,10 +44,13 @@ export async function openPack(user: User, searchId: string) {
     throw new ApiError(422, "You already own every bookable card in this search");
   }
 
-  const claim = await prisma.cityPackClaim.findUnique({
-    where: { userId_normalizedCity: { userId: user.id, normalizedCity: search.city } },
-  });
-  const cost = claim ? PACK_COST : 0;
+  const claim =
+    scope === "trip"
+      ? await prisma.cityPackClaim.findUnique({
+          where: { userId_normalizedCity: { userId: user.id, normalizedCity: search.city } },
+        })
+      : null;
+  const cost = scope === "global" ? PACK_COST : claim ? PACK_COST : 0;
   if (cost > user.currency) {
     throw new ApiError(402, `Not enough coins — this pack costs ${cost}`);
   }
@@ -69,7 +75,7 @@ export async function openPack(user: User, searchId: string) {
             snapshotId: snapshotByProperty.get(hotel.id)!,
             rarity: assignRarity(hotel.id, cosmeticSeed),
             cosmeticSeed,
-            acquiredScope: "trip",
+            acquiredScope: scope,
             acquiredCity: search.city,
           },
         }),
@@ -79,14 +85,14 @@ export async function openPack(user: User, searchId: string) {
       data: {
         userId: user.id,
         searchApiCallId: searchId,
-        scope: "trip",
+        scope,
         city: search.city,
         cost,
         seed,
         generatedCardIds: asJson(cards.map((c) => c.id)),
       },
     });
-    if (!claim) {
+    if (scope === "trip" && !claim) {
       await tx.cityPackClaim.create({
         data: { userId: user.id, normalizedCity: search.city },
       });
@@ -101,6 +107,7 @@ export async function openPack(user: User, searchId: string) {
   const hotelById = new Map(picked.map((h) => [h.id, h]));
   return {
     packId: created.pack.id,
+    scope,
     seed,
     cost,
     cards: created.cards.map((card) => {
@@ -137,6 +144,7 @@ export async function getPackReplay(user: User, packId: string) {
   return {
     packId: pack.id,
     searchId: pack.searchApiCallId,
+    scope: pack.scope,
     city: pack.city,
     cost: pack.cost,
     seed: pack.seed,

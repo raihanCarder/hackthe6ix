@@ -13,11 +13,14 @@ import type { NormalizedAccommodation, TripContext } from "@/lib/engine/types";
 import { generateAdaptiveQuestion } from "@/lib/gemini/questions";
 import { searchAccommodations } from "@/lib/stay22/client";
 import { prisma } from "@/lib/db";
+import { pickRandomCity } from "@/lib/data/worldCities";
+import { createRng, hashString } from "@/lib/engine/seed";
 import { asJson, ApiError, PACK_COST } from "./core";
 
 export const searchRequestSchema = z
   .object({
-    destination: z.string().trim().min(2).max(120),
+    scope: z.enum(["trip", "global"]).default("trip"),
+    destination: z.string().trim().min(2).max(120).optional(),
     checkin: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     checkout: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     adults: z.number().int().min(1).max(16),
@@ -29,6 +32,10 @@ export const searchRequestSchema = z
   .refine((v) => v.checkout > v.checkin, { message: "Checkout must be after check-in" })
   .refine((v) => !v.minNightly || !v.maxNightly || v.maxNightly >= v.minNightly, {
     message: "Max nightly price must be at least the minimum",
+  })
+  .refine((v) => v.scope === "global" || (v.destination?.length ?? 0) >= 2, {
+    message: "Destination is required for a Trip Pack",
+    path: ["destination"],
   });
 
 export const answersSchema = z.array(
@@ -52,8 +59,13 @@ export interface SearchRecord {
 }
 
 export async function createSearch(user: User, body: z.infer<typeof searchRequestSchema>) {
+  const address =
+    body.scope === "global"
+      ? pickRandomCity(createRng(hashString(`global-pack:${user.id}:${user.packsOpened}`))).city
+      : body.destination!;
+
   const result = await searchAccommodations({
-    address: body.destination,
+    address,
     checkin: body.checkin,
     checkout: body.checkout,
     adults: body.adults,
@@ -98,12 +110,14 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
 
   const city = normalizeCity(result.destination.label);
   const freePackAvailable =
+    body.scope === "trip" &&
     (await prisma.cityPackClaim.findUnique({
       where: { userId_normalizedCity: { userId: user.id, normalizedCity: city } },
     })) === null;
 
   return {
     searchId: apiCall.id,
+    scope: body.scope,
     mode: result.mode,
     destination: result.destination,
     totalResults: result.hotels.length,

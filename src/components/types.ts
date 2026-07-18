@@ -10,6 +10,8 @@ export interface CardPayload {
   overall: number;
   hotel: NormalizedAccommodation;
   acquiredCity?: string;
+  acquiredScope?: string;
+  sourceApiCallId?: string;
   xp?: number;
   trophies?: number;
   wins?: number;

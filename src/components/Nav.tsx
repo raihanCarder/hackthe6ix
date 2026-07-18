@@ -113,7 +113,8 @@ export function Nav() {
   }
 
   const links = [
-    { href: "/search", label: "New trip" },
+    { href: "/packs", label: "Packs" },
+    { href: "/play", label: "Play" },
     { href: "/collection", label: "Collection" },
     { href: "/profile", label: "Profile" },
   ];
