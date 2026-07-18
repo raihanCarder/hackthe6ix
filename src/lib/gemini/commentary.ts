@@ -4,7 +4,7 @@ import { z } from "zod";
 const selectionSchema = z.object({ templateIndex: z.number().int().min(0) });
 const globalSelectionCache = globalThis as unknown as {
   commentarySelections?: Map<string, number | null>;
-  commentaryGeminiRetryAfter?: number;
+  geminiRetryAfter?: number;
 };
 const selectionCache = globalSelectionCache.commentarySelections ?? new Map<string, number | null>();
 globalSelectionCache.commentarySelections = selectionCache;
@@ -20,7 +20,7 @@ export async function chooseCommentaryCandidate(
   if (process.env.GEMINI_COMMENTARY_ENABLED !== "true" || choices.length < 2) return null;
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) return null;
-  if ((globalSelectionCache.commentaryGeminiRetryAfter ?? 0) > Date.now()) return null;
+  if ((globalSelectionCache.geminiRetryAfter ?? 0) > Date.now()) return null;
   if (selectionCache.has(eventId)) return selectionCache.get(eventId) ?? null;
 
   const model = process.env.GEMINI_MODEL?.trim() || "gemini-3.5-flash";
@@ -53,7 +53,7 @@ export async function chooseCommentaryCandidate(
       },
     );
     if (!response.ok) {
-      if (response.status === 429) globalSelectionCache.commentaryGeminiRetryAfter = Date.now() + 300_000;
+      if (response.status === 429) globalSelectionCache.geminiRetryAfter = Date.now() + 300_000;
       return null;
     }
     const body = await response.json() as {
