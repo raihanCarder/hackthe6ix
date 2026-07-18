@@ -18,7 +18,13 @@ import type { EngineInput, EngineResult, NormalizedWeights, PreferencePoints } f
 import { DEFAULT_ENGINE_CONFIG } from "./types";
 
 export * from "./types";
-export { selectAdaptiveQuestions, QUESTION_BANK, FALLBACK_PROFILES } from "./questionnaire";
+export {
+  selectAdaptiveQuestions,
+  selectNextQuestionCandidates,
+  normalizeTravelerAnswers,
+  QUESTION_BANK,
+  FALLBACK_PROFILES,
+} from "./questionnaire";
 export { applyHardConstraints } from "./constraints";
 export { calculatePoolMetrics, haversineKm } from "./metrics";
 export { hashString, stableStringify, createRng } from "./seed";

@@ -1,9 +1,16 @@
 import "server-only";
 import { z } from "zod";
 import type { User } from "@/generated/prisma/client";
-import { applyHardConstraints, calculatePoolMetrics, selectAdaptiveQuestions } from "@/lib/engine";
+import {
+  applyHardConstraints,
+  calculatePoolMetrics,
+  normalizeTravelerAnswers,
+  selectAdaptiveQuestions,
+  selectNextQuestionCandidates,
+} from "@/lib/engine";
 import { DEFAULT_ENGINE_CONFIG } from "@/lib/engine/types";
 import type { NormalizedAccommodation, TripContext } from "@/lib/engine/types";
+import { generateAdaptiveQuestion } from "@/lib/gemini/questions";
 import { searchAccommodations } from "@/lib/stay22/client";
 import { prisma } from "@/lib/db";
 import { asJson, ApiError, PACK_COST } from "./core";
@@ -30,6 +37,12 @@ export const answersSchema = z.array(
     optionIds: z.array(z.string().max(64)).max(4),
   }),
 ).max(10);
+
+export const nextQuestionRequestSchema = z.object({
+  answers: answersSchema.default([]),
+});
+
+const MAX_QUESTIONS = 5;
 
 export interface SearchRecord {
   apiCallId: string;
@@ -155,6 +168,52 @@ export async function getSearchQuestions(searchId: string, userId: string) {
       coverage: Math.round(a.coverage * 100) / 100,
       reason: a.reason,
     })),
+  };
+}
+
+/** Generate one validated question at a time, conditioned on prior answers. */
+export async function getNextSearchQuestion(
+  searchId: string,
+  userId: string,
+  submittedAnswers: z.infer<typeof answersSchema>,
+) {
+  const search = await loadSearch(searchId, userId);
+  const { eligible } = applyHardConstraints(search.pool, search.trip, DEFAULT_ENGINE_CONFIG);
+  const { availability, activeMetrics } = calculatePoolMetrics(
+    eligible,
+    search.trip,
+    DEFAULT_ENGINE_CONFIG,
+  );
+  const answers = normalizeTravelerAnswers(submittedAnswers);
+  const context = {
+    activeMetrics,
+    availability,
+    partySize: search.trip.adults + search.trip.children,
+  };
+  const candidates = selectNextQuestionCandidates(context, answers);
+
+  if (answers.length >= MAX_QUESTIONS || candidates.length === 0) {
+    return {
+      complete: true as const,
+      question: null,
+      questionNumber: answers.length,
+      maxQuestions: MAX_QUESTIONS,
+      source: "complete" as const,
+    };
+  }
+
+  const generated = await generateAdaptiveQuestion({
+    trip: search.trip,
+    availability,
+    answers,
+    candidates,
+  });
+  return {
+    complete: false as const,
+    question: generated ?? candidates[0],
+    questionNumber: answers.length + 1,
+    maxQuestions: MAX_QUESTIONS,
+    source: generated ? ("gemini" as const) : ("deterministic" as const),
   };
 }
 

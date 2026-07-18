@@ -170,6 +170,54 @@ export function selectAdaptiveQuestions(context: QuestionnaireContext): Preferen
     });
 }
 
+/**
+ * Keep only answers that reference an approved question and option. This is
+ * used on the server before both Gemini prompting and recommendation scoring,
+ * so a client cannot invent metric effects.
+ */
+export function normalizeTravelerAnswers(answers: TravelerAnswer[]): TravelerAnswer[] {
+  const normalized = new Map<string, TravelerAnswer>();
+  for (const answer of answers) {
+    const question = QUESTION_BANK.find((candidate) => candidate.id === answer.questionId);
+    if (!question) continue;
+    const allowed = new Set(question.options.map((option) => option.id));
+    const optionIds = [...new Set(answer.optionIds.filter((id) => allowed.has(id)))];
+    if (optionIds.length === 0) continue;
+    normalized.set(question.id, {
+      questionId: question.id,
+      optionIds: question.type === "single_select" ? optionIds.slice(0, 1) : optionIds,
+    });
+  }
+  return [...normalized.values()];
+}
+
+/** Eligible approved questions for the next sequential questionnaire step. */
+export function selectNextQuestionCandidates(
+  context: QuestionnaireContext,
+  answers: TravelerAnswer[],
+): PreferenceQuestion[] {
+  const normalized = normalizeTravelerAnswers(answers);
+  const answered = new Set(normalized.map((answer) => answer.questionId));
+  const eligible = selectAdaptiveQuestions(context)
+    .filter((question) => !answered.has(question.id))
+    .filter((question) => {
+      const previous = question.condition?.previousAnswers;
+      if (!previous) return true;
+      return Object.entries(previous).every(([questionId, allowedOptions]) => {
+        const answer = normalized.find((candidate) => candidate.questionId === questionId);
+        return answer?.optionIds.some((optionId) => allowedOptions.includes(optionId)) ?? false;
+      });
+    });
+
+  // Anchor the conversation in the primary priority. Gemini may personalize
+  // its wording, but should not skip the most informative first dimension.
+  if (normalized.length === 0) {
+    const priority = eligible.find((question) => question.id === "q_priority");
+    return priority ? [priority] : eligible.slice(0, 1);
+  }
+  return eligible;
+}
+
 /** Drop options whose primary (largest-effect) metric is inactive, e.g. "Best value" with no prices. */
 function pruneQuestion(q: PreferenceQuestion, active: Set<Metric>): PreferenceQuestion | null {
   const options = q.options.filter((o) => {
