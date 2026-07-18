@@ -23,6 +23,8 @@ export async function getUserCollection(user: User) {
         rarity: card.rarity,
         cosmeticSeed: card.cosmeticSeed,
         acquiredCity: card.acquiredCity,
+        acquiredScope: card.acquiredScope,
+        sourceApiCallId: card.snapshot.sourceApiCallId,
         xp: card.xp,
         trophies: card.trophies,
         wins: card.wins,

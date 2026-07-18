@@ -1,6 +1,6 @@
 import { chromium } from "@playwright/test";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 const SHOTS = "./e2e-shots";
 const errors = [];
 
@@ -35,11 +35,12 @@ await step("dev sign-in", async () => {
   await page.getByText("coins").waitFor();
 });
 
-await step("search", async () => {
-  await page.goto(`${BASE}/search`);
+await step("choose trip pack", async () => {
+  await page.goto(`${BASE}/packs`);
+  await page.getByRole("button", { name: "Choose Trip Pack" }).click();
   await page.getByRole("button", { name: "Scout the field" }).click();
   await page.getByText("Scouting report").waitFor({ timeout: 20000 });
-  await page.screenshot({ path: `${SHOTS}/02-search.png` });
+  await page.screenshot({ path: `${SHOTS}/02-trip-pack-setup.png` });
 });
 
 await step("open pack", async () => {
@@ -51,13 +52,21 @@ await step("open pack", async () => {
 
 await step("reveal cards", async () => {
   await page.getByRole("button", { name: "Reveal all" }).click();
-  await page.getByRole("button", { name: "Set up the tournament" }).waitFor({ timeout: 10000 });
+  await page.getByRole("link", { name: "Play a match" }).waitFor({ timeout: 10000 });
   await page.waitForTimeout(900); // let flips finish
   await page.screenshot({ path: `${SHOTS}/04-pack-revealed.png` });
 });
 
-await step("questionnaire", async () => {
-  await page.getByRole("button", { name: "Set up the tournament" }).click();
+await step("trip cup card selection", async () => {
+  await page.getByRole("link", { name: "Play a match" }).click();
+  await page.waitForURL(/\/play$/);
+  await page.getByRole("button", { name: "Play Trip Cup" }).click();
+  await page.getByText("Pick your card").waitFor();
+  await page.locator("button:has(.card-face)").first().click();
+  await page.getByRole("button", { name: /Enter .* into the tournament/ }).click();
+});
+
+await step("trip questionnaire", async () => {
   await page.getByText("Pre-match interview").waitFor({ timeout: 15000 });
   await page.screenshot({ path: `${SHOTS}/05-questions.png` });
   for (let i = 0; i < 8; i++) {
@@ -66,7 +75,7 @@ await step("questionnaire", async () => {
       .then(() => true)
       .catch(() => false);
     if (done) break;
-    const options = page.locator("div.fixed button.btn-chalk");
+    const options = page.locator("button.btn-chalk");
     if ((await options.count()) === 0) break;
     await options.first().click();
   }
@@ -106,6 +115,29 @@ await step("profile", async () => {
   await page.goto(`${BASE}/profile`);
   await page.getByText("Manager profile").waitFor();
   await page.screenshot({ path: `${SHOTS}/10-profile.png` });
+});
+
+await step("global pack", async () => {
+  await page.goto(`${BASE}/packs`);
+  await page.getByRole("button", { name: "Choose Global Pack" }).click();
+  await page.getByRole("button", { name: "Draw a destination" }).click();
+  await page.getByText("Scouting report").waitFor({ timeout: 20000 });
+  await page.getByRole("button", { name: /Open a Global Pack/ }).click();
+  await page.waitForURL(/\/pack\//, { timeout: 20000 });
+  await page.getByRole("button", { name: "Reveal all" }).click();
+  await page.getByRole("link", { name: "Play a match" }).waitFor({ timeout: 10000 });
+  await page.screenshot({ path: `${SHOTS}/10-global-pack.png` });
+});
+
+await step("global cup", async () => {
+  await page.goto(`${BASE}/play`);
+  await page.getByRole("button", { name: "Play Global Cup" }).click();
+  await page.getByText("Pick your card").waitFor();
+  await page.locator("button:has(.card-face)").first().click();
+  await page.getByRole("button", { name: /Enter .* into the tournament/ }).click();
+  await page.waitForURL(/\/tournament\//, { timeout: 30000 });
+  await page.getByText("World champion").waitFor({ timeout: 20000 });
+  await page.screenshot({ path: `${SHOTS}/11-global-cup.png` });
 });
 
 // Security check: the API never leaks a key (none configured, but check shape anyway)

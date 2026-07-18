@@ -11,6 +11,7 @@ import type { GroupResult, MatchResult } from "@/lib/game/matchSim";
 
 interface TournamentPayload {
   id: string;
+  mode: "trip" | "world";
   seed: string;
   trip: { destinationLabel: string; checkin: string; checkout: string; adults: number; children: number };
   searchId: string;
@@ -101,18 +102,22 @@ export default function TournamentPage() {
 
   const champion = data.champion;
   const championContender = byId.get(data.championId);
+  const isWorld = data.mode === "world";
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <p className="eyebrow">
-        Trip cup · {data.trip.destinationLabel} · {data.trip.checkin} → {data.trip.checkout}
+        {isWorld
+          ? "Global cup · casual play"
+          : `Trip cup · ${data.trip.destinationLabel} · ${data.trip.checkin} → ${data.trip.checkout}`}
       </p>
       <h1 className="font-display mt-2 text-3xl text-chalk">
         {data.contenders.length} hotels. One booking.
       </h1>
       <p className="mt-1 text-sm text-chalk-dim">
-        Group stage → knockouts → champion. Match drama is seeded animation; the winner is the
-        recommendation engine&apos;s verdict, evidence below.
+        {isWorld
+          ? "Group stage → knockouts → champion. This one's just for fun — the champion is whichever card rates highest, from anywhere in the world."
+          : "Group stage → knockouts → champion. Match drama is seeded animation; the winner is the recommendation engine's verdict, evidence below."}
       </p>
 
       {/* Group stage */}
@@ -236,7 +241,7 @@ export default function TournamentPage() {
           <div className="chalk-line" />
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,340px)_1fr]">
             <div>
-              <p className="eyebrow text-gold-bright">🏆 Trip champion</p>
+              <p className="eyebrow text-gold-bright">🏆 {isWorld ? "World champion" : "Trip champion"}</p>
               {championContender && (
                 <div className="mt-3 max-w-[320px]">
                   <HotelCard
@@ -258,7 +263,11 @@ export default function TournamentPage() {
                 <Fact
                   label="First-place probability"
                   value={`${Math.round(champion.winProbability * 100)}%`}
-                  hint={`across 5,000 simulated preference profiles (gap to runner-up ${Math.round(champion.explanation.stability.gap * 100)} pts)`}
+                  hint={
+                    isWorld
+                      ? `share of combined OVERALL rating across the bracket (gap to runner-up ${Math.round(champion.explanation.stability.gap)} pts)`
+                      : `across 5,000 simulated preference profiles (gap to runner-up ${Math.round(champion.explanation.stability.gap * 100)} pts)`
+                  }
                 />
                 <Fact
                   label="Tonight's price"
@@ -274,23 +283,29 @@ export default function TournamentPage() {
 
               {/* Why it won */}
               <div className="mt-6">
-                <p className="eyebrow">Why it won — your weights</p>
-                <div className="mt-2 grid gap-1.5">
-                  {Object.entries(champion.weights)
-                    .sort(([, a], [, b]) => b - a)
-                    .map(([metric, weight]) => (
-                    <div key={metric} className="flex items-center gap-2 text-xs">
-                      <span className="w-28 shrink-0 text-chalk-dim">{METRIC_LABELS[metric] ?? metric}</span>
-                      <div className="stat-bar h-2 flex-1 overflow-hidden rounded-full">
-                        <div className="h-full rounded-full" style={{ width: `${weight * 100}%` }} />
+                <p className="eyebrow">{isWorld ? "Why it won" : "Why it won — your weights"}</p>
+                {isWorld ? (
+                  <p className="mt-2 text-sm text-chalk-dim">
+                    Highest OVERALL rating in the bracket — casual play, no personalized weights.
+                  </p>
+                ) : (
+                  <div className="mt-2 grid gap-1.5">
+                    {Object.entries(champion.weights)
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([metric, weight]) => (
+                      <div key={metric} className="flex items-center gap-2 text-xs">
+                        <span className="w-28 shrink-0 text-chalk-dim">{METRIC_LABELS[metric] ?? metric}</span>
+                        <div className="stat-bar h-2 flex-1 overflow-hidden rounded-full">
+                          <div className="h-full rounded-full" style={{ width: `${weight * 100}%` }} />
+                        </div>
+                        <span className="font-score w-10 text-right text-chalk">
+                          {(weight * 100).toFixed(0)}%
+                        </span>
                       </div>
-                      <span className="font-score w-10 text-right text-chalk">
-                        {(weight * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                {champion.evidence && champion.evidence.mainAdvantages.length > 0 && (
+                    ))}
+                  </div>
+                )}
+                {!isWorld && champion.evidence && champion.evidence.mainAdvantages.length > 0 && (
                   <p className="mt-3 text-sm text-chalk-dim">
                     Decisive edge over the runner-up:{" "}
                     <span className="text-chalk">
@@ -325,8 +340,11 @@ export default function TournamentPage() {
                     Transfer pending — booking link unavailable
                   </span>
                 )}
-                <Link href="/search" className="btn-chalk rounded-lg px-5 py-3">
-                  New trip
+                <Link href="/play" className="btn-chalk rounded-lg px-5 py-3">
+                  Play again
+                </Link>
+                <Link href="/packs" className="btn-chalk rounded-lg px-5 py-3">
+                  Open another pack
                 </Link>
               </div>
 
@@ -334,8 +352,10 @@ export default function TournamentPage() {
                 {data.rewards.userWon
                   ? `Your card lifted the trophy! +${data.rewards.userXp} XP, +${data.rewards.userCurrency} coins.`
                   : `Full-time rewards: +${data.rewards.userXp} XP, +${data.rewards.userCurrency} coins.`}{" "}
-                Engine {champion.engineVersion} · seed {data.seed.slice(0, 12)}… — same trip, same
-                answers, same result.
+                Engine {champion.engineVersion} · seed {data.seed.slice(0, 12)}…{" "}
+                {isWorld
+                  ? "— same cards, same seed, same result."
+                  : "— same trip, same answers, same result."}
               </p>
             </div>
           </div>

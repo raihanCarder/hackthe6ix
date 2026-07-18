@@ -1,4 +1,5 @@
 import { createRng, hashString } from "@/lib/engine/seed";
+import { WORLD_CITIES } from "@/lib/data/worldCities";
 
 /**
  * Deterministic mock accommodation provider. Active only when
@@ -17,10 +18,14 @@ const CITY_COORDS: Record<string, { lat: number; lng: number; label: string }> =
   paris: { lat: 48.8566, lng: 2.3522, label: "Paris" },
   tokyo: { lat: 35.6762, lng: 139.6503, label: "Tokyo" },
   barcelona: { lat: 41.3874, lng: 2.1686, label: "Barcelona" },
+  ...Object.fromEntries(
+    WORLD_CITIES.map((c) => [c.city.toLowerCase(), { lat: c.lat, lng: c.lng, label: c.city }]),
+  ),
 };
 
 export function resolveDestination(address: string): { lat: number; lng: number; label: string } {
   const key = address.trim().toLowerCase();
+  if (CITY_COORDS[key]) return CITY_COORDS[key];
   for (const [name, coords] of Object.entries(CITY_COORDS)) {
     if (key.includes(name)) return coords;
   }

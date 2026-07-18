@@ -5,30 +5,30 @@ import type { EngineResult, NormalizedAccommodation } from "@/lib/engine/types";
 import { normalizeTravelerAnswers } from "@/lib/engine";
 import { computeCardStats, overallRating, poolPriceContext } from "@/lib/game/cardStats";
 import type { TournamentBracket } from "@/lib/game/matchSim";
-import { createTournament } from "@/lib/tournament";
+import { createGlobalTournament, createTripTournament } from "@/lib/tournament";
 import { prisma } from "@/lib/db";
 import { ApiError } from "./core";
 import { answersSchema, loadSearch } from "./searches";
 
 export const createTournamentSchema = z.object({
-  searchId: z.string().min(1),
-  answers: answersSchema,
+  mode: z.enum(["trip", "world"]),
+  cardId: z.string().min(1),
+  answers: answersSchema.default([]),
 });
 
-export async function createTournamentForSearch(
+/** Trip Cup Mode or Global Cup Mode — one selected card enters the bracket. */
+export async function createTournamentForCard(
   user: User,
   body: z.infer<typeof createTournamentSchema>,
 ) {
-  const search = await loadSearch(body.searchId, user.id);
-  const answers = normalizeTravelerAnswers(body.answers);
-
-  const { tournament } = await createTournament({
-    user,
-    searchApiCallId: search.apiCallId,
-    trip: search.trip,
-    pool: search.pool,
-    answers,
-  });
+  const { tournament } =
+    body.mode === "trip"
+      ? await createTripTournament({
+          user,
+          cardId: body.cardId,
+          answers: normalizeTravelerAnswers(body.answers),
+        })
+      : await createGlobalTournament({ user, cardId: body.cardId });
 
   return { tournamentId: tournament.id };
 }
@@ -49,8 +49,9 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
     search.pool.filter((h) => engine.eligibleIds.includes(h.id)),
   );
 
+  const selectedCardIds = tournament.userCardIds as unknown as string[];
   const userCards = await prisma.savedCard.findMany({
-    where: { userId: user.id, stay22PropertyId: { in: contenderIds } },
+    where: { userId: user.id, id: { in: selectedCardIds } },
   });
   const userCardByProperty = new Map(userCards.map((c) => [c.stay22PropertyId, c]));
 
@@ -90,6 +91,7 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
 
   return {
     id: tournament.id,
+    mode: tournament.mode,
     createdAt: tournament.createdAt,
     seed: tournament.seed,
     trip: search.trip,

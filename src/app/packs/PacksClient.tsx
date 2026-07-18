@@ -1,10 +1,14 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type PackKind = "trip" | "global";
+
 interface SearchSummary {
   searchId: string;
+  scope: PackKind;
   mode: "live" | "mock";
   destination: { label: string };
   totalResults: number;
@@ -13,15 +17,21 @@ interface SearchSummary {
   packCost: number;
 }
 
+interface UserSettings {
+  defaultAdults: number;
+  numberOfKids: number;
+}
+
 function addDays(base: Date, days: number): string {
   const d = new Date(base);
   d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
 }
 
-export default function SearchPage() {
+export function PacksClient() {
   const router = useRouter();
   const today = new Date();
+  const [pack, setPack] = useState<PackKind | null>(null);
   const [form, setForm] = useState({
     destination: "Toronto",
     checkin: addDays(today, 21),
@@ -36,20 +46,49 @@ export default function SearchPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/me")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user: unknown | null; authMode: "auth0" | "dev" } | null) => {
+        if (!cancelled && data?.authMode === "auth0" && !data.user) {
+          window.location.assign(`/auth/login?returnTo=${encodeURIComponent("/packs")}`);
+        }
+      })
+      .catch(() => undefined);
+
     fetch("/api/settings")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((settings) => {
-        if (!settings) return;
-        setForm((prev) => ({
-          ...prev,
-          adults: settings.defaultAdults ?? prev.adults,
-          children: settings.numberOfKids ?? prev.children,
+      .then((response) => (response.ok ? response.json() : null))
+      .then((settings: UserSettings | null) => {
+        if (cancelled || !settings) return;
+        setForm((previous) => ({
+          ...previous,
+          adults: settings.defaultAdults ?? previous.adults,
+          children: settings.numberOfKids ?? previous.children,
         }));
-      });
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  function choosePack(kind: PackKind) {
+    setPack(kind);
+    setSummary(null);
+    setError(null);
+  }
+
+  function backToChoose() {
+    setPack(null);
+    setSummary(null);
+    setError(null);
+  }
 
   async function runSearch(event: React.FormEvent) {
     event.preventDefault();
+    if (!pack) return;
     setBusy("search");
     setError(null);
     setSummary(null);
@@ -58,7 +97,8 @@ export default function SearchPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          destination: form.destination,
+          scope: pack,
+          destination: pack === "trip" ? form.destination : undefined,
           checkin: form.checkin,
           checkout: form.checkout,
           adults: form.adults,
@@ -85,7 +125,7 @@ export default function SearchPage() {
       const response = await fetch("/api/packs/open", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ searchId: summary.searchId }),
+        body: JSON.stringify({ searchId: summary.searchId, scope: summary.scope }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Pack opening failed");
@@ -99,27 +139,81 @@ export default function SearchPage() {
   const field =
     "w-full rounded border border-chalk/25 bg-pitch-950 px-3 py-2 text-chalk placeholder:text-chalk-dim/60";
 
+  if (!pack) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+        <p className="eyebrow text-center">Matchday · pack selection</p>
+        <h1 className="font-display mt-2 text-center text-3xl text-chalk sm:text-4xl">
+          Pick your pack
+        </h1>
+        <p className="mx-auto mt-2 max-w-lg text-center text-sm text-chalk-dim">
+          Every card is a real, bookable property. Choose a Trip Pack for your next getaway or a
+          Global Pack for a surprise destination.
+        </p>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          <motion.button
+            whileHover={{ y: -4 }}
+            onClick={() => choosePack("trip")}
+            className="panel rounded-2xl border-2 border-turf-bright/40 p-8 text-left transition hover:border-turf-bright"
+          >
+            <p className="eyebrow">Home fixture</p>
+            <h2 className="font-display mt-2 text-2xl text-chalk">Trip Pack</h2>
+            <p className="mt-3 text-sm text-chalk-dim">
+              Built from your real trip — pick a destination, dates, and party size. Five cards,
+              all bookable for that stay. First pack per city is free.
+            </p>
+            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Choose Trip Pack</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ y: -4 }}
+            onClick={() => choosePack("global")}
+            className="panel rounded-2xl border-2 border-gold-bright/40 p-8 text-left transition hover:border-gold-bright"
+          >
+            <p className="eyebrow">Away fixture</p>
+            <h2 className="font-display mt-2 text-2xl text-chalk">Global Pack</h2>
+            <p className="mt-3 text-sm text-chalk-dim">
+              A random destination from around the world — every continent in play. Five cards
+              for the surprise city and dates you choose.
+            </p>
+            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Choose Global Pack</span>
+          </motion.button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <p className="eyebrow">Fixture setup</p>
-      <h1 className="font-display mt-2 text-3xl text-chalk">Where&apos;s the away game?</h1>
+      <button onClick={backToChoose} className="text-xs text-chalk-dim underline-offset-2 hover:underline">
+        ← Back to pack selection
+      </button>
+
+      <p className="eyebrow mt-4">Fixture setup</p>
+      <h1 className="font-display mt-2 text-3xl text-chalk">
+        {pack === "trip" ? "Where's the away game?" : "Roll the dice on a destination"}
+      </h1>
       <p className="mt-2 text-sm text-chalk-dim">
-        Real trip inputs drive a live accommodation search — every card in your pack is bookable
-        for these dates.
+        {pack === "trip"
+          ? "Real trip inputs drive a live accommodation search — every card in your pack is bookable for these dates."
+          : "We'll pick a random city from around the world. Set your dates and party, and let the draw decide the rest."}
       </p>
 
       <form onSubmit={runSearch} className="panel mt-6 grid gap-4 rounded-xl p-6 sm:grid-cols-2">
-        <label className="sm:col-span-2">
-          <span className="eyebrow">Destination</span>
-          <input
-            className={`${field} mt-1`}
-            value={form.destination}
-            onChange={(e) => setForm({ ...form, destination: e.target.value })}
-            placeholder="Toronto, Montréal, Tokyo…"
-            required
-            minLength={2}
-          />
-        </label>
+        {pack === "trip" && (
+          <label className="sm:col-span-2">
+            <span className="eyebrow">Destination</span>
+            <input
+              className={`${field} mt-1`}
+              value={form.destination}
+              onChange={(e) => setForm({ ...form, destination: e.target.value })}
+              placeholder="Toronto, Montréal, Tokyo…"
+              required
+              minLength={2}
+            />
+          </label>
+        )}
         <label>
           <span className="eyebrow">Check-in</span>
           <input
@@ -186,7 +280,11 @@ export default function SearchPage() {
         </label>
         <div className="sm:col-span-2">
           <button type="submit" disabled={busy !== null} className="btn-gold w-full rounded-lg px-6 py-3">
-            {busy === "search" ? "Scouting live hotels…" : "Scout the field"}
+            {busy === "search"
+              ? "Scouting live hotels…"
+              : pack === "trip"
+                ? "Scout the field"
+                : "Draw a destination"}
           </button>
         </div>
       </form>
@@ -217,7 +315,7 @@ export default function SearchPage() {
               ? "Tearing the foil…"
               : summary.freePackAvailable
                 ? "Open your free Trip Pack"
-                : `Open a Trip Pack · ${summary.packCost} coins`}
+                : `Open a ${pack === "trip" ? "Trip" : "Global"} Pack · ${summary.packCost} coins`}
           </button>
         </div>
       )}
