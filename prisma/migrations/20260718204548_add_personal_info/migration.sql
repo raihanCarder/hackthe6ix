@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "defaultAdults" INTEGER NOT NULL DEFAULT 2,
+ADD COLUMN     "homeCity" TEXT,
+ADD COLUMN     "numberOfKids" INTEGER NOT NULL DEFAULT 0;

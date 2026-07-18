@@ -983,6 +983,9 @@ export const UserScalarFieldEnum = {
   packsOpened: 'packsOpened',
   matchesPlayed: 'matchesPlayed',
   mvpCount: 'mvpCount',
+  numberOfKids: 'numberOfKids',
+  homeCity: 'homeCity',
+  defaultAdults: 'defaultAdults',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
