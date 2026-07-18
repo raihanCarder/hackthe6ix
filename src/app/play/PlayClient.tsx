@@ -185,7 +185,7 @@ export function PlayClient() {
 
   if (step === "card") {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <button onClick={backToMode} className="text-xs text-chalk-dim underline-offset-2 hover:underline">
           ← Back to gamemode selection
         </button>

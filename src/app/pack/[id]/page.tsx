@@ -57,7 +57,7 @@ export default function PackPage() {
   const packLabel = pack.scope === "global" ? "Global pack" : "Trip pack";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <p className="eyebrow">
         {packLabel} · {pack.trip.destinationLabel} · {pack.trip.checkin} → {pack.trip.checkout}
       </p>

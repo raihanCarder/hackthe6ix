@@ -68,7 +68,6 @@ function artStyle(hotel: NormalizedAccommodation, cosmeticSeed: string): CSSProp
 
   return {
     backgroundImage:
-      "linear-gradient(180deg, rgba(232, 255, 238, 0.16), rgba(0, 0, 0, 0.16) 38%, rgba(1, 16, 12, 0.58)), " +
       `url(${JSON.stringify(hotel.thumbnailUrl)}), ${fallback}`,
   };
 }
@@ -95,6 +94,7 @@ export function HotelCard({
   const name = hotelName(hotel);
   const statRows = displayStats(hotel, stats);
   const location = compact ? compactLocation(hotel.address) : hotel.address ?? compactLocation(hotel.address);
+  const hasThumbnail = Boolean(hotel.thumbnailUrl);
 
   return (
     <article className={`hotel-card hotel-card-${rarity} card-face relative w-full select-none`}>
@@ -103,47 +103,52 @@ export function HotelCard({
         <div className="hotel-card-inner">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 leading-none">
-              <div className="font-score text-[3.35rem] font-bold leading-[0.82] text-card-primary sm:text-[3.8rem]">
+              <div className="hotel-overall font-score font-bold text-card-primary">
                 {overall}
               </div>
-              <div className="font-display mt-2 text-sm leading-none text-chalk">OVR</div>
+              <div className="hotel-overall-label font-display text-chalk">OVR</div>
             </div>
             <span className="hotel-rarity-pill font-score shrink-0 truncate px-4 py-1 text-[10px] font-bold uppercase">
               {RARITY_LABEL[rarity]}
             </span>
           </div>
 
-          <div className="hotel-art mt-4" style={artStyle(hotel, cosmeticSeed)}>
-            <div className="hotel-art-skyline" aria-hidden>
-              <span className="building building-a" />
-              <span className="building building-b" />
-              <span className="building building-c" />
-              <span className="building building-d" />
-            </div>
+          <div
+            className={`hotel-art ${hasThumbnail ? "hotel-art-photo" : "hotel-art-generated"}`}
+            style={artStyle(hotel, cosmeticSeed)}
+          >
+            {!hasThumbnail && (
+              <div className="hotel-art-skyline" aria-hidden>
+                <span className="building building-a" />
+                <span className="building building-b" />
+                <span className="building building-c" />
+                <span className="building building-d" />
+              </div>
+            )}
           </div>
 
           <div className="hotel-divider" />
 
-          <div className="mt-2 min-h-[3rem] text-center">
-            <h3 className="font-display line-clamp-2 text-balance text-lg leading-[1.02] text-chalk sm:text-xl">
+          <div className="hotel-name-wrap text-center">
+            <h3 className="hotel-name font-display line-clamp-2 text-balance text-chalk">
               {name}
             </h3>
           </div>
 
-          <div className="mt-2 flex items-end justify-between gap-2 border-b border-card-line pb-1.5">
-            <p className="min-w-0 truncate text-sm font-bold text-chalk-dim">{location}</p>
-            <p className="font-score shrink-0 whitespace-nowrap text-base font-bold text-card-primary">
+          <div className="hotel-meta flex items-end justify-between gap-2 border-b border-card-line">
+            <p className="min-w-0 truncate font-bold text-chalk-dim">{location}</p>
+            <p className="font-score shrink-0 whitespace-nowrap font-bold text-card-primary">
               {priceLabel(hotel)}
             </p>
           </div>
 
-          <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1">
+          <dl className="hotel-stats grid grid-cols-2">
             {statRows.map((stat) => (
-              <div key={stat.label} className="grid grid-cols-[2.2rem_minmax(0,1fr)] items-baseline gap-1">
-                <dt className="font-score text-right text-sm font-bold leading-none text-card-primary">
+              <div key={stat.label} className="hotel-stat-row grid items-baseline">
+                <dt className="font-score text-right font-bold leading-none text-card-primary">
                   {stat.value}
                 </dt>
-                <dd className="truncate text-[0.55rem] font-bold uppercase leading-none text-chalk">
+                <dd className="truncate font-bold uppercase leading-none text-chalk">
                   {stat.label}
                 </dd>
               </div>

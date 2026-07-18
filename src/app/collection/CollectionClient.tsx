@@ -62,9 +62,14 @@ export function CollectionClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <p className="eyebrow">Clubhouse</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">Your collection</h1>
+      {cards !== null && (
+        <p className="mt-1 text-sm text-chalk-dim">
+          {cards.length} {cards.length === 1 ? "card" : "cards"} collected
+        </p>
+      )}
 
       {cards === null ? (
         <p className="mt-8 text-chalk-dim">Polishing the trophy cabinet…</p>
