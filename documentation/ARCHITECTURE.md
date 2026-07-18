@@ -28,7 +28,7 @@ Product in one line: *hotels compete for your booking* — live Stay22 search re
 src/
   app/
     (marketing)/page.tsx            # landing
-    api/auth/[auth0]/route.ts       # Auth0 handlers
+    proxy.ts                        # Auth0 SDK middleware routes under /auth/*
     api/search/route.ts             # POST trip search → Stay22 fetch + snapshot
     api/packs/open/route.ts         # POST open Trip Pack
     api/tournaments/route.ts        # POST create+run tournament
@@ -99,6 +99,8 @@ Never persist: API keys, raw dumps without request context.
 ## API surface
 
 All Stay22 access and engine runs happen in route handlers (server). Routes validate inputs with zod, check the Auth0 session, and never echo credentials. `POST /api/tournaments` executes steps 5–7 in one request and persists the complete result — the bracket UI then plays it back client-side (no long-lived server state, demo-safe).
+
+Authentication setup, routes, and dashboard callback URLs are documented in [`AUTH.md`](./AUTH.md).
 
 ## Build phases (hackathon order)
 
