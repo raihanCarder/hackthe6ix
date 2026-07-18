@@ -18,6 +18,7 @@ export interface ElevenLabsConfig {
   outputFormat: string;
   monthlyCharacterLimit: number;
   accountCreditReserve: number;
+  checkAccountQuota: boolean;
 }
 
 export function getElevenLabsConfig(): ElevenLabsConfig | null {
@@ -43,5 +44,6 @@ export function getElevenLabsConfig(): ElevenLabsConfig | null {
       process.env.ELEVENLABS_ACCOUNT_CREDIT_RESERVE,
       DEFAULT_CREDIT_RESERVE,
     ),
+    checkAccountQuota: process.env.ELEVENLABS_CHECK_ACCOUNT_QUOTA === "true",
   };
 }

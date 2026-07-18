@@ -47,9 +47,11 @@ export async function prepareCommentaryAudio(
       return { status: "quota", cacheKey: null };
     }
 
-    const accountAllowance = await getSubscriptionAllowance(config);
-    if (accountAllowance - text.length < config.accountCreditReserve) {
-      return { status: "quota", cacheKey: null };
+    if (config.checkAccountQuota) {
+      const accountAllowance = await getSubscriptionAllowance(config);
+      if (accountAllowance - text.length < config.accountCreditReserve) {
+        return { status: "quota", cacheKey: null };
+      }
     }
 
     const audio = await synthesizeSpeech(config, text);

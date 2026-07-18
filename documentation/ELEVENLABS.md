@@ -28,7 +28,10 @@ every cache miss. See the official [create speech API](https://elevenlabs.io/doc
 
 - Audio generation is opt-in in the tournament UI. Caption-only requests spend no ElevenLabs credits.
 - `ELEVENLABS_MONTHLY_CHARACTER_LIMIT` sets an application-level UTC monthly ceiling.
-- `ELEVENLABS_ACCOUNT_CREDIT_RESERVE` stops generation before the ElevenLabs account is exhausted.
+- `ELEVENLABS_ACCOUNT_CREDIT_RESERVE` protects account-wide allowance when
+  `ELEVENLABS_CHECK_ACCOUNT_QUOTA=true`. That optional check requires `user_read` permission.
+- Keep the account check off for a least-privilege `text_to_speech`-only key, and set a credit quota
+  on that key in ElevenLabs as the external hard limit.
 - Generated MP3 data is stored once in `PresentationAudio`. Its SHA-256 key covers the template
   version, exact text, voice, model, and output format.
 - `PresentationUsage` counts only successful new generations. Cache hits are free.
