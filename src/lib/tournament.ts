@@ -208,7 +208,7 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
 
   const card = await prisma.savedCard.findFirst({
     where: { id: cardId, userId: user.id },
-    include: { snapshot: true },
+    include: { snapshot: { include: { sourceApiCall: true } } },
   });
   if (!card) throw new ApiError(404, "Card not found");
 
@@ -216,35 +216,44 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
   const seed = hashString(`global-cup:${user.id}:${card.id}:${user.matchesPlayed}`);
   const rng = createRng(seed);
   const cities = pickUniqueCountryCities(rng, GLOBAL_CUP_OPPONENTS);
-  const { checkin, checkout } = defaultGlobalCupTrip();
+  const sourceParams = card.snapshot.sourceApiCall.requestParams as Record<string, unknown>;
+  const globalTrip = globalCupTrip(sourceParams);
 
   const opponentResults = await Promise.all(
     cities.map((city) =>
       searchAccommodations({
-        address: city.city,
-        checkin,
-        checkout,
-        adults: 2,
-        children: 0,
-        rooms: 1,
-        currency: "CAD",
+        address: `${city.city}, ${city.country}`,
+        checkin: globalTrip.checkin,
+        checkout: globalTrip.checkout,
+        adults: globalTrip.adults,
+        children: globalTrip.children,
+        rooms: globalTrip.rooms,
+        currency: globalTrip.currency,
       }),
     ),
   );
 
   const opponents: NormalizedAccommodation[] = [];
-  opponentResults.forEach((result, index) => {
-    const pickRng = createRng(`${seed}:pick:${cities[index].country}`);
+  const usedPropertyIds = new Set([userHotel.id]);
+  opponentResults.forEach((result) => {
     const sorted = [...result.hotels]
-      .filter((h) => h.id !== userHotel.id)
-      .sort((a, b) => (a.id < b.id ? -1 : 1));
+      .filter((hotel) => !usedPropertyIds.has(hotel.id))
+      .sort(
+        (a, b) =>
+          (b.guestRating ?? -1) - (a.guestRating ?? -1) ||
+          (b.reviewCount ?? -1) - (a.reviewCount ?? -1) ||
+          (a.id < b.id ? -1 : 1),
+      );
     if (sorted.length === 0) return;
-    const pickIndex = Math.min(Math.floor(pickRng() * sorted.length), sorted.length - 1);
-    opponents.push(sorted[pickIndex]);
+    opponents.push(sorted[0]);
+    usedPropertyIds.add(sorted[0].id);
   });
 
-  if (opponents.length < 3) {
-    throw new ApiError(422, "Could not find enough global opponents — try again");
+  if (opponents.length !== GLOBAL_CUP_OPPONENTS) {
+    throw new ApiError(
+      422,
+      `Global Cup needs ${GLOBAL_CUP_OPPONENTS} unique opponents; found ${opponents.length}`,
+    );
   }
 
   const pool = [userHotel, ...opponents];
@@ -254,15 +263,17 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
     const stats = computeCardStats(hotel, prices, cosmeticSeed);
     return { hotelId: hotel.id, overall: overallRating(stats) };
   });
-  const totalOverall = rankEntries.reduce((sum, r) => sum + r.overall, 0) || 1;
   const sorted = [...rankEntries].sort(
     (a, b) => b.overall - a.overall || (a.hotelId < b.hotelId ? -1 : 1),
   );
+  const overallGap = sorted.length > 1 ? sorted[0].overall - sorted[1].overall : 0;
+  const championProbability = Math.min(0.95, 0.55 + overallGap / 50);
+  const remainingProbability = (1 - championProbability) / Math.max(1, sorted.length - 1);
   const ranking: HotelRankStats[] = sorted.map((entry, index) => ({
     hotelId: entry.hotelId,
     deterministicScore: entry.overall,
-    firstPlaceProbability: entry.overall / totalOverall,
-    topThreeProbability: Math.min(1, (entry.overall / totalOverall) * 3),
+    firstPlaceProbability: index === 0 ? championProbability : remainingProbability,
+    topThreeProbability: index < 3 ? 1 : 0,
     averageRank: index + 1,
     medianRank: index + 1,
     averageUtility: entry.overall,
@@ -270,7 +281,6 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
 
   const championId = ranking[0].hotelId;
   const runnerUpId = ranking[1]?.hotelId ?? null;
-  const overallGap = ranking.length > 1 ? ranking[0].deterministicScore - ranking[1].deterministicScore : 0;
 
   const engineResult: EngineResult = {
     version: "card-overall-v1",
@@ -306,7 +316,7 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
     seed,
   });
 
-  if (!plan.contenderIds.includes(championId) || plan.contenderIds.length < 4) {
+  if (!plan.contenderIds.includes(championId) || plan.contenderIds.length !== 16) {
     throw new ApiError(422, "Could not build a Global Cup bracket — try again");
   }
 
@@ -330,17 +340,18 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
       endpoint: "global://world-cup",
       requestParams: asJson({
         destination: { lat: 0, lng: 0, label: "Global Cup" },
-        checkin,
-        checkout,
-        adults: 2,
-        children: 0,
-        rooms: 1,
-        currency: "CAD",
+        checkin: globalTrip.checkin,
+        checkout: globalTrip.checkout,
+        adults: globalTrip.adults,
+        children: globalTrip.children,
+        rooms: globalTrip.rooms,
+        currency: globalTrip.currency,
         countries: cities.map((c) => c.country),
       }),
       responseBody: asJson({
         note: "synthetic Global Cup opponent pool",
         countries: cities.map((c) => c.country),
+        results: pool,
       }),
       status: 200,
       snapshots: {
@@ -367,7 +378,30 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
   });
 }
 
-function defaultGlobalCupTrip(): { checkin: string; checkout: string } {
+function globalCupTrip(params: Record<string, unknown>): {
+  checkin: string;
+  checkout: string;
+  adults: number;
+  children: number;
+  rooms: number;
+  currency: string;
+} {
+  const sourceCheckin = typeof params.checkin === "string" ? params.checkin : "";
+  const sourceCheckout = typeof params.checkout === "string" ? params.checkout : "";
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const datesAreUsable = sourceCheckin >= todayIso && sourceCheckout > sourceCheckin;
+  const fallback = defaultGlobalCupDates();
+  return {
+    checkin: datesAreUsable ? sourceCheckin : fallback.checkin,
+    checkout: datesAreUsable ? sourceCheckout : fallback.checkout,
+    adults: positiveInteger(params.adults, 2),
+    children: nonNegativeInteger(params.children, 0),
+    rooms: positiveInteger(params.rooms, 1),
+    currency: typeof params.currency === "string" && params.currency ? params.currency : "CAD",
+  };
+}
+
+function defaultGlobalCupDates(): { checkin: string; checkout: string } {
   const today = new Date();
   const checkinDate = new Date(today);
   checkinDate.setDate(checkinDate.getDate() + 21);
@@ -377,6 +411,16 @@ function defaultGlobalCupTrip(): { checkin: string; checkout: string } {
     checkin: checkinDate.toISOString().slice(0, 10),
     checkout: checkoutDate.toISOString().slice(0, 10),
   };
+}
+
+function positiveInteger(value: unknown, fallback: number): number {
+  const number = Number(value);
+  return Number.isInteger(number) && number > 0 ? number : fallback;
+}
+
+function nonNegativeInteger(value: unknown, fallback: number): number {
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : fallback;
 }
 
 export type { TournamentBracket, TournamentRewards };

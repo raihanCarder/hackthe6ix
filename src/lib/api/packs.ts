@@ -20,11 +20,15 @@ const PACK_SIZE = 5;
 
 export const openPackSchema = z.object({
   searchId: z.string().min(1),
-  scope: z.enum(["trip", "global"]).default("trip"),
+  scope: z.enum(["trip", "global"]),
 });
 
-export async function openPack(user: User, searchId: string, scope: "trip" | "global" = "trip") {
+export async function openPack(user: User, searchId: string, requestedScope: "trip" | "global") {
   const search = await loadSearch(searchId, user.id);
+  if (requestedScope !== search.scope) {
+    throw new ApiError(409, "Pack type does not match the original search");
+  }
+  const scope = search.scope;
 
   const { eligible } = applyHardConstraints(search.pool, search.trip, DEFAULT_ENGINE_CONFIG);
   if (eligible.length < PACK_SIZE) {
@@ -40,8 +44,11 @@ export async function openPack(user: User, searchId: string, scope: "trip" | "gl
     ).map((c) => c.stay22PropertyId),
   );
   const selectable = eligible.filter((h) => !owned.has(h.id));
-  if (selectable.length === 0) {
-    throw new ApiError(422, "You already own every bookable card in this search");
+  if (selectable.length < PACK_SIZE) {
+    throw new ApiError(
+      422,
+      `Only ${selectable.length} new properties remain — a pack needs ${PACK_SIZE}`,
+    );
   }
 
   const claim =

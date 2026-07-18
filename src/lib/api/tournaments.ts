@@ -49,8 +49,9 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
     search.pool.filter((h) => engine.eligibleIds.includes(h.id)),
   );
 
+  const selectedCardIds = tournament.userCardIds as unknown as string[];
   const userCards = await prisma.savedCard.findMany({
-    where: { userId: user.id, stay22PropertyId: { in: contenderIds } },
+    where: { userId: user.id, id: { in: selectedCardIds } },
   });
   const userCardByProperty = new Map(userCards.map((c) => [c.stay22PropertyId, c]));
 

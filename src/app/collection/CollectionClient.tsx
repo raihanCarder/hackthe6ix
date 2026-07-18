@@ -74,8 +74,8 @@ export function CollectionClient() {
           <p className="mt-2 text-sm text-chalk-dim">
             Open your first Trip Pack — the first one in every city is free.
           </p>
-          <Link href="/search" className="btn-gold mt-5 inline-block rounded-lg px-6 py-2.5">
-            Scout a trip
+          <Link href="/packs" className="btn-gold mt-5 inline-block rounded-lg px-6 py-2.5">
+            Open a pack
           </Link>
         </div>
       ) : (

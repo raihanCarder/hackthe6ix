@@ -11,15 +11,15 @@ export default function Home() {
           <span className="text-gold-bright">FOR YOUR BOOKING.</span>
         </h1>
         <p className="mt-6 max-w-xl text-base text-chalk-dim sm:text-lg">
-          Search a real trip. Open a pack of live, bookable hotel cards. Run a 16-team World Cup
-          bracket where every stat comes from real listing data — then book the champion.
+          Open packs of live, bookable hotel cards. Build your collection, then enter one card in
+          a Trip Cup recommendation or a casual Global Cup.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <ProtectedLink href="/search" className="btn-gold rounded-lg px-8 py-3 text-lg">
-            Kick off a trip
+          <ProtectedLink href="/packs" className="btn-gold rounded-lg px-8 py-3 text-lg">
+            Open a pack
           </ProtectedLink>
-          <ProtectedLink href="/collection" className="btn-chalk rounded-lg px-6 py-3">
-            My collection
+          <ProtectedLink href="/play" className="btn-chalk rounded-lg px-6 py-3">
+            Play a match
           </ProtectedLink>
         </div>
       </section>
@@ -30,13 +30,13 @@ export default function Home() {
         {[
           {
             step: "1st half",
-            title: "Open a Trip Pack",
-            body: "Five collectible cards, each one a real hotel available for your dates. VIBE, LEGACY, VALUE — every stat is derived from live listing attributes.",
+            title: "Open a pack",
+            body: "Choose a real Trip Pack or a surprise Global Pack. Each contains five collectible hotel cards derived from live listing attributes.",
           },
           {
             step: "2nd half",
-            title: "Run the bracket",
-            body: "Sixteen contenders, four groups, knockouts. A deterministic recommendation engine scores every hotel against your answers — the drama is animated, never faked.",
+            title: "Choose a card and play",
+            body: "Your collection is reusable. Enter one owned card into a Trip Cup for a real recommendation or a casual Global Cup for fun.",
           },
           {
             step: "Full time",

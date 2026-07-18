@@ -53,16 +53,17 @@ const MAX_QUESTIONS = 5;
 
 export interface SearchRecord {
   apiCallId: string;
+  scope: "trip" | "global";
   trip: TripContext;
   city: string;
   pool: NormalizedAccommodation[];
 }
 
 export async function createSearch(user: User, body: z.infer<typeof searchRequestSchema>) {
-  const address =
-    body.scope === "global"
-      ? pickRandomCity(createRng(hashString(`global-pack:${user.id}:${user.packsOpened}`))).city
-      : body.destination!;
+  const globalCity = body.scope === "global"
+    ? pickRandomCity(createRng(hashString(`global-pack:${user.id}:${user.packsOpened}`)))
+    : null;
+  const address = globalCity ? `${globalCity.city}, ${globalCity.country}` : body.destination!;
 
   const result = await searchAccommodations({
     address,
@@ -76,10 +77,13 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
     maxNightly: body.maxNightly ?? null,
   });
 
+  const destination = globalCity
+    ? { ...result.destination, label: `${globalCity.city}, ${globalCity.country}` }
+    : result.destination;
   const trip = {
-    destinationLabel: result.destination.label,
-    lat: result.destination.lat,
-    lng: result.destination.lng,
+    destinationLabel: destination.label,
+    lat: destination.lat,
+    lng: destination.lng,
     checkin: body.checkin,
     checkout: body.checkout,
     adults: body.adults,
@@ -96,7 +100,7 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
     data: {
       userId: user.id,
       endpoint: result.endpoint,
-      requestParams: asJson({ ...result.requestParams, destination: result.destination }),
+      requestParams: asJson({ ...result.requestParams, scope: body.scope, destination }),
       responseBody: asJson(result.responseBody),
       status: result.status,
       snapshots: {
@@ -108,7 +112,7 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
     },
   });
 
-  const city = normalizeCity(result.destination.label);
+  const city = normalizeCity(destination.label);
   const freePackAvailable =
     body.scope === "trip" &&
     (await prisma.cityPackClaim.findUnique({
@@ -119,7 +123,7 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
     searchId: apiCall.id,
     scope: body.scope,
     mode: result.mode,
-    destination: result.destination,
+    destination,
     totalResults: result.hotels.length,
     eligibleCount: eligible.length,
     excludedCount: excluded.length,
@@ -137,6 +141,7 @@ export async function loadSearch(apiCallId: string, userId: string): Promise<Sea
   if (!apiCall) throw new ApiError(404, "Search not found");
 
   const params = apiCall.requestParams as Record<string, unknown>;
+  const scope = params.scope === "global" ? "global" : "trip";
   const destination = params.destination as { lat: number; lng: number; label: string };
   const trip: TripContext = {
     destinationLabel: destination.label,
@@ -156,7 +161,7 @@ export async function loadSearch(apiCallId: string, userId: string): Promise<Sea
   const pool = apiCall.snapshots.map(
     (s) => s.normalizedData as unknown as NormalizedAccommodation,
   );
-  return { apiCallId: apiCall.id, trip, city: normalizeCity(destination.label), pool };
+  return { apiCallId: apiCall.id, scope, trip, city: normalizeCity(destination.label), pool };
 }
 
 export async function getSearchQuestions(searchId: string, userId: string) {

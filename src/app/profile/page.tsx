@@ -62,8 +62,11 @@ export default function ProfilePage() {
       </div>
 
       <div className="mt-8 flex gap-3">
-        <Link href="/search" className="btn-gold rounded-lg px-6 py-2.5">
-          New trip
+        <Link href="/packs" className="btn-gold rounded-lg px-6 py-2.5">
+          Open a pack
+        </Link>
+        <Link href="/play" className="btn-chalk rounded-lg px-6 py-2.5">
+          Play
         </Link>
         <Link href="/collection" className="btn-chalk rounded-lg px-6 py-2.5">
           Collection
