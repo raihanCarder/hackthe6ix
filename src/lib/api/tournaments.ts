@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { User } from "@/generated/prisma/client";
 import type { EngineResult, NormalizedAccommodation } from "@/lib/engine/types";
+import { normalizeTravelerAnswers } from "@/lib/engine";
 import { computeCardStats, overallRating, poolPriceContext } from "@/lib/game/cardStats";
 import type { TournamentBracket } from "@/lib/game/matchSim";
 import { createTournament } from "@/lib/tournament";
@@ -19,13 +20,14 @@ export async function createTournamentForSearch(
   body: z.infer<typeof createTournamentSchema>,
 ) {
   const search = await loadSearch(body.searchId, user.id);
+  const answers = normalizeTravelerAnswers(body.answers);
 
   const { tournament } = await createTournament({
     user,
     searchApiCallId: search.apiCallId,
     trip: search.trip,
     pool: search.pool,
-    answers: body.answers,
+    answers,
   });
 
   return { tournamentId: tournament.id };

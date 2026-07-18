@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CardBack, HotelCard } from "@/components/HotelCard";
 import type { CardPayload } from "@/components/types";
 import type { PreferenceQuestion, TravelerAnswer } from "@/lib/engine/types";
@@ -25,9 +25,12 @@ export default function PackPage() {
   const [phase, setPhase] = useState<"reveal" | "questions" | "simulating">("reveal");
 
   // Questionnaire state
-  const [questions, setQuestions] = useState<PreferenceQuestion[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<PreferenceQuestion | null>(null);
   const [answers, setAnswers] = useState<TravelerAnswer[]>([]);
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionNumber, setQuestionNumber] = useState(1);
+  const [maxQuestions, setMaxQuestions] = useState(5);
+  const [questionSource, setQuestionSource] = useState<"gemini" | "deterministic" | null>(null);
+  const [questionBusy, setQuestionBusy] = useState(false);
 
   useEffect(() => {
     fetch(`/api/packs/${id}`)
@@ -47,45 +50,41 @@ export default function PackPage() {
 
   async function startQuestions() {
     if (!pack) return;
-    const response = await fetch(`/api/search/${pack.searchId}/questions`);
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.error ?? "Could not load questions");
-      return;
-    }
-    setQuestions(data.questions);
     setPhase("questions");
+    await fetchNextQuestion([]);
   }
 
-  /** Questions whose previousAnswers condition matches what's been answered. */
-  const visibleQuestions = useMemo(() => {
-    return questions.filter((q) => {
-      const cond = q.condition?.previousAnswers;
-      if (!cond) return true;
-      return Object.entries(cond).every(([questionId, optionIds]) => {
-        const answer = answers.find((a) => a.questionId === questionId);
-        return answer?.optionIds.some((o) => optionIds.includes(o));
+  async function fetchNextQuestion(nextAnswers: TravelerAnswer[]) {
+    if (!pack) return;
+    setQuestionBusy(true);
+    setCurrentQuestion(null);
+    try {
+      const response = await fetch(`/api/search/${pack.searchId}/questions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers: nextAnswers }),
       });
-    });
-  }, [questions, answers]);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not load the next question");
+      if (data.complete) {
+        await kickOff(nextAnswers);
+        return;
+      }
+      setCurrentQuestion(data.question);
+      setQuestionNumber(data.questionNumber);
+      setMaxQuestions(data.maxQuestions);
+      setQuestionSource(data.source);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load the next question");
+    } finally {
+      setQuestionBusy(false);
+    }
+  }
 
   async function answerAndAdvance(question: PreferenceQuestion, optionId: string) {
     const next = [...answers.filter((a) => a.questionId !== question.id), { questionId: question.id, optionIds: [optionId] }];
     setAnswers(next);
-    // Recompute visibility with the new answer to know if we're done.
-    const remaining = questions.filter((q) => {
-      const cond = q.condition?.previousAnswers;
-      if (!cond) return true;
-      return Object.entries(cond).every(([questionId, optionIds]) => {
-        const answer = next.find((a) => a.questionId === questionId);
-        return answer?.optionIds.some((o) => optionIds.includes(o));
-      });
-    });
-    if (questionIndex + 1 < remaining.length) {
-      setQuestionIndex(questionIndex + 1);
-    } else {
-      await kickOff(next);
-    }
+    await fetchNextQuestion(next);
   }
 
   async function kickOff(finalAnswers: TravelerAnswer[]) {
@@ -120,8 +119,6 @@ export default function PackPage() {
       </div>
     );
   }
-
-  const currentQuestion = visibleQuestions[questionIndex];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -222,7 +219,8 @@ export default function PackPage() {
               ) : currentQuestion ? (
                 <div>
                   <p className="eyebrow">
-                    Pre-match interview · {questionIndex + 1} of {visibleQuestions.length}
+                    Pre-match interview · {questionNumber} of up to {maxQuestions}
+                    {questionSource === "gemini" ? " · AI personalized" : ""}
                   </p>
                   <h2 className="font-display mt-2 text-xl text-chalk">{currentQuestion.text}</h2>
                   <div className="mt-4 grid gap-2">
@@ -230,6 +228,7 @@ export default function PackPage() {
                       <button
                         key={option.id}
                         onClick={() => answerAndAdvance(currentQuestion, option.id)}
+                        disabled={questionBusy}
                         className="btn-chalk rounded-lg px-4 py-3 text-left text-sm"
                       >
                         {option.label}
@@ -244,7 +243,9 @@ export default function PackPage() {
                   </button>
                 </div>
               ) : (
-                <div className="py-6 text-center text-chalk-dim">Loading questions…</div>
+                <div className="py-6 text-center text-chalk-dim">
+                  {questionBusy ? "Personalizing your next question…" : "Loading question…"}
+                </div>
               )}
             </motion.div>
           </motion.div>
