@@ -37,6 +37,8 @@ export type UserAvgAggregateOutputType = {
   packsOpened: number | null
   matchesPlayed: number | null
   mvpCount: number | null
+  numberOfKids: number | null
+  defaultAdults: number | null
 }
 
 export type UserSumAggregateOutputType = {
@@ -50,6 +52,8 @@ export type UserSumAggregateOutputType = {
   packsOpened: number | null
   matchesPlayed: number | null
   mvpCount: number | null
+  numberOfKids: number | null
+  defaultAdults: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -68,6 +72,9 @@ export type UserMinAggregateOutputType = {
   packsOpened: number | null
   matchesPlayed: number | null
   mvpCount: number | null
+  numberOfKids: number | null
+  homeCity: string | null
+  defaultAdults: number | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -89,6 +96,9 @@ export type UserMaxAggregateOutputType = {
   packsOpened: number | null
   matchesPlayed: number | null
   mvpCount: number | null
+  numberOfKids: number | null
+  homeCity: string | null
+  defaultAdults: number | null
   lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -110,6 +120,9 @@ export type UserCountAggregateOutputType = {
   packsOpened: number
   matchesPlayed: number
   mvpCount: number
+  numberOfKids: number
+  homeCity: number
+  defaultAdults: number
   lastLoginAt: number
   createdAt: number
   updatedAt: number
@@ -128,6 +141,8 @@ export type UserAvgAggregateInputType = {
   packsOpened?: true
   matchesPlayed?: true
   mvpCount?: true
+  numberOfKids?: true
+  defaultAdults?: true
 }
 
 export type UserSumAggregateInputType = {
@@ -141,6 +156,8 @@ export type UserSumAggregateInputType = {
   packsOpened?: true
   matchesPlayed?: true
   mvpCount?: true
+  numberOfKids?: true
+  defaultAdults?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -159,6 +176,9 @@ export type UserMinAggregateInputType = {
   packsOpened?: true
   matchesPlayed?: true
   mvpCount?: true
+  numberOfKids?: true
+  homeCity?: true
+  defaultAdults?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -180,6 +200,9 @@ export type UserMaxAggregateInputType = {
   packsOpened?: true
   matchesPlayed?: true
   mvpCount?: true
+  numberOfKids?: true
+  homeCity?: true
+  defaultAdults?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -201,6 +224,9 @@ export type UserCountAggregateInputType = {
   packsOpened?: true
   matchesPlayed?: true
   mvpCount?: true
+  numberOfKids?: true
+  homeCity?: true
+  defaultAdults?: true
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
@@ -309,6 +335,9 @@ export type UserGroupByOutputType = {
   packsOpened: number
   matchesPlayed: number
   mvpCount: number
+  numberOfKids: number
+  homeCity: string | null
+  defaultAdults: number
   lastLoginAt: Date
   createdAt: Date
   updatedAt: Date
@@ -353,6 +382,9 @@ export type UserWhereInput = {
   packsOpened?: Prisma.IntFilter<"User"> | number
   matchesPlayed?: Prisma.IntFilter<"User"> | number
   mvpCount?: Prisma.IntFilter<"User"> | number
+  numberOfKids?: Prisma.IntFilter<"User"> | number
+  homeCity?: Prisma.StringNullableFilter<"User"> | string | null
+  defaultAdults?: Prisma.IntFilter<"User"> | number
   lastLoginAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -379,6 +411,9 @@ export type UserOrderByWithRelationInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  homeCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -408,6 +443,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   packsOpened?: Prisma.IntFilter<"User"> | number
   matchesPlayed?: Prisma.IntFilter<"User"> | number
   mvpCount?: Prisma.IntFilter<"User"> | number
+  numberOfKids?: Prisma.IntFilter<"User"> | number
+  homeCity?: Prisma.StringNullableFilter<"User"> | string | null
+  defaultAdults?: Prisma.IntFilter<"User"> | number
   lastLoginAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -434,6 +472,9 @@ export type UserOrderByWithAggregationInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  homeCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -463,6 +504,9 @@ export type UserScalarWhereWithAggregatesInput = {
   packsOpened?: Prisma.IntWithAggregatesFilter<"User"> | number
   matchesPlayed?: Prisma.IntWithAggregatesFilter<"User"> | number
   mvpCount?: Prisma.IntWithAggregatesFilter<"User"> | number
+  numberOfKids?: Prisma.IntWithAggregatesFilter<"User"> | number
+  homeCity?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  defaultAdults?: Prisma.IntWithAggregatesFilter<"User"> | number
   lastLoginAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -484,6 +528,9 @@ export type UserCreateInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -510,6 +557,9 @@ export type UserUncheckedCreateInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -536,6 +586,9 @@ export type UserUpdateInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -562,6 +615,9 @@ export type UserUncheckedUpdateInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -588,6 +644,9 @@ export type UserCreateManyInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -609,6 +668,9 @@ export type UserUpdateManyMutationInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -630,6 +692,9 @@ export type UserUncheckedUpdateManyInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -651,6 +716,9 @@ export type UserCountOrderByAggregateInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  homeCity?: Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -667,6 +735,8 @@ export type UserAvgOrderByAggregateInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -685,6 +755,9 @@ export type UserMaxOrderByAggregateInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  homeCity?: Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -706,6 +779,9 @@ export type UserMinOrderByAggregateInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  homeCity?: Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -722,6 +798,8 @@ export type UserSumOrderByAggregateInput = {
   packsOpened?: Prisma.SortOrder
   matchesPlayed?: Prisma.SortOrder
   mvpCount?: Prisma.SortOrder
+  numberOfKids?: Prisma.SortOrder
+  defaultAdults?: Prisma.SortOrder
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -842,6 +920,9 @@ export type UserCreateWithoutApiCallsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -867,6 +948,9 @@ export type UserUncheckedCreateWithoutApiCallsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -908,6 +992,9 @@ export type UserUpdateWithoutApiCallsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,6 +1020,9 @@ export type UserUncheckedUpdateWithoutApiCallsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -958,6 +1048,9 @@ export type UserCreateWithoutPackOpensInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -983,6 +1076,9 @@ export type UserUncheckedCreateWithoutPackOpensInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1024,6 +1120,9 @@ export type UserUpdateWithoutPackOpensInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1049,6 +1148,9 @@ export type UserUncheckedUpdateWithoutPackOpensInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1074,6 +1176,9 @@ export type UserCreateWithoutCityClaimsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1099,6 +1204,9 @@ export type UserUncheckedCreateWithoutCityClaimsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1140,6 +1248,9 @@ export type UserUpdateWithoutCityClaimsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1165,6 +1276,9 @@ export type UserUncheckedUpdateWithoutCityClaimsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1190,6 +1304,9 @@ export type UserCreateWithoutCardsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1215,6 +1332,9 @@ export type UserUncheckedCreateWithoutCardsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1256,6 +1376,9 @@ export type UserUpdateWithoutCardsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1281,6 +1404,9 @@ export type UserUncheckedUpdateWithoutCardsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1306,6 +1432,9 @@ export type UserCreateWithoutTournamentsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1331,6 +1460,9 @@ export type UserUncheckedCreateWithoutTournamentsInput = {
   packsOpened?: number
   matchesPlayed?: number
   mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
   lastLoginAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1372,6 +1504,9 @@ export type UserUpdateWithoutTournamentsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1397,6 +1532,9 @@ export type UserUncheckedUpdateWithoutTournamentsInput = {
   packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
   matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
   mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
   lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1489,6 +1627,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   packsOpened?: boolean
   matchesPlayed?: boolean
   mvpCount?: boolean
+  numberOfKids?: boolean
+  homeCity?: boolean
+  defaultAdults?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1516,6 +1657,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   packsOpened?: boolean
   matchesPlayed?: boolean
   mvpCount?: boolean
+  numberOfKids?: boolean
+  homeCity?: boolean
+  defaultAdults?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1537,6 +1681,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   packsOpened?: boolean
   matchesPlayed?: boolean
   mvpCount?: boolean
+  numberOfKids?: boolean
+  homeCity?: boolean
+  defaultAdults?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1558,12 +1705,15 @@ export type UserSelectScalar = {
   packsOpened?: boolean
   matchesPlayed?: boolean
   mvpCount?: boolean
+  numberOfKids?: boolean
+  homeCity?: boolean
+  defaultAdults?: boolean
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth0Sub" | "username" | "email" | "avatarUrl" | "wins" | "losses" | "currentWinStreak" | "bestWinStreak" | "currency" | "xp" | "level" | "packsOpened" | "matchesPlayed" | "mvpCount" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth0Sub" | "username" | "email" | "avatarUrl" | "wins" | "losses" | "currentWinStreak" | "bestWinStreak" | "currency" | "xp" | "level" | "packsOpened" | "matchesPlayed" | "mvpCount" | "numberOfKids" | "homeCity" | "defaultAdults" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cards?: boolean | Prisma.User$cardsArgs<ExtArgs>
   packOpens?: boolean | Prisma.User$packOpensArgs<ExtArgs>
@@ -1600,6 +1750,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     packsOpened: number
     matchesPlayed: number
     mvpCount: number
+    numberOfKids: number
+    homeCity: string | null
+    defaultAdults: number
     lastLoginAt: Date
     createdAt: Date
     updatedAt: Date
@@ -2046,6 +2199,9 @@ export interface UserFieldRefs {
   readonly packsOpened: Prisma.FieldRef<"User", 'Int'>
   readonly matchesPlayed: Prisma.FieldRef<"User", 'Int'>
   readonly mvpCount: Prisma.FieldRef<"User", 'Int'>
+  readonly numberOfKids: Prisma.FieldRef<"User", 'Int'>
+  readonly homeCity: Prisma.FieldRef<"User", 'String'>
+  readonly defaultAdults: Prisma.FieldRef<"User", 'Int'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

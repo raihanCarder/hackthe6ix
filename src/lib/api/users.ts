@@ -1,10 +1,48 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import type { User } from "@/generated/prisma/client";
 import { DEV_SESSION_COOKIE, getSessionUser, isAuth0Mode } from "@/lib/auth";
+import { isKnownCity } from "@/lib/cities";
+import { prisma } from "@/lib/db";
 import { syncUser } from "@/lib/userSync";
+import { ApiError } from "./core";
 
 export const devLoginSchema = z.object({ username: z.string().trim().min(2).max(32) });
+
+export const updateSettingsSchema = z.object({
+  numberOfKids: z.number().int().min(0).max(20),
+  homeCity: z.string().trim().max(80).nullable(),
+  defaultAdults: z.number().int().min(1).max(16),
+});
+
+export function getUserSettings(user: User) {
+  return {
+    numberOfKids: user.numberOfKids,
+    homeCity: user.homeCity,
+    defaultAdults: user.defaultAdults,
+  };
+}
+
+export async function updateUserSettings(
+  userId: string,
+  data: z.infer<typeof updateSettingsSchema>,
+) {
+  const homeCity = data.homeCity && data.homeCity.length > 0 ? data.homeCity : null;
+  if (homeCity && !(await isKnownCity(homeCity))) {
+    throw new ApiError(422, "That doesn't look like a real city — pick one from the suggestions");
+  }
+
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      numberOfKids: data.numberOfKids,
+      homeCity,
+      defaultAdults: data.defaultAdults,
+    },
+  });
+  return getUserSettings(user);
+}
 
 export async function getCurrentUserPayload() {
   const session = await getSessionUser();

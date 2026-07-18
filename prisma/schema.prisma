@@ -23,6 +23,9 @@ model User {
   packsOpened      Int      @default(0)
   matchesPlayed    Int      @default(0)
   mvpCount         Int      @default(0)
+  numberOfKids     Int      @default(0)
+  homeCity         String?
+  defaultAdults    Int      @default(2)
   lastLoginAt      DateTime @default(now())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

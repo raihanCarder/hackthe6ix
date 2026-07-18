@@ -17,6 +17,11 @@ interface SearchSummary {
   packCost: number;
 }
 
+interface UserSettings {
+  defaultAdults: number;
+  numberOfKids: number;
+}
+
 function addDays(base: Date, days: number): string {
   const d = new Date(base);
   d.setDate(d.getDate() + days);
@@ -49,7 +54,20 @@ export function PacksClient() {
         if (!cancelled && data?.authMode === "auth0" && !data.user) {
           window.location.assign(`/auth/login?returnTo=${encodeURIComponent("/packs")}`);
         }
-      });
+      })
+      .catch(() => undefined);
+
+    fetch("/api/settings")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((settings: UserSettings | null) => {
+        if (cancelled || !settings) return;
+        setForm((previous) => ({
+          ...previous,
+          adults: settings.defaultAdults ?? previous.adults,
+          children: settings.numberOfKids ?? previous.children,
+        }));
+      })
+      .catch(() => undefined);
 
     return () => {
       cancelled = true;
