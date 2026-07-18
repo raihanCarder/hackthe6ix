@@ -189,7 +189,7 @@ export function PlayClient() {
               interview drives a real recommendation engine — the winner is a genuine pick for
               your trip.
             </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Trip Cup</span>
+            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Trip Cup</span>
           </motion.button>
 
           <motion.button
@@ -203,7 +203,7 @@ export function PlayClient() {
               Your card takes on 15 opponents from 15 different countries around the world. No
               interview, no wait — just bragging rights.
             </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
+            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
           </motion.button>
         </div>
       </div>
@@ -237,7 +237,7 @@ export function PlayClient() {
           <div className="panel mt-8 rounded-xl p-10 text-center">
             <p className="font-display text-lg text-chalk">No cards yet.</p>
             <p className="mt-2 text-sm text-chalk-dim">Open a pack to build your squad first.</p>
-            <Link href="/packs" className="btn-gold mt-5 inline-block rounded-lg px-6 py-2.5">
+            <Link href="/packs" className="btn-primary mt-5 inline-block rounded-lg px-6 py-2.5">
               Open a pack
             </Link>
           </div>
@@ -251,7 +251,7 @@ export function PlayClient() {
                     key={card.id}
                     onClick={() => selectCard(card)}
                     className={`rounded-xl text-left transition ${
-                      isSelected ? "ring-2 ring-gold-bright" : "hover:-translate-y-1"
+                      isSelected ? "ring-2 ring-cyan-bright" : "hover:-translate-y-1"
                     }`}
                   >
                     <HotelCard
@@ -270,7 +270,7 @@ export function PlayClient() {
             <button
               onClick={enterTournament}
               disabled={!selected}
-              className="btn-gold mt-6 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
+              className="btn-primary mt-6 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
             >
               {selected ? `Enter ${selected.hotel.name} into the tournament` : "Select a card to continue"}
             </button>

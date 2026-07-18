@@ -259,8 +259,7 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
   const pool = [userHotel, ...opponents];
   const prices = poolPriceContext(pool);
   const rankEntries = pool.map((hotel) => {
-    const cosmeticSeed = hotel.id === userHotel.id ? card.cosmeticSeed : `npc:${seed}:${hotel.id}`;
-    const stats = computeCardStats(hotel, prices, cosmeticSeed);
+    const stats = computeCardStats(hotel, prices);
     return { hotelId: hotel.id, overall: overallRating(stats) };
   });
   const sorted = [...rankEntries].sort(

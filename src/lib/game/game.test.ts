@@ -68,8 +68,8 @@ describe("card stats and rarity", () => {
   it("cheaper hotels get higher VALUE within the pool", () => {
     const pool = makePool(10);
     const prices = poolPriceContext(pool)!;
-    const cheap = computeCardStats({ ...pool[0], nightlyPrice: prices.min }, prices, "s");
-    const dear = computeCardStats({ ...pool[0], nightlyPrice: prices.max }, prices, "s");
+    const cheap = computeCardStats({ ...pool[0], nightlyPrice: prices.min }, prices);
+    const dear = computeCardStats({ ...pool[0], nightlyPrice: prices.max }, prices);
     expect(cheap.value).toBeGreaterThan(dear.value);
   });
 
@@ -77,7 +77,7 @@ describe("card stats and rarity", () => {
     const pool = makePool(20);
     const prices = poolPriceContext(pool);
     for (const hotel of pool) {
-      const stats = computeCardStats(hotel, prices, "seed");
+      const stats = computeCardStats(hotel, prices);
       for (const value of Object.values(stats)) {
         expect(value).toBeGreaterThanOrEqual(1);
         expect(value).toBeLessThanOrEqual(99);
