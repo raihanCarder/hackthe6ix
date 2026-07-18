@@ -52,3 +52,14 @@ export type SavedCard = Prisma.SavedCardModel
  * 
  */
 export type Tournament = Prisma.TournamentModel
+/**
+ * Model PresentationAudio
+ * Reusable ElevenLabs output. The cache key includes template, text, voice,
+ * model, and format, so a changed input can never return stale commentary.
+ */
+export type PresentationAudio = Prisma.PresentationAudioModel
+/**
+ * Model PresentationUsage
+ * Application-side generation ceiling. Cache hits do not consume this budget.
+ */
+export type PresentationUsage = Prisma.PresentationUsageModel
