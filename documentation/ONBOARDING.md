@@ -61,6 +61,7 @@ Open http://localhost:3000. With no Stay22 or Auth0 credentials, the app uses de
 - `src/lib/game/`: cards, rarity, bracket simulation, highlights, and rewards.
 - `prisma/schema.prisma`: database schema.
 - `documentation/ARCHITECTURE.md`: product and system architecture.
+- `documentation/AUTH.md`: Auth0/dev auth setup, routes, endpoints, and common redirect issues.
 - `documentation/ideas/ALGORITHM_DESIGN.md`: recommendation algorithm details.
 
 ## Development Rules
@@ -98,3 +99,4 @@ To test real integrations, fill in `.env`:
 - `DATABASE_URL` with the deployment database connection string for hosted environments.
 
 When `AUTH0_*` is configured, local dev sign-in disables itself automatically.
+See [`documentation/AUTH.md`](./AUTH.md) for Auth0 callback URLs, Google social login setup, and auth endpoint behavior.
