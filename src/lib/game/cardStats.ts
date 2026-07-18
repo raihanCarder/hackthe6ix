@@ -1,19 +1,20 @@
 import { createRng, hashString } from "@/lib/engine/seed";
+import { DEFAULT_ENGINE_CONFIG } from "@/lib/engine/types";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
- * Presentation-layer football-card stats (documentation/ideas/IDEA.md "Card Stats"). Derived
+ * Presentation-layer hotel-card stats (documentation/ideas/IDEA.md "Card Stats"). Derived
  * from live attributes for flavor and card visuals — they NEVER feed the
  * recommendation engine, and rarity never affects who wins.
  */
 
 export interface CardStats {
-  vibe: number; // guest rating
-  legacy: number; // review count
+  comfort: number; // guest rating, shrunk toward neutral by review count
+  amenities: number; // guests, bedrooms, beds
+  luxury: number; // star rating
   value: number; // relative trip price
-  flex: number; // cancellation / instant book / suppliers
-  squad: number; // guests, bedrooms, beds
-  chaos: number; // property-type rarity + cosmetic seed
+  location: number; // distance from destination
+  service: number; // cancellation / instant book / suppliers
 }
 
 export type Rarity = "common" | "rare" | "epic" | "legendary";
@@ -34,54 +35,50 @@ export function poolPriceContext(pool: NormalizedAccommodation[]): PoolPriceCont
 export function computeCardStats(
   hotel: NormalizedAccommodation,
   prices: PoolPriceContext | null,
-  cosmeticSeed: string,
 ): CardStats {
-  const vibe = hotel.guestRating !== null ? clampStat(hotel.guestRating * 10) : 50;
+  let comfort = 50;
+  if (hotel.guestRating !== null) {
+    const n = hotel.reviewCount ?? 8;
+    const m = 25; // pseudo-count for the neutral-50 prior — mirrors the engine's quality shrinkage
+    const adjusted = (n / (n + m)) * (hotel.guestRating * 10) + (m / (n + m)) * 50;
+    comfort = clampStat(adjusted);
+  }
 
-  const legacy =
-    hotel.reviewCount !== null
-      ? clampStat(99 * Math.min(1, Math.log1p(hotel.reviewCount) / Math.log1p(3000)))
-      : 40;
+  const capacityPart = Math.min(1, (hotel.capacity ?? 2) / 8);
+  const bedroomPart = Math.min(1, (hotel.bedrooms ?? 1) / 4);
+  const bedPart = Math.min(1, (hotel.beds ?? 1) / 5);
+  const amenities = clampStat(99 * (0.5 * capacityPart + 0.25 * bedroomPart + 0.25 * bedPart));
+
+  const luxury = hotel.stars !== null ? clampStat(20 + hotel.stars * 16) : 50;
 
   let value = 50;
   if (hotel.nightlyPrice !== null && prices && prices.max > prices.min) {
     value = clampStat(20 + 79 * ((prices.max - hotel.nightlyPrice) / (prices.max - prices.min)));
   }
 
-  let flex = 0;
-  flex += hotel.freeCancellation ? 40 : 0;
-  flex += hotel.instantBooking ? 25 : 0;
+  const location =
+    hotel.distanceKm !== null
+      ? clampStat(100 * Math.max(0, 1 - hotel.distanceKm / DEFAULT_ENGINE_CONFIG.defaultRadiusKm))
+      : 50;
+
+  let service = 0;
+  service += hotel.freeCancellation ? 40 : 0;
+  service += hotel.instantBooking ? 25 : 0;
   const suppliers = hotel.supplierCount ?? hotel.supplierIds.length;
-  flex += 34 * Math.min(1, Math.log1p(suppliers) / Math.log1p(5));
-  flex = clampStat(Math.max(flex, 15));
+  service += 34 * Math.min(1, Math.log1p(suppliers) / Math.log1p(5));
+  service = clampStat(Math.max(service, 15));
 
-  const capacityPart = Math.min(1, (hotel.capacity ?? 2) / 8);
-  const bedroomPart = Math.min(1, (hotel.bedrooms ?? 1) / 4);
-  const bedPart = Math.min(1, (hotel.beds ?? 1) / 5);
-  const squad = clampStat(99 * (0.5 * capacityPart + 0.25 * bedroomPart + 0.25 * bedPart));
-
-  const typeRarityBonus: Record<string, number> = {
-    hotel: 0,
-    apartment: 8,
-    bnb: 16,
-    hostel: 12,
-  };
-  const chaosRng = createRng(`chaos:${hotel.id}:${cosmeticSeed}`);
-  const chaos = clampStat(
-    25 + chaosRng() * 55 + (typeRarityBonus[hotel.propertyType ?? "hotel"] ?? 20),
-  );
-
-  return { vibe, legacy, value, flex, squad, chaos };
+  return { comfort, amenities, luxury, value, location, service };
 }
 
 export function overallRating(stats: CardStats): number {
   return clampStat(
-    0.28 * stats.vibe +
-      0.18 * stats.legacy +
-      0.18 * stats.value +
-      0.14 * stats.flex +
-      0.12 * stats.squad +
-      0.1 * stats.chaos,
+    0.26 * stats.comfort +
+      0.2 * stats.value +
+      0.2 * stats.location +
+      0.14 * stats.luxury +
+      0.12 * stats.amenities +
+      0.08 * stats.service,
   );
 }
 

@@ -331,7 +331,7 @@ export default function TournamentPage() {
                     href={champion.hotel.bookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-gold rounded-lg px-8 py-3 text-lg"
+                    className="btn-primary rounded-lg px-8 py-3 text-lg"
                   >
                     Book the champion →
                   </a>

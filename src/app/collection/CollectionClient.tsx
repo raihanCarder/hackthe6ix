@@ -63,19 +63,19 @@ export function CollectionClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <p className="eyebrow">Clubhouse</p>
+      <p className="eyebrow">Collection</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">Your collection</h1>
 
       {cards === null ? (
-        <p className="mt-8 text-chalk-dim">Polishing the trophy cabinet…</p>
+        <p className="mt-8 text-chalk-dim">Loading your collection…</p>
       ) : cards.length === 0 ? (
         <div className="panel mt-8 rounded-xl p-10 text-center">
-          <p className="font-display text-lg text-chalk">No signings yet.</p>
+          <p className="font-display text-lg text-chalk">No cards yet.</p>
           <p className="mt-2 text-sm text-chalk-dim">
-            Open your first Trip Pack — the first one in every city is free.
+            Mint your first Trip Pack — the first one in every city is free.
           </p>
-          <Link href="/packs" className="btn-gold mt-5 inline-block rounded-lg px-6 py-2.5">
-            Open a pack
+          <Link href="/packs" className="btn-primary mt-5 inline-block rounded-lg px-6 py-2.5">
+            Kick off a trip
           </Link>
         </div>
       ) : (
@@ -137,7 +137,7 @@ export function CollectionClient() {
                         href={live.hotel.bookingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-gold mt-3 block rounded-lg px-4 py-2.5 text-center"
+                        className="btn-primary mt-3 block rounded-lg px-4 py-2.5 text-center"
                       >
                         Book this stay →
                       </a>
