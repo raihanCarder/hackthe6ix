@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String   @id @default(cuid())
+  auth0Sub         String   @unique
+  username         String
+  email            String?
+  avatarUrl        String?
+  wins             Int      @default(0)
+  losses           Int      @default(0)
+  currentWinStreak Int      @default(0)
+  bestWinStreak    Int      @default(0)
+  currency         Int      @default(500)
+  xp               Int      @default(0)
+  level            Int      @default(1)
+  packsOpened      Int      @default(0)
+  matchesPlayed    Int      @default(0)
+  mvpCount         Int      @default(0)
+  lastLoginAt      DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  cards       SavedCard[]
+  packOpens   PackOpen[]
+  cityClaims  CityPackClaim[]
+  tournaments Tournament[]
+  apiCalls    Stay22ApiCall[]
+}
+
+model Stay22ApiCall {
+  id            String   @id @default(cuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  endpoint      String
+  requestParams Json
+  responseBody  Json
+  status        Int
+  createdAt     DateTime @default(now())
+
+  snapshots   HotelSnapshot[]
+  tournaments Tournament[]
+  packOpens   PackOpen[]
+}
+
+model HotelSnapshot {
+  id               String        @id @default(cuid())
+  stay22PropertyId String
+  sourceApiCallId  String
+  sourceApiCall    Stay22ApiCall @relation(fields: [sourceApiCallId], references: [id])
+  normalizedData   Json
+  createdAt        DateTime      @default(now())
+
+  cards SavedCard[]
+
+  @@index([stay22PropertyId])
+  @@index([sourceApiCallId])
+}
+
+model PackOpen {
+  id               String        @id @default(cuid())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  searchApiCallId  String
+  searchApiCall    Stay22ApiCall @relation(fields: [searchApiCallId], references: [id])
+  scope            String // "trip" | "global"
+  city             String
+  cost             Int
+  seed             String
+  generatedCardIds Json
+  createdAt        DateTime      @default(now())
+}
+
+model CityPackClaim {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  normalizedCity String
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, normalizedCity])
+}
+
+model SavedCard {
+  id               String        @id @default(cuid())
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  stay22PropertyId String
+  snapshotId       String
+  snapshot         HotelSnapshot @relation(fields: [snapshotId], references: [id])
+  rarity           String // "common" | "rare" | "epic" | "legendary"
+  cosmeticSeed     String
+  acquiredScope    String
+  acquiredCity     String
+  edition          Int           @default(1)
+  xp               Int           @default(0)
+  trophies         Int           @default(0)
+  wins             Int           @default(0)
+  losses           Int           @default(0)
+  timesMvp         Int           @default(0)
+  dateAcquired     DateTime      @default(now())
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@unique([userId, stay22PropertyId])
+}
+
+model Tournament {
+  id                   String        @id @default(cuid())
+  userId               String
+  user                 User          @relation(fields: [userId], references: [id])
+  mode                 String // "trip" | "world"
+  searchApiCallId      String
+  searchApiCall        Stay22ApiCall @relation(fields: [searchApiCallId], references: [id])
+  contenderPropertyIds Json
+  userCardIds          Json
+  questionnaireAnswers Json
+  engineResult         Json
+  seed                 String
+  championPropertyId   String
+  bracket              Json
+  rewards              Json
+  createdAt            DateTime      @default(now())
+}
