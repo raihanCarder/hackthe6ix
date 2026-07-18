@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
 
 type PackKind = "trip" | "global";
 
@@ -31,6 +32,7 @@ function addDays(base: Date, days: number): string {
 export function PacksClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { announce } = usePresentation();
   const today = new Date();
   const prefilledDestination = searchParams.get("destination");
   const [pack, setPack] = useState<PackKind | null>(prefilledDestination ? "trip" : null);
@@ -80,6 +82,13 @@ export function PacksClient() {
     setPack(kind);
     setSummary(null);
     setError(null);
+    announce({
+      source: "journey",
+      cue: {
+        kind: "journey.moment",
+        moment: kind === "trip" ? "pack.trip_selected" : "pack.global_selected",
+      },
+    });
   }
 
   function backToChoose() {
@@ -94,6 +103,7 @@ export function PacksClient() {
     setBusy("search");
     setError(null);
     setSummary(null);
+    announce({ source: "journey", cue: { kind: "journey.moment", moment: "search.started" } });
     try {
       const response = await fetch("/api/search", {
         method: "POST",
@@ -112,6 +122,7 @@ export function PacksClient() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Search failed");
       setSummary(data);
+      announce({ source: "journey", cue: { kind: "journey.moment", moment: "search.complete" } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed");
     } finally {
@@ -123,6 +134,7 @@ export function PacksClient() {
     if (!summary) return;
     setBusy("pack");
     setError(null);
+    announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
     try {
       const response = await fetch("/api/packs/open", {
         method: "POST",
@@ -143,6 +155,7 @@ export function PacksClient() {
   if (!pack) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+        <JourneyCommentaryCue moment="pack.selection" />
         <p className="eyebrow text-center">New trip · pack selection</p>
         <h1 className="font-display mt-2 text-center text-3xl text-chalk sm:text-4xl">
           Build the booking game from your first search.

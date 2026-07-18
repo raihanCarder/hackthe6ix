@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Archivo_Black, Oswald } from "next/font/google";
 import "./globals.css";
 import { Chrome } from "@/components/Chrome";
+import { PresentationProvider } from "@/components/PresentationCommentary";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -35,7 +36,9 @@ export default function RootLayout({
       className={`${archivo.variable} ${archivoBlack.variable} ${oswald.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <Chrome>{children}</Chrome>
+        <PresentationProvider>
+         <Chrome>{children}</Chrome>
+        </PresentationProvider>
       </body>
     </html>
   );

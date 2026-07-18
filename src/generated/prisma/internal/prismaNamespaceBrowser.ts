@@ -57,7 +57,9 @@ export const ModelName = {
   PackOpen: 'PackOpen',
   CityPackClaim: 'CityPackClaim',
   SavedCard: 'SavedCard',
-  Tournament: 'Tournament'
+  Tournament: 'Tournament',
+  PresentationAudio: 'PresentationAudio',
+  PresentationUsage: 'PresentationUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -192,6 +194,32 @@ export const TournamentScalarFieldEnum = {
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
+
+
+export const PresentationAudioScalarFieldEnum = {
+  cacheKey: 'cacheKey',
+  eventType: 'eventType',
+  text: 'text',
+  voiceId: 'voiceId',
+  modelId: 'modelId',
+  outputFormat: 'outputFormat',
+  mimeType: 'mimeType',
+  audio: 'audio',
+  characterCount: 'characterCount',
+  createdAt: 'createdAt'
+} as const
+
+export type PresentationAudioScalarFieldEnum = (typeof PresentationAudioScalarFieldEnum)[keyof typeof PresentationAudioScalarFieldEnum]
+
+
+export const PresentationUsageScalarFieldEnum = {
+  period: 'period',
+  characterCount: 'characterCount',
+  generationCount: 'generationCount',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PresentationUsageScalarFieldEnum = (typeof PresentationUsageScalarFieldEnum)[keyof typeof PresentationUsageScalarFieldEnum]
 
 
 export const SortOrder = {

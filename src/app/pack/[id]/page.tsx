@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CardBack, HotelCard } from "@/components/HotelCard";
+import { usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
 
 interface PackPayload {
@@ -19,6 +20,7 @@ interface PackPayload {
 
 export default function PackPage() {
   const { id } = useParams<{ id: string }>();
+  const { announce } = usePresentation();
   const [pack, setPack] = useState<PackPayload | null>(null);
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -29,14 +31,24 @@ export default function PackPage() {
         const data = await r.json();
         if (!r.ok) throw new Error(data.error ?? "Pack not found");
         setPack(data);
+        announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
       })
       .catch((e) => setError(e.message));
-  }, [id]);
+  }, [announce, id]);
 
   const allFlipped = pack !== null && flipped.size >= pack.cards.length;
 
   function flip(index: number) {
+    if (flipped.has(index) || !pack) return;
+    const moment = flipped.size + 1 >= pack.cards.length ? "pack.complete" : "pack.reveal";
+    announce({ source: "journey", cue: { kind: "journey.moment", moment } });
     setFlipped((prev) => new Set(prev).add(index));
+  }
+
+  function revealAll() {
+    if (!pack) return;
+    announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.complete" } });
+    setFlipped(new Set(pack.cards.map((_, index) => index)));
   }
 
   if (error) {
@@ -111,7 +123,7 @@ export default function PackPage() {
       <div className="mt-8 flex flex-wrap items-center gap-3">
         {!allFlipped && (
           <button
-            onClick={() => setFlipped(new Set(pack.cards.map((_, i) => i)))}
+            onClick={revealAll}
             className="btn-chalk rounded-lg px-5 py-2.5"
           >
             Reveal all

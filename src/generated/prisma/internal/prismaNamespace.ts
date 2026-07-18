@@ -390,7 +390,9 @@ export const ModelName = {
   PackOpen: 'PackOpen',
   CityPackClaim: 'CityPackClaim',
   SavedCard: 'SavedCard',
-  Tournament: 'Tournament'
+  Tournament: 'Tournament',
+  PresentationAudio: 'PresentationAudio',
+  PresentationUsage: 'PresentationUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "savedCard" | "tournament"
+    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +930,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PresentationAudio: {
+      payload: Prisma.$PresentationAudioPayload<ExtArgs>
+      fields: Prisma.PresentationAudioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PresentationAudioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PresentationAudioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        findFirst: {
+          args: Prisma.PresentationAudioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PresentationAudioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        findMany: {
+          args: Prisma.PresentationAudioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>[]
+        }
+        create: {
+          args: Prisma.PresentationAudioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        createMany: {
+          args: Prisma.PresentationAudioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PresentationAudioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>[]
+        }
+        delete: {
+          args: Prisma.PresentationAudioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        update: {
+          args: Prisma.PresentationAudioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        deleteMany: {
+          args: Prisma.PresentationAudioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PresentationAudioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PresentationAudioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>[]
+        }
+        upsert: {
+          args: Prisma.PresentationAudioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationAudioPayload>
+        }
+        aggregate: {
+          args: Prisma.PresentationAudioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePresentationAudio>
+        }
+        groupBy: {
+          args: Prisma.PresentationAudioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationAudioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PresentationAudioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationAudioCountAggregateOutputType> | number
+        }
+      }
+    }
+    PresentationUsage: {
+      payload: Prisma.$PresentationUsagePayload<ExtArgs>
+      fields: Prisma.PresentationUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PresentationUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PresentationUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.PresentationUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PresentationUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        findMany: {
+          args: Prisma.PresentationUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>[]
+        }
+        create: {
+          args: Prisma.PresentationUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        createMany: {
+          args: Prisma.PresentationUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PresentationUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.PresentationUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        update: {
+          args: Prisma.PresentationUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.PresentationUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PresentationUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PresentationUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.PresentationUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.PresentationUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePresentationUsage>
+        }
+        groupBy: {
+          args: Prisma.PresentationUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PresentationUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationUsageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1085,6 +1235,32 @@ export const TournamentScalarFieldEnum = {
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
 
 
+export const PresentationAudioScalarFieldEnum = {
+  cacheKey: 'cacheKey',
+  eventType: 'eventType',
+  text: 'text',
+  voiceId: 'voiceId',
+  modelId: 'modelId',
+  outputFormat: 'outputFormat',
+  mimeType: 'mimeType',
+  audio: 'audio',
+  characterCount: 'characterCount',
+  createdAt: 'createdAt'
+} as const
+
+export type PresentationAudioScalarFieldEnum = (typeof PresentationAudioScalarFieldEnum)[keyof typeof PresentationAudioScalarFieldEnum]
+
+
+export const PresentationUsageScalarFieldEnum = {
+  period: 'period',
+  characterCount: 'characterCount',
+  generationCount: 'generationCount',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PresentationUsageScalarFieldEnum = (typeof PresentationUsageScalarFieldEnum)[keyof typeof PresentationUsageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1185,6 +1361,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
+
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+
 
 
 /**
@@ -1317,6 +1507,8 @@ export type GlobalOmitConfig = {
   cityPackClaim?: Prisma.CityPackClaimOmit
   savedCard?: Prisma.SavedCardOmit
   tournament?: Prisma.TournamentOmit
+  presentationAudio?: Prisma.PresentationAudioOmit
+  presentationUsage?: Prisma.PresentationUsageOmit
 }
 
 /* Types for Logging */
@@ -1379,4 +1571,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

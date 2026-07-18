@@ -131,3 +131,26 @@ model Tournament {
   rewards              Json
   createdAt            DateTime      @default(now())
 }
+
+/// Reusable ElevenLabs output. The cache key includes template, text, voice,
+/// model, and format, so a changed input can never return stale commentary.
+model PresentationAudio {
+  cacheKey       String   @id
+  eventType      String
+  text           String
+  voiceId        String
+  modelId        String
+  outputFormat   String
+  mimeType       String
+  audio          Bytes
+  characterCount Int
+  createdAt      DateTime @default(now())
+}
+
+/// Application-side generation ceiling. Cache hits do not consume this budget.
+model PresentationUsage {
+  period          String   @id // UTC YYYY-MM
+  characterCount  Int      @default(0)
+  generationCount Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
