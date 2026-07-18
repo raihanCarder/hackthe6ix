@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleApiError, requireUser } from "@/lib/api";
 import { prepareCommentaryAudio } from "@/lib/presentation/audio.server";
-import { renderCommentary } from "@/lib/presentation/commentary";
+import { renderPresentationCommentary } from "@/lib/presentation/commentary.server";
 import { commentaryRequestSchema } from "@/lib/presentation/cues";
-import { resolvePresentationEvent } from "@/lib/presentation/events.server";
+import {
+  resolveCardSelectionEvent,
+  resolveJourneyEvent,
+  resolvePresentationEvent,
+} from "@/lib/presentation/events.server";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireUser();
-    const { tournamentId, cue, audio: audioRequested } = commentaryRequestSchema.parse(await request.json());
-    const event = await resolvePresentationEvent(user, tournamentId, cue);
-    const caption = renderCommentary(event);
+    const body = commentaryRequestSchema.parse(await request.json());
+    const event = body.source === "journey"
+      ? resolveJourneyEvent(body.cue.moment)
+      : body.source === "card"
+        ? await resolveCardSelectionEvent(await requireUser(), body.cardId)
+        : await resolvePresentationEvent(await requireUser(), body.tournamentId, body.cue);
+    const caption = await renderPresentationCommentary(event);
+    const audioRequested = body.audio;
     const audio = audioRequested
       ? await prepareCommentaryAudio(event.kind, caption)
       : { status: "not_requested" as const, cacheKey: null };

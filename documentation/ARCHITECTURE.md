@@ -97,7 +97,7 @@ Never persist: API keys, raw dumps without request context.
    - Group stage: round-robin points table per group; top 2 advance to quarterfinals; knockout to the final.
    - 5–7 highlight events per match generated from real attributes only (templates from `ideas/IDEA.md`: Cancellation Shield, Transfer Window, First-Touch Finish, LEGACY attack…). Rarity/cosmetics affect visuals only.
 8. **Champion = recommendation** — champion screen shows engine evidence (win probability, main advantages, caveats from the structured explanation), then **rehydrates live** from Stay22 for current price, policies, supplier, and the tracked **Book MVP** CTA. Unavailable → themed "Transfer Pending" state.
-9. **Optional commentary** — trusted stored results become structured presentation events and deterministic captions. ElevenLabs may synthesize cached speech after the user opts in; it never receives authority to choose or describe new facts.
+9. **Optional commentary** — a global provider narrates approved events from landing through the champion screen. Trusted stored results become structured presentation events and deterministic captions. ElevenLabs synthesizes cached speech; Gemini may select only among approved lines. Neither receives authority to choose or invent facts.
 10. **Rewards + history** — update user stats, card XP/trophies; tournament fully replayable from stored `engineResult` + `bracket` JSON.
 
 ## API surface

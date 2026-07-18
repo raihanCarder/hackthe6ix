@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { HotelCard } from "@/components/HotelCard";
-import { PresentationCommentary } from "@/components/PresentationCommentary";
+import { usePresentation } from "@/components/PresentationCommentary";
 import type { ContenderPayload } from "@/components/types";
 import type { NormalizedAccommodation, MetricContribution } from "@/lib/engine/types";
 import type { GroupResult, MatchResult } from "@/lib/game/matchSim";
-import type { PresentationCue } from "@/lib/presentation/types";
 
 interface TournamentPayload {
   id: string;
@@ -60,11 +59,11 @@ const ROUND_LABELS: Record<string, string> = {
 
 export default function TournamentPage() {
   const { id } = useParams<{ id: string }>();
+  const { announce } = usePresentation();
   const [data, setData] = useState<TournamentPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openMatch, setOpenMatch] = useState<MatchResult | null>(null);
   const [stage, setStage] = useState(0); // 0 groups, 1 knockout, 2 champion
-  const [commentaryCue, setCommentaryCue] = useState<PresentationCue | null>(null);
 
   useEffect(() => {
     fetch(`/api/tournaments/${id}`)
@@ -72,10 +71,14 @@ export default function TournamentPage() {
         const payload = await r.json();
         if (!r.ok) throw new Error(payload.error ?? "Tournament not found");
         setData(payload);
-        setCommentaryCue({ kind: "competition.intro" });
+        announce({
+          source: "tournament",
+          tournamentId: id,
+          cue: { kind: "competition.intro" },
+        });
       })
       .catch((e) => setError(e.message));
-  }, [id]);
+  }, [announce, id]);
 
   useEffect(() => {
     if (!data) return;
@@ -83,11 +86,15 @@ export default function TournamentPage() {
       setTimeout(() => setStage(1), 1400),
       setTimeout(() => {
         setStage(2);
-        setCommentaryCue({ kind: "competition.champion" });
+        announce({
+          source: "tournament",
+          tournamentId: data.id,
+          cue: { kind: "competition.champion" },
+        });
       }, 2800),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [data]);
+  }, [announce, data]);
 
   const byId = useMemo(
     () => new Map((data?.contenders ?? []).map((c) => [c.propertyId, c])),
@@ -97,10 +104,14 @@ export default function TournamentPage() {
 
   function showMatch(match: MatchResult) {
     setOpenMatch(match);
-    setCommentaryCue({
-      kind: "matchup.introduction",
-      homeId: match.homeId,
-      awayId: match.awayId,
+    announce({
+      source: "tournament",
+      tournamentId: data?.id ?? id,
+      cue: {
+        kind: "matchup.introduction",
+        homeId: match.homeId,
+        awayId: match.awayId,
+      },
     });
   }
 
@@ -338,7 +349,13 @@ export default function TournamentPage() {
                       )}
                     </p>
                     <button
-                      onClick={() => setCommentaryCue({ kind: "hotel.advantage", advantageIndex: 0 })}
+                      onClick={() =>
+                        announce({
+                          source: "tournament",
+                          tournamentId: data.id,
+                          cue: { kind: "hotel.advantage", advantageIndex: 0 },
+                        })
+                      }
                       className="mt-2 text-xs text-gold-bright underline-offset-2 hover:underline"
                     >
                       Commentate the leading advantage
@@ -422,10 +439,14 @@ export default function TournamentPage() {
               </div>
               <button
                 onClick={() =>
-                  setCommentaryCue({
-                    kind: "match.winner",
-                    homeId: openMatch.homeId,
-                    awayId: openMatch.awayId,
+                  announce({
+                    source: "tournament",
+                    tournamentId: data.id,
+                    cue: {
+                      kind: "match.winner",
+                      homeId: openMatch.homeId,
+                      awayId: openMatch.awayId,
+                    },
                   })
                 }
                 className="btn-gold mt-5 w-full rounded-lg px-4 py-2"
@@ -439,11 +460,6 @@ export default function TournamentPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      <PresentationCommentary
-        tournamentId={data.id}
-        cue={commentaryCue}
-        musicCue={stage === 0 ? "intro" : stage === 1 ? "final" : "victory"}
-      />
     </div>
   );
 }

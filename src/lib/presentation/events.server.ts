@@ -3,7 +3,34 @@ import type { User } from "@/generated/prisma/client";
 import { getTournamentReplay } from "@/lib/api/tournaments";
 import type { MatchResult } from "@/lib/game/matchSim";
 import { ApiError } from "@/lib/api/core";
+import { prisma } from "@/lib/db";
+import type { NormalizedAccommodation } from "@/lib/engine/types";
 import type { PresentationCue, PresentationEvent } from "./types";
+
+export function resolveJourneyEvent(
+  moment: Extract<PresentationEvent, { kind: "journey.moment" }>["moment"],
+): PresentationEvent {
+  return { version: 1, id: `journey:${moment}`, kind: "journey.moment", moment };
+}
+
+export async function resolveCardSelectionEvent(
+  user: User,
+  cardId: string,
+): Promise<PresentationEvent> {
+  const card = await prisma.savedCard.findFirst({
+    where: { id: cardId, userId: user.id },
+    include: { snapshot: true },
+  });
+  if (!card) throw new ApiError(404, "Card not found");
+  const hotel = card.snapshot.normalizedData as unknown as NormalizedAccommodation;
+  if (!hotel.name) throw new ApiError(422, "This card has no hotel name to announce");
+  return {
+    version: 1,
+    id: `card:${card.id}:selection`,
+    kind: "card.selection",
+    hotelName: hotel.name,
+  };
+}
 
 function hotelName(
   contenders: Awaited<ReturnType<typeof getTournamentReplay>>["contenders"],

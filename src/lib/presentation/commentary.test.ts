@@ -7,6 +7,12 @@ describe("presentation commentary", () => {
   const events: PresentationEvent[] = [
     {
       version: 1,
+      id: "journey:welcome",
+      kind: "journey.moment",
+      moment: "welcome",
+    },
+    {
+      version: 1,
       id: "cup:intro",
       kind: "competition.intro",
       competitionName: "Trip Cup",
@@ -53,7 +59,9 @@ describe("presentation commentary", () => {
   });
 
   it("uses the facts supplied by a structured event", () => {
-    const winner = renderCommentary(events[3]);
+    const winnerEvent = events.find((event) => event.kind === "match.winner");
+    expect(winnerEvent).toBeDefined();
+    const winner = renderCommentary(winnerEvent as PresentationEvent);
     expect(winner).toContain("Hotel Alpha");
     expect(winner).toContain("Hotel Bravo");
     expect(winner).toContain("2");
@@ -63,6 +71,7 @@ describe("presentation commentary", () => {
   it("rejects client-authored hotel facts", () => {
     expect(() =>
       commentaryRequestSchema.parse({
+        source: "tournament",
         tournamentId: "tournament-1",
         audio: false,
         cue: {
@@ -71,6 +80,23 @@ describe("presentation commentary", () => {
           awayId: "hotel-b",
           winnerName: "invented client value",
         },
+      }),
+    ).toThrow();
+  });
+
+  it("accepts only approved journey moments", () => {
+    expect(
+      commentaryRequestSchema.parse({
+        source: "journey",
+        audio: true,
+        cue: { kind: "journey.moment", moment: "pack.reveal" },
+      }),
+    ).toMatchObject({ source: "journey", cue: { moment: "pack.reveal" } });
+
+    expect(() =>
+      commentaryRequestSchema.parse({
+        source: "journey",
+        cue: { kind: "journey.moment", moment: "say-any-client-text" },
       }),
     ).toThrow();
   });

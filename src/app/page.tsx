@@ -1,8 +1,10 @@
 import { ProtectedLink } from "@/components/ProtectedLink";
+import { JourneyCommentaryCue } from "@/components/PresentationCommentary";
 
 export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <JourneyCommentaryCue moment="welcome" />
       <section className="flex min-h-[70vh] flex-col items-center justify-center py-16 text-center">
         <p className="eyebrow">Matchday · live inventory</p>
         <h1 className="font-display mt-4 max-w-3xl text-4xl leading-[1.05] sm:text-6xl">

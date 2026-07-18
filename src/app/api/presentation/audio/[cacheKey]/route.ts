@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { handleApiError, requireUser } from "@/lib/api";
+import { handleApiError } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { ApiError } from "@/lib/api/core";
 
@@ -11,7 +11,6 @@ export async function GET(
   context: { params: Promise<{ cacheKey: string }> },
 ) {
   try {
-    await requireUser();
     const { cacheKey } = await context.params;
     const key = cacheKeySchema.parse(cacheKey);
     const asset = await prisma.presentationAudio.findUnique({ where: { cacheKey: key } });

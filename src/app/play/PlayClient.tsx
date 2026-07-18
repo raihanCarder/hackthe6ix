@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HotelCard } from "@/components/HotelCard";
+import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
 import type { PreferenceQuestion, TravelerAnswer } from "@/lib/engine/types";
 
@@ -13,6 +14,7 @@ type Step = "mode" | "card" | "questions" | "simulating";
 
 export function PlayClient() {
   const router = useRouter();
+  const { announce } = usePresentation();
   const [step, setStep] = useState<Step>("mode");
   const [mode, setMode] = useState<Mode | null>(null);
   const [cards, setCards] = useState<CardPayload[] | null>(null);
@@ -47,6 +49,13 @@ export function PlayClient() {
     setMode(next);
     setStep("card");
     setError(null);
+    announce({
+      source: "journey",
+      cue: {
+        kind: "journey.moment",
+        moment: next === "trip" ? "play.trip_selected" : "play.global_selected",
+      },
+    });
     if (cards === null) {
       fetch("/api/cards")
         .then(async (r) => {
@@ -80,6 +89,10 @@ export function PlayClient() {
       return;
     }
     setStep("questions");
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "questionnaire.started" },
+    });
     await fetchNextQuestion([]);
   }
 
@@ -116,12 +129,25 @@ export function PlayClient() {
       { questionId: question.id, optionIds: [optionId] },
     ];
     setAnswers(next);
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "questionnaire.answer" },
+    });
     await fetchNextQuestion(next);
+  }
+
+  function selectCard(card: CardPayload) {
+    setSelected(card);
+    announce({ source: "card", cardId: card.id, cue: { kind: "card.selection" } });
   }
 
   async function kickOff(finalAnswers: TravelerAnswer[]) {
     if (!selected || !mode) return;
     setStep("simulating");
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "tournament.simulating" },
+    });
     try {
       const response = await fetch("/api/tournaments", {
         method: "POST",
@@ -140,6 +166,7 @@ export function PlayClient() {
   if (step === "mode") {
     return (
       <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+        <JourneyCommentaryCue moment="play.mode_selection" />
         <p className="eyebrow text-center">Matchday · gamemode selection</p>
         <h1 className="font-display mt-2 text-center text-3xl text-chalk sm:text-4xl">
           Pick your competition
@@ -222,7 +249,7 @@ export function PlayClient() {
                 return (
                   <button
                     key={card.id}
-                    onClick={() => setSelected(card)}
+                    onClick={() => selectCard(card)}
                     className={`rounded-xl text-left transition ${
                       isSelected ? "ring-2 ring-gold-bright" : "hover:-translate-y-1"
                     }`}
