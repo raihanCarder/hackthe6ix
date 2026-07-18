@@ -43,6 +43,8 @@
   --color-gold: var(--gold);
   --color-gold-bright: var(--gold-bright);
   --color-whistle: var(--whistle-red);
+  --color-card-primary: var(--card-primary);
+  --color-card-line: var(--card-line);
   --font-sans: var(--font-archivo);
   --font-display: var(--font-archivo-black);
   --font-score: var(--font-oswald);
@@ -88,7 +90,7 @@ body {
   background: linear-gradient(90deg, transparent, rgba(238, 246, 238, 0.35), transparent);
 }
 
-/* Card foil treatments per rarity */
+/* Hotel card foil treatments per rarity */
 .foil-common {
   --foil-a: #35503f;
   --foil-b: #22382c;
@@ -110,13 +112,68 @@ body {
   --foil-ring: rgba(255, 210, 94, 0.75);
 }
 
+.hotel-card-common {
+  --card-primary: #c5d9d0;
+  --card-line: rgba(162, 205, 190, 0.58);
+  --card-line-soft: rgba(162, 205, 190, 0.28);
+  --card-glow: rgba(119, 173, 154, 0.34);
+  --card-pill-bg: rgba(18, 53, 36, 0.82);
+  --card-pill-fg: #eef6ee;
+  --card-bg-a: #074030;
+  --card-bg-b: #041a14;
+}
+
+.hotel-card-rare {
+  --card-primary: #dff8ef;
+  --card-line: rgba(103, 255, 210, 0.82);
+  --card-line-soft: rgba(103, 255, 210, 0.34);
+  --card-glow: rgba(45, 235, 180, 0.42);
+  --card-pill-bg: #dff8ef;
+  --card-pill-fg: #063326;
+  --card-bg-a: #087756;
+  --card-bg-b: #043124;
+}
+
+.hotel-card-epic {
+  --card-primary: #d7fff3;
+  --card-line: rgba(38, 247, 188, 0.95);
+  --card-line-soft: rgba(38, 247, 188, 0.38);
+  --card-glow: rgba(38, 247, 188, 0.52);
+  --card-pill-bg: #1be2b4;
+  --card-pill-fg: #021d17;
+  --card-bg-a: #08715a;
+  --card-bg-b: #03271f;
+}
+
+.hotel-card-legendary {
+  --card-primary: #fff0b7;
+  --card-line: rgba(232, 192, 82, 0.96);
+  --card-line-soft: rgba(232, 192, 82, 0.38);
+  --card-glow: rgba(232, 192, 82, 0.46);
+  --card-pill-bg: linear-gradient(180deg, #ebcb72, #d2ab4d);
+  --card-pill-fg: #102018;
+  --card-bg-a: #0b3326;
+  --card-bg-b: #03150f;
+}
+
+.hotel-card-back {
+  --card-primary: var(--gold-bright);
+  --card-line: rgba(232, 179, 59, 0.74);
+  --card-line-soft: rgba(238, 246, 238, 0.22);
+  --card-glow: rgba(232, 179, 59, 0.34);
+  --card-bg-a: #123524;
+  --card-bg-b: #071510;
+}
+
 .card-face {
   background:
-    linear-gradient(160deg, var(--foil-a) 0%, var(--foil-b) 55%, var(--pitch-950) 100%);
-  border: 1px solid var(--foil-ring);
+    radial-gradient(circle at 48% 14%, color-mix(in srgb, var(--card-bg-a) 70%, white 8%), transparent 34%),
+    linear-gradient(150deg, var(--card-bg-a) 0%, var(--card-bg-b) 58%, #020b08 100%);
+  border: 0;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.4),
-    0 18px 40px -18px rgba(0, 0, 0, 0.8);
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 0 30px -6px var(--card-glow),
+    0 18px 40px -18px rgba(0, 0, 0, 0.9);
 }
 
 .card-sheen {
@@ -152,6 +209,158 @@ body {
     ),
     radial-gradient(circle at 50% 42%, #1a4a30 0%, #0d2a1d 65%);
   border: 1px solid rgba(238, 246, 238, 0.15);
+}
+
+.hotel-card {
+  aspect-ratio: 2 / 3;
+  container-type: inline-size;
+  clip-path: polygon(9% 0, 91% 0, 100% 11%, 100% 87%, 89% 100%, 11% 100%, 0 87%, 0 11%);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hotel-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: inherit;
+  background: var(--card-line);
+  z-index: 0;
+}
+
+.hotel-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  clip-path: polygon(9% 0, 91% 0, 100% 11%, 100% 87%, 89% 100%, 11% 100%, 0 87%, 0 11%);
+  background:
+    radial-gradient(circle at 44% 20%, rgba(53, 218, 166, 0.18), transparent 32%),
+    linear-gradient(155deg, var(--card-bg-a), var(--card-bg-b) 62%, #020906);
+  z-index: 1;
+}
+
+.hotel-card-frame {
+  position: absolute;
+  inset: 13px;
+  z-index: 2;
+  clip-path: polygon(8% 0, 92% 0, 100% 10%, 100% 87%, 88% 100%, 12% 100%, 0 87%, 0 10%);
+  border: 1px solid var(--card-line-soft);
+}
+
+.hotel-card-inner {
+  position: absolute;
+  inset: 9px;
+  display: flex;
+  flex-direction: column;
+  clip-path: polygon(7% 0, 93% 0, 100% 9%, 100% 88%, 88% 100%, 12% 100%, 0 88%, 0 9%);
+  background:
+    linear-gradient(180deg, rgba(12, 83, 62, 0.26), rgba(2, 14, 10, 0.66) 66%),
+    rgba(3, 23, 17, 0.92);
+  padding: clamp(0.75rem, 5.2cqw, 1.1rem);
+}
+
+.hotel-rarity-pill {
+  min-width: min(7.8rem, 42cqw);
+  max-width: 48%;
+  border: 1px solid var(--card-line-soft);
+  border-radius: 999px;
+  background: var(--card-pill-bg);
+  color: var(--card-pill-fg);
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.hotel-art {
+  position: relative;
+  flex: 0 0 auto;
+  aspect-ratio: 1.64 / 1;
+  overflow: hidden;
+  border: 1px solid var(--card-line-soft);
+  border-radius: 10% / 17%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -44px 52px rgba(1, 13, 10, 0.68);
+}
+
+.hotel-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 21%, rgba(221, 186, 95, 0.22) 21% 54%, transparent 54%),
+    linear-gradient(180deg, transparent 0 52%, rgba(1, 25, 18, 0.7) 52% 72%, rgba(0, 0, 0, 0.28) 72%);
+  mix-blend-mode: multiply;
+}
+
+.hotel-art-skyline {
+  position: absolute;
+  inset: auto 13% 0;
+  height: 70%;
+  opacity: 0.68;
+}
+
+.building {
+  position: absolute;
+  bottom: 0;
+  width: 20%;
+  border: 1px solid rgba(183, 229, 210, 0.18);
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 15%,
+      rgba(237, 213, 137, 0.82) 15% 22%,
+      transparent 22% 38%
+    ),
+    rgba(3, 24, 19, 0.78);
+}
+
+.building-a {
+  left: 0;
+  height: 70%;
+}
+
+.building-b {
+  left: 23%;
+  height: 91%;
+}
+
+.building-c {
+  left: 56%;
+  height: 61%;
+}
+
+.building-d {
+  right: 0;
+  height: 82%;
+}
+
+.hotel-divider {
+  height: 1px;
+  margin: 1rem -0.3rem 0;
+  background: linear-gradient(90deg, transparent, var(--card-line-soft), transparent);
+}
+
+.hotel-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.hotel-card-grid > * {
+  max-width: 16rem;
+  width: 100%;
+  justify-self: center;
+}
+
+@media (min-width: 1024px) {
+  .hotel-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(12.25rem, 1fr));
+    gap: 1.75rem;
+  }
 }
 
 .btn-gold {

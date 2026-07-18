@@ -216,7 +216,7 @@ export function PlayClient() {
           </div>
         ) : (
           <>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="hotel-card-grid mt-8">
               {cards.map((card) => {
                 const isSelected = selected?.id === card.id;
                 return (

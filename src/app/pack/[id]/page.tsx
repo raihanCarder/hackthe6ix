@@ -69,7 +69,7 @@ export default function PackPage() {
         {pack.cost > 0 ? ` Pack cost: ${pack.cost} coins.` : " First pack in this city — free."}
       </p>
 
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="hotel-card-grid mt-8">
         {pack.cards.map((card, index) => (
           <motion.button
             key={card.id}
@@ -77,7 +77,7 @@ export default function PackPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.12, type: "spring", stiffness: 120 }}
-            className="relative text-left"
+            className="relative text-left transition hover:-translate-y-1"
             style={{ perspective: 1200 }}
             aria-label={flipped.has(index) ? card.hotel.name ?? "card" : "Reveal card"}
           >
