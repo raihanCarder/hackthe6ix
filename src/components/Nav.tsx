@@ -116,6 +116,7 @@ export function Nav() {
     { href: "/search", label: "New trip" },
     { href: "/collection", label: "Collection" },
     { href: "/profile", label: "Profile" },
+    { href: "/settings", label: "Settings" },
   ];
 
   return (
