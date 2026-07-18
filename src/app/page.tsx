@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ProtectedLink } from "@/components/ProtectedLink";
 
 export default function Home() {
   return (
@@ -15,12 +15,12 @@ export default function Home() {
           bracket where every stat comes from real listing data — then book the champion.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/search" className="btn-gold rounded-lg px-8 py-3 text-lg">
+          <ProtectedLink href="/search" className="btn-gold rounded-lg px-8 py-3 text-lg">
             Kick off a trip
-          </Link>
-          <Link href="/collection" className="btn-chalk rounded-lg px-6 py-3">
+          </ProtectedLink>
+          <ProtectedLink href="/collection" className="btn-chalk rounded-lg px-6 py-3">
             My collection
-          </Link>
+          </ProtectedLink>
         </div>
       </section>
 
