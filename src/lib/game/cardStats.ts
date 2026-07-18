@@ -2,7 +2,7 @@ import { createRng, hashString } from "@/lib/engine/seed";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
- * Presentation-layer football-card stats (IDEA.md "Card Stats"). Derived
+ * Presentation-layer football-card stats (documentation/ideas/IDEA.md "Card Stats"). Derived
  * from live attributes for flavor and card visuals — they NEVER feed the
  * recommendation engine, and rarity never affects who wins.
  */
@@ -86,7 +86,7 @@ export function overallRating(stats: CardStats): number {
 }
 
 /**
- * Deterministic rarity from propertyId + cosmeticSeed (IDEA.md test plan).
+ * Deterministic rarity from propertyId + cosmeticSeed (documentation/ideas/IDEA.md test plan).
  * Distribution: 50% common, 30% rare, 15% epic, 5% legendary.
  */
 export function assignRarity(stay22PropertyId: string, cosmeticSeed: string): Rarity {

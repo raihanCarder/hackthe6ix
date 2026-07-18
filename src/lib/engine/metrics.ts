@@ -32,7 +32,7 @@ export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: numb
   return EARTH_RADIUS_KM * c;
 }
 
-/** Bayesian-shrunk quality score (ALGORITHM_DESIGN.md §2.1). */
+/** Bayesian-shrunk quality score (documentation/ideas/ALGORITHM_DESIGN.md §2.1). */
 export function calculateQualityScore(
   hotel: NormalizedAccommodation,
   poolMeanRating: number | null,

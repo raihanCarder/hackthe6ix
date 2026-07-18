@@ -9,7 +9,7 @@ import type {
 /**
  * Per-hotel metric vectors over the active metrics, null where a hotel is
  * missing an otherwise-active metric. Utilities renormalize over known
- * metrics rather than silently imputing 50 (ALGORITHM_DESIGN.md §5).
+ * metrics rather than silently imputing 50 (documentation/ideas/ALGORITHM_DESIGN.md §5).
  */
 export interface MetricMatrix {
   hotelIds: string[];

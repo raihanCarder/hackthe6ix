@@ -1,5 +1,5 @@
 /**
- * Deterministic hashing and seeded random utilities (ALGORITHM_DESIGN.md §14).
+ * Deterministic hashing and seeded random utilities (documentation/ideas/ALGORITHM_DESIGN.md §14).
  * Pure — no Node crypto so the engine stays portable and trivially testable.
  */
 

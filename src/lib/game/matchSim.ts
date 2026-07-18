@@ -2,7 +2,7 @@ import { createRng, type Rng } from "@/lib/engine/seed";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
- * Hybrid tournament simulation (ARCHITECTURE.md):
+ * Hybrid tournament simulation (documentation/ARCHITECTURE.md):
  *
  *   INVARIANT — the engine's #1 recommendation always wins the tournament.
  *
@@ -205,7 +205,7 @@ function playMatch(
   };
 }
 
-/** 5–7 highlight moments referencing only real listing attributes (IDEA.md). */
+/** 5–7 highlight moments referencing only real listing attributes (documentation/ideas/IDEA.md). */
 function buildHighlights(
   homeId: string,
   awayId: string,

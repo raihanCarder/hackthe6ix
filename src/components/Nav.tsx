@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Profile {
   id: string;
@@ -20,6 +20,12 @@ export interface Profile {
   mvpCount: number;
 }
 
+async function fetchCurrentUser(): Promise<{ user: Profile | null; authMode: "auth0" | "dev" } | null> {
+  const response = await fetch("/api/me");
+  if (!response.ok) return null;
+  return response.json();
+}
+
 export function Nav() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [authMode, setAuthMode] = useState<"auth0" | "dev">("dev");
@@ -29,17 +35,17 @@ export function Nav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const refresh = useCallback(async () => {
-    const response = await fetch("/api/me");
-    if (!response.ok) return;
-    const data = await response.json();
-    setProfile(data.user);
-    setAuthMode(data.authMode);
-  }, []);
-
   useEffect(() => {
-    refresh();
-  }, [refresh, pathname]);
+    let cancelled = false;
+    void fetchCurrentUser().then((data) => {
+      if (!data || cancelled) return;
+      setProfile(data.user);
+      setAuthMode(data.authMode);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   async function devLogin(event: React.FormEvent) {
     event.preventDefault();
@@ -54,7 +60,11 @@ export function Nav() {
       if (response.ok) {
         setShowLogin(false);
         setUsername("");
-        await refresh();
+        const data = await fetchCurrentUser();
+        if (data) {
+          setProfile(data.user);
+          setAuthMode(data.authMode);
+        }
         router.refresh();
       }
     } finally {

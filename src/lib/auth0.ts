@@ -1,7 +1,7 @@
 import { Auth0Client } from "@auth0/nextjs-auth0/server";
 
 /**
- * Auth0 is the identity source of truth when configured (IDEA.md). Without
+ * Auth0 is the identity source of truth when configured (documentation/ideas/IDEA.md). Without
  * tenant credentials the app falls back to a local dev session so the demo
  * runs with zero external setup — see src/lib/auth.ts.
  */

@@ -4,8 +4,10 @@
 cards, run a 16-team World Cup bracket, and book the champion — a genuine, auditable
 recommendation backed by a deterministic engine and Monte Carlo simulation.
 
-Built at Hack the 6ix. Architecture in [`ARCHITECTURE.md`](./ARCHITECTURE.md), engine math in
-[`ALGORITHM_DESIGN.md`](./ALGORITHM_DESIGN.md).
+Built at Hack the 6ix. Architecture in
+[`documentation/ARCHITECTURE.md`](./documentation/ARCHITECTURE.md), engine math in
+[`documentation/ideas/ALGORITHM_DESIGN.md`](./documentation/ideas/ALGORITHM_DESIGN.md), contributor setup in
+[`documentation/ONBOARDING.md`](./documentation/ONBOARDING.md).
 
 ## The one rule
 

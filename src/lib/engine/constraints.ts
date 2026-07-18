@@ -8,7 +8,7 @@ import type {
 import { haversineKm } from "./metrics";
 
 /**
- * Hard filters (ALGORITHM_DESIGN.md §1.3). Runs after dedupe, before scoring.
+ * Hard filters (documentation/ideas/ALGORITHM_DESIGN.md §1.3). Runs after dedupe, before scoring.
  * Missing data is not automatic failure — each rule has an explicit policy.
  */
 export function applyHardConstraints(

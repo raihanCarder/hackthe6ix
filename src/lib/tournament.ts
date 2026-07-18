@@ -4,7 +4,7 @@ import type { EngineResult, NormalizedAccommodation, TravelerAnswer, TripContext
 import { buildBracketContenders } from "@/lib/game/bracket";
 import { simulateTournament, type TournamentBracket } from "@/lib/game/matchSim";
 import { computeTournamentRewards, levelForXp, type TournamentRewards } from "@/lib/game/rewards";
-import { ApiError, asJson } from "@/lib/api";
+import { ApiError, asJson } from "@/lib/api/core";
 import { prisma } from "@/lib/db";
 import type { User } from "@/generated/prisma/client";
 

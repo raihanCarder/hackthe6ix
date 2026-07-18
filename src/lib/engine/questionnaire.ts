@@ -11,7 +11,7 @@ import type {
 export const QUESTION_BANK_VERSION = "cic-questions-1.0.0";
 
 /**
- * Approved question bank (ALGORITHM_DESIGN.md §3). Point effects are
+ * Approved question bank (documentation/ideas/ALGORITHM_DESIGN.md §3). Point effects are
  * transparent MVP design choices, not learned preferences.
  */
 export const QUESTION_BANK: PreferenceQuestion[] = [

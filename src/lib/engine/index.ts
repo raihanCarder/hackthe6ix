@@ -25,7 +25,7 @@ export { hashString, stableStringify, createRng } from "./seed";
 
 /**
  * The complete game-mode-independent recommendation run
- * (ALGORITHM_DESIGN.md §16). Deterministic for identical live facts,
+ * (documentation/ideas/ALGORITHM_DESIGN.md §16). Deterministic for identical live facts,
  * answers, and configuration. Nothing downstream may alter its outputs.
  */
 export function runEngine(input: EngineInput): EngineResult {

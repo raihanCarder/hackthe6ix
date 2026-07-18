@@ -2,7 +2,7 @@ import type { NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
  * Runtime validation and canonicalization of one raw Stay22 accommodation
- * record (ALGORITHM_DESIGN.md §1.2). Missing stays missing — `unknown` is
+ * record (documentation/ideas/ALGORITHM_DESIGN.md §1.2). Missing stays missing — `unknown` is
  * preserved as null, never coerced to false or zero.
  *
  * NOTE: field names must be re-verified against the live Stay22 integration

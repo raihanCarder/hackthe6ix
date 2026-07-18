@@ -1,7 +1,7 @@
 import type { TournamentBracket } from "./matchSim";
 
 /**
- * Post-tournament progression (IDEA.md). Rewards are flavor — they never
+ * Post-tournament progression (documentation/ideas/IDEA.md). Rewards are flavor — they never
  * influence which hotel the engine recommends.
  */
 

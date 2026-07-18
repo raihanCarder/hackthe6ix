@@ -2,7 +2,7 @@ import { haversineKm } from "@/lib/engine/metrics";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
- * Conservative duplicate merging (ALGORITHM_DESIGN.md §1.2): exact ID match,
+ * Conservative duplicate merging (documentation/ideas/ALGORITHM_DESIGN.md §1.2): exact ID match,
  * or high name similarity plus ≤80 m proximity. Ambiguous pairs stay
  * separate. Merges keep the most complete facts; conflicts stay untouched
  * on the primary record rather than being averaged.

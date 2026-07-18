@@ -2,7 +2,7 @@ import { createRng } from "@/lib/engine/seed";
 import type { HotelRankStats, NormalizedAccommodation } from "@/lib/engine/types";
 
 /**
- * 16-team contender selection and group seeding (GAMEPLAY_PACK_IDEAS.md).
+ * 16-team contender selection and group seeding (documentation/ideas/GAMEPLAY_PACK_IDEAS.md).
  * The engine's #1 recommendation is always force-included, the user's pack
  * cards enter as "your squad", and remaining slots are stratified-sampled
  * across price and rating bands so opponents feel varied while staying
