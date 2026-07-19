@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Avatar, Style } from "@dicebear/core";
+import thumbs from "@dicebear/styles/thumbs.json";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HotelCard, STAT_META } from "@/components/HotelCard";
 import type { CardPayload } from "@/components/types";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+
+const thumbsAvatarStyle = new Style(thumbs);
+const DEFAULT_PROFILE_BIO = "Looking for a hotel for my next trip!";
 
 function addDays(base: Date, days: number): string {
   const d = new Date(base);
@@ -26,9 +32,55 @@ function priceLabel(price: number | null): string {
   return price !== null ? `$${price}/night` : "Price at booking";
 }
 
+function FlameIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className={className}
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M34.4 5.7c2.3 8.5-1.9 12.7-6.3 17.4-4.1 4.4-8.4 9-8.4 16.6 0 10.1 7.4 18.6 18.2 18.6 10.2 0 18-7.8 18-18.1 0-8-4.6-14.7-10.3-19.7.4 5.2-1 8.9-4.7 11.7.4-10.1-2.8-19.5-6.5-26.5Z"
+        fill="url(#dashboard-flame-outer)"
+      />
+      <path
+        d="M31.9 54.1c-5.6 0-10-4.2-10-9.9 0-4.7 2.5-7.4 5.1-10.1 2.8-2.9 5.6-5.9 4.4-11.4 4.7 4.6 8.6 10.7 8.1 17.4 2.6-1.3 4.2-3.7 4.5-6.9 3.3 3.1 5.1 6.9 5.1 11 0 5.7-4.2 9.9-9.8 9.9h-7.4Z"
+        fill="url(#dashboard-flame-inner)"
+      />
+      <defs>
+        <linearGradient
+          id="dashboard-flame-outer"
+          x1="21"
+          x2="51"
+          y1="9"
+          y2="56"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FFD25E" />
+          <stop offset=".45" stopColor="#FF8A22" />
+          <stop offset="1" stopColor="#E5533C" />
+        </linearGradient>
+        <linearGradient
+          id="dashboard-flame-inner"
+          x1="29"
+          x2="44"
+          y1="25"
+          y2="55"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FFF6B7" />
+          <stop offset=".55" stopColor="#FFD25E" />
+          <stop offset="1" stopColor="#FF8A22" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 export function DashboardClient() {
   const router = useRouter();
-  const { profile, authMode, loaded } = useCurrentUser();
+  const { profile, authMode, loaded, setProfile } = useCurrentUser();
   const [cards, setCards] = useState<CardPayload[] | null>(null);
   const today = new Date();
   const [quickTrip, setQuickTrip] = useState({
@@ -36,6 +88,10 @@ export function DashboardClient() {
     checkin: addDays(today, 21),
     checkout: addDays(today, 24),
   });
+  const [editingBio, setEditingBio] = useState(false);
+  const [bioDraft, setBioDraft] = useState(DEFAULT_PROFILE_BIO);
+  const [bioSaving, setBioSaving] = useState(false);
+  const [bioError, setBioError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loaded) return;
@@ -56,6 +112,15 @@ export function DashboardClient() {
       .catch(() => setCards([]));
   }, [profile]);
 
+  const avatarSrc = useMemo(() => {
+    if (!profile) return "";
+    if (profile.avatarUrl) return profile.avatarUrl;
+    return new Avatar(thumbsAvatarStyle, {
+      seed: profile.id || profile.username,
+      size: 96,
+    }).toDataUri();
+  }, [profile]);
+
   function mintQuickTrip(event: React.FormEvent) {
     event.preventDefault();
     const params = new URLSearchParams({
@@ -64,6 +129,32 @@ export function DashboardClient() {
       checkout: quickTrip.checkout,
     });
     router.push(`/packs?${params.toString()}`);
+  }
+
+  async function saveBio() {
+    if (!profile) return;
+    setBioSaving(true);
+    setBioError(null);
+    try {
+      const response = await fetch("/api/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bio: bioDraft }),
+      });
+      const data = (await response.json()) as { bio?: string; error?: string };
+      if (!response.ok || !data.bio) {
+        throw new Error(data.error ?? "Could not save bio");
+      }
+      setProfile({ ...profile, bio: data.bio });
+      setBioDraft(data.bio);
+      setEditingBio(false);
+    } catch (error) {
+      setBioError(
+        error instanceof Error ? error.message : "Could not save bio",
+      );
+    } finally {
+      setBioSaving(false);
+    }
   }
 
   if (!loaded) {
@@ -98,6 +189,7 @@ export function DashboardClient() {
     : [];
   const maxScore =
     scoreBoard.length > 0 ? Math.max(...scoreBoard.map((c) => c.overall)) : 1;
+  const profileBio = profile.bio ?? DEFAULT_PROFILE_BIO;
 
   const tiles = [
     {
@@ -115,9 +207,118 @@ export function DashboardClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:py-12">
-      <h1 className="font-display mt-2 max-w-4xl text-2xl text-chalk sm:text-3xl">
-        Check-in Champions Dashboard
-      </h1>
+      <div className="mt-2">
+        <h1 className="font-display max-w-4xl text-2xl text-chalk sm:text-3xl">
+          Check-in Champions Dashboard
+        </h1>
+        <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
+          <section className="panel rounded-lg p-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <Image
+                src={avatarSrc}
+                alt=""
+                width={80}
+                height={80}
+                unoptimized
+                className="h-20 w-20 shrink-0 rounded-full border border-chalk/15 bg-pitch-950 object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="font-display truncate text-xl text-chalk">
+                    {profile.username}
+                  </h2>
+                  <span className="font-score rounded bg-pitch-800 px-2 py-1 text-xs text-gold-bright">
+                    LV {profile.level}
+                  </span>
+                  {!editingBio && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBioDraft(profileBio);
+                        setBioError(null);
+                        setEditingBio(true);
+                      }}
+                      className="ml-auto rounded border border-chalk/15 px-3 py-1 text-xs font-bold uppercase text-chalk-dim transition hover:border-cyan-bright/50 hover:text-chalk"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
+
+                {editingBio ? (
+                  <div className="mt-3">
+                    <textarea
+                      value={bioDraft}
+                      onChange={(event) => {
+                        setBioDraft(event.target.value);
+                        setBioError(null);
+                      }}
+                      maxLength={160}
+                      rows={3}
+                      className="input-field resize-none"
+                    />
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={saveBio}
+                        disabled={bioSaving}
+                        className="btn-primary rounded-lg px-4 py-2 text-xs"
+                      >
+                        {bioSaving ? "Saving…" : "Save"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBioDraft(profileBio);
+                          setBioError(null);
+                          setEditingBio(false);
+                        }}
+                        disabled={bioSaving}
+                        className="rounded-lg border border-chalk/15 px-4 py-2 text-xs font-bold text-chalk-dim transition hover:border-chalk/30 hover:text-chalk disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                      <span className="ml-auto font-score text-xs text-chalk-dim">
+                        {bioDraft.length}/160
+                      </span>
+                    </div>
+                    {bioError && (
+                      <p className="mt-2 text-sm text-whistle">{bioError}</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-chalk-dim">
+                    {profileBio}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+
+          <div className="panel relative flex w-full items-center gap-4 overflow-hidden rounded-lg border-gold/40 bg-[radial-gradient(circle_at_20%_20%,rgba(255,210,94,0.18),transparent_34%),linear-gradient(135deg,rgba(229,83,60,0.18),rgba(16,23,27,0.92)_58%)] p-4">
+            <FlameIcon className="relative h-16 w-16 shrink-0 drop-shadow-[0_0_18px_rgba(255,138,34,0.8)] sm:h-20 sm:w-20" />
+            <div className="relative min-w-0">
+              <p className="eyebrow !text-[9px] text-gold-bright">
+                Current win streak
+              </p>
+              <div className="mt-1 flex items-end gap-2">
+                <p className="font-score text-5xl leading-none text-chalk sm:text-6xl">
+                  {profile.currentWinStreak}
+                </p>
+                <p className="pb-1 font-display text-sm uppercase text-gold-bright">
+                  wins
+                </p>
+              </div>
+              <p className="font-score mt-2 text-sm text-chalk-dim">
+                Best{" "}
+                <span className="text-gold-bright">
+                  {profile.bestWinStreak}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {tiles.map((tile) => (

@@ -6,6 +6,7 @@ export interface Profile {
   id: string;
   username: string;
   avatarUrl: string | null;
+  bio: string;
   wins: number;
   losses: number;
   currentWinStreak: number;

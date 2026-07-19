@@ -62,6 +62,7 @@ export type UserMinAggregateOutputType = {
   username: string | null
   email: string | null
   avatarUrl: string | null
+  bio: string | null
   wins: number | null
   losses: number | null
   currentWinStreak: number | null
@@ -86,6 +87,7 @@ export type UserMaxAggregateOutputType = {
   username: string | null
   email: string | null
   avatarUrl: string | null
+  bio: string | null
   wins: number | null
   losses: number | null
   currentWinStreak: number | null
@@ -110,6 +112,7 @@ export type UserCountAggregateOutputType = {
   username: number
   email: number
   avatarUrl: number
+  bio: number
   wins: number
   losses: number
   currentWinStreak: number
@@ -166,6 +169,7 @@ export type UserMinAggregateInputType = {
   username?: true
   email?: true
   avatarUrl?: true
+  bio?: true
   wins?: true
   losses?: true
   currentWinStreak?: true
@@ -190,6 +194,7 @@ export type UserMaxAggregateInputType = {
   username?: true
   email?: true
   avatarUrl?: true
+  bio?: true
   wins?: true
   losses?: true
   currentWinStreak?: true
@@ -214,6 +219,7 @@ export type UserCountAggregateInputType = {
   username?: true
   email?: true
   avatarUrl?: true
+  bio?: true
   wins?: true
   losses?: true
   currentWinStreak?: true
@@ -325,6 +331,7 @@ export type UserGroupByOutputType = {
   username: string
   email: string | null
   avatarUrl: string | null
+  bio: string
   wins: number
   losses: number
   currentWinStreak: number
@@ -372,6 +379,7 @@ export type UserWhereInput = {
   username?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  bio?: Prisma.StringFilter<"User"> | string
   wins?: Prisma.IntFilter<"User"> | number
   losses?: Prisma.IntFilter<"User"> | number
   currentWinStreak?: Prisma.IntFilter<"User"> | number
@@ -404,6 +412,7 @@ export type UserOrderByWithRelationInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  bio?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   currentWinStreak?: Prisma.SortOrder
@@ -439,6 +448,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   username?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  bio?: Prisma.StringFilter<"User"> | string
   wins?: Prisma.IntFilter<"User"> | number
   losses?: Prisma.IntFilter<"User"> | number
   currentWinStreak?: Prisma.IntFilter<"User"> | number
@@ -471,6 +481,7 @@ export type UserOrderByWithAggregationInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  bio?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   currentWinStreak?: Prisma.SortOrder
@@ -503,6 +514,7 @@ export type UserScalarWhereWithAggregatesInput = {
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bio?: Prisma.StringWithAggregatesFilter<"User"> | string
   wins?: Prisma.IntWithAggregatesFilter<"User"> | number
   losses?: Prisma.IntWithAggregatesFilter<"User"> | number
   currentWinStreak?: Prisma.IntWithAggregatesFilter<"User"> | number
@@ -527,6 +539,7 @@ export type UserCreateInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -559,6 +572,7 @@ export type UserUncheckedCreateInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -591,6 +605,7 @@ export type UserUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -623,6 +638,7 @@ export type UserUncheckedUpdateInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -655,6 +671,7 @@ export type UserCreateManyInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -679,6 +696,7 @@ export type UserUpdateManyMutationInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -703,6 +721,7 @@ export type UserUncheckedUpdateManyInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -727,6 +746,7 @@ export type UserCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   currentWinStreak?: Prisma.SortOrder
@@ -766,6 +786,7 @@ export type UserMaxOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   currentWinStreak?: Prisma.SortOrder
@@ -790,6 +811,7 @@ export type UserMinOrderByAggregateInput = {
   username?: Prisma.SortOrder
   email?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   currentWinStreak?: Prisma.SortOrder
@@ -975,6 +997,7 @@ export type UserCreateWithoutApiCallsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1006,6 +1029,7 @@ export type UserUncheckedCreateWithoutApiCallsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1053,6 +1077,7 @@ export type UserUpdateWithoutApiCallsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1084,6 +1109,7 @@ export type UserUncheckedUpdateWithoutApiCallsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1115,6 +1141,7 @@ export type UserCreateWithoutPackOpensInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1146,6 +1173,7 @@ export type UserUncheckedCreateWithoutPackOpensInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1193,6 +1221,7 @@ export type UserUpdateWithoutPackOpensInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1224,6 +1253,7 @@ export type UserUncheckedUpdateWithoutPackOpensInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1255,6 +1285,7 @@ export type UserCreateWithoutCityClaimsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1286,6 +1317,7 @@ export type UserUncheckedCreateWithoutCityClaimsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1333,6 +1365,7 @@ export type UserUpdateWithoutCityClaimsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1364,6 +1397,7 @@ export type UserUncheckedUpdateWithoutCityClaimsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1395,6 +1429,7 @@ export type UserCreateWithoutCoinPurchasesInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1426,6 +1461,7 @@ export type UserUncheckedCreateWithoutCoinPurchasesInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1473,6 +1509,7 @@ export type UserUpdateWithoutCoinPurchasesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1504,6 +1541,7 @@ export type UserUncheckedUpdateWithoutCoinPurchasesInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1535,6 +1573,7 @@ export type UserCreateWithoutCardsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1566,6 +1605,7 @@ export type UserUncheckedCreateWithoutCardsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1613,6 +1653,7 @@ export type UserUpdateWithoutCardsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1644,6 +1685,7 @@ export type UserUncheckedUpdateWithoutCardsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1675,6 +1717,7 @@ export type UserCreateWithoutTournamentsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1706,6 +1749,7 @@ export type UserUncheckedCreateWithoutTournamentsInput = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1753,6 +1797,7 @@ export type UserUpdateWithoutTournamentsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1784,6 +1829,7 @@ export type UserUncheckedUpdateWithoutTournamentsInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1815,6 +1861,7 @@ export type UserCreateWithoutDuelsAsPlayer1Input = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1846,6 +1893,7 @@ export type UserUncheckedCreateWithoutDuelsAsPlayer1Input = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1882,6 +1930,7 @@ export type UserCreateWithoutDuelsAsPlayer2Input = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1913,6 +1962,7 @@ export type UserUncheckedCreateWithoutDuelsAsPlayer2Input = {
   username: string
   email?: string | null
   avatarUrl?: string | null
+  bio?: string
   wins?: number
   losses?: number
   currentWinStreak?: number
@@ -1960,6 +2010,7 @@ export type UserUpdateWithoutDuelsAsPlayer1Input = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1991,6 +2042,7 @@ export type UserUncheckedUpdateWithoutDuelsAsPlayer1Input = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2033,6 +2085,7 @@ export type UserUpdateWithoutDuelsAsPlayer2Input = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2064,6 +2117,7 @@ export type UserUncheckedUpdateWithoutDuelsAsPlayer2Input = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
   wins?: Prisma.IntFieldUpdateOperationsInput | number
   losses?: Prisma.IntFieldUpdateOperationsInput | number
   currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2189,6 +2243,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   username?: boolean
   email?: boolean
   avatarUrl?: boolean
+  bio?: boolean
   wins?: boolean
   losses?: boolean
   currentWinStreak?: boolean
@@ -2222,6 +2277,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   email?: boolean
   avatarUrl?: boolean
+  bio?: boolean
   wins?: boolean
   losses?: boolean
   currentWinStreak?: boolean
@@ -2246,6 +2302,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   email?: boolean
   avatarUrl?: boolean
+  bio?: boolean
   wins?: boolean
   losses?: boolean
   currentWinStreak?: boolean
@@ -2270,6 +2327,7 @@ export type UserSelectScalar = {
   username?: boolean
   email?: boolean
   avatarUrl?: boolean
+  bio?: boolean
   wins?: boolean
   losses?: boolean
   currentWinStreak?: boolean
@@ -2288,7 +2346,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth0Sub" | "username" | "email" | "avatarUrl" | "wins" | "losses" | "currentWinStreak" | "bestWinStreak" | "currency" | "xp" | "level" | "packsOpened" | "matchesPlayed" | "mvpCount" | "numberOfKids" | "homeCity" | "defaultAdults" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth0Sub" | "username" | "email" | "avatarUrl" | "bio" | "wins" | "losses" | "currentWinStreak" | "bestWinStreak" | "currency" | "xp" | "level" | "packsOpened" | "matchesPlayed" | "mvpCount" | "numberOfKids" | "homeCity" | "defaultAdults" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cards?: boolean | Prisma.User$cardsArgs<ExtArgs>
   packOpens?: boolean | Prisma.User$packOpensArgs<ExtArgs>
@@ -2321,6 +2379,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     username: string
     email: string | null
     avatarUrl: string | null
+    bio: string
     wins: number
     losses: number
     currentWinStreak: number
@@ -2773,6 +2832,7 @@ export interface UserFieldRefs {
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly bio: Prisma.FieldRef<"User", 'String'>
   readonly wins: Prisma.FieldRef<"User", 'Int'>
   readonly losses: Prisma.FieldRef<"User", 'Int'>
   readonly currentWinStreak: Prisma.FieldRef<"User", 'Int'>
