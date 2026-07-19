@@ -10,8 +10,9 @@ import { createRng, hashString } from "@/lib/engine/seed";
 import { buildBracketContenders } from "@/lib/game/bracket";
 import { simulateTournament, type TournamentBracket } from "@/lib/game/matchSim";
 import { computeCardStats, overallRating, poolPriceContext } from "@/lib/game/cardStats";
+import { collectGlobalOpponents } from "@/lib/game/globalOpponents";
 import { computeTournamentRewards, levelForXp, type TournamentRewards } from "@/lib/game/rewards";
-import { pickUniqueCountryCities } from "@/lib/data/worldCities";
+import { pickUniqueCountryCities, WORLD_CITIES } from "@/lib/data/worldCities";
 import { searchAccommodations } from "@/lib/stay22/client";
 import { ApiError, asJson } from "@/lib/api/core";
 import { loadSearch } from "@/lib/api/searches";
@@ -215,12 +216,15 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
   const userHotel = card.snapshot.normalizedData as unknown as NormalizedAccommodation;
   const seed = hashString(`global-cup:${user.id}:${card.id}:${user.matchesPlayed}`);
   const rng = createRng(seed);
-  const cities = pickUniqueCountryCities(rng, GLOBAL_CUP_OPPONENTS);
+  const candidateCities = pickUniqueCountryCities(rng, WORLD_CITIES.length);
   const sourceParams = card.snapshot.sourceApiCall.requestParams as Record<string, unknown>;
   const globalTrip = globalCupTrip(sourceParams);
 
-  const opponentResults = await Promise.all(
-    cities.map((city) =>
+  const { opponents, opponentCities, attemptedCityCount } = await collectGlobalOpponents({
+    cities: candidateCities,
+    targetCount: GLOBAL_CUP_OPPONENTS,
+    excludedPropertyIds: [userHotel.id],
+    search: (city) =>
       searchAccommodations({
         address: `${city.city}, ${city.country}`,
         checkin: globalTrip.checkin,
@@ -230,29 +234,12 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
         rooms: globalTrip.rooms,
         currency: globalTrip.currency,
       }),
-    ),
-  );
-
-  const opponents: NormalizedAccommodation[] = [];
-  const usedPropertyIds = new Set([userHotel.id]);
-  opponentResults.forEach((result) => {
-    const sorted = [...result.hotels]
-      .filter((hotel) => !usedPropertyIds.has(hotel.id))
-      .sort(
-        (a, b) =>
-          (b.guestRating ?? -1) - (a.guestRating ?? -1) ||
-          (b.reviewCount ?? -1) - (a.reviewCount ?? -1) ||
-          (a.id < b.id ? -1 : 1),
-      );
-    if (sorted.length === 0) return;
-    opponents.push(sorted[0]);
-    usedPropertyIds.add(sorted[0].id);
   });
 
   if (opponents.length !== GLOBAL_CUP_OPPONENTS) {
     throw new ApiError(
       422,
-      `Global Cup needs ${GLOBAL_CUP_OPPONENTS} unique opponents; found ${opponents.length}`,
+      `Global Cup needs ${GLOBAL_CUP_OPPONENTS} unique opponents; found ${opponents.length} after searching ${attemptedCityCount} countries`,
     );
   }
 
@@ -345,11 +332,11 @@ export async function createGlobalTournament(args: RunGlobalTournamentArgs) {
         children: globalTrip.children,
         rooms: globalTrip.rooms,
         currency: globalTrip.currency,
-        countries: cities.map((c) => c.country),
+        countries: opponentCities.map((c) => c.country),
       }),
       responseBody: asJson({
         note: "synthetic Global Cup opponent pool",
-        countries: cities.map((c) => c.country),
+        countries: opponentCities.map((c) => c.country),
         results: pool,
       }),
       status: 200,
