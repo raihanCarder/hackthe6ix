@@ -651,6 +651,11 @@ body {
   backdrop-filter: blur(6px);
 }
 
+.stat-tile {
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
 .stat-bar {
   background: rgba(238, 244, 242, 0.12);
 }

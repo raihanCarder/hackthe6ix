@@ -75,13 +75,13 @@ export function DashboardClient() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:py-12">
       <p className="eyebrow">Big Brain Stay Engine</p>
-      <h1 className="font-display mt-1 text-2xl text-chalk sm:text-3xl">
+      <h1 className="font-display mt-2 max-w-4xl text-2xl text-chalk sm:text-3xl">
         Turn a destination into a ranked, collectible hotel pack.
       </h1>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {tiles.map((tile) => (
           <div key={tile.label} className="panel stat-tile">
             <p className="eyebrow !text-[9px]">{tile.label}</p>
@@ -90,10 +90,10 @@ export function DashboardClient() {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <div className="panel rounded-xl p-5">
+      <div className="mt-7 grid gap-5 lg:grid-cols-2">
+        <div className="panel rounded-xl p-6">
           <h2 className="font-display text-sm text-chalk">Quick trip pack</h2>
-          <form onSubmit={mintQuickTrip} className="mt-3 grid gap-3 sm:grid-cols-2">
+          <form onSubmit={mintQuickTrip} className="mt-4 grid gap-4 sm:grid-cols-2">
             <label className="sm:col-span-2">
               <span className="eyebrow">Destination</span>
               <input
@@ -123,17 +123,17 @@ export function DashboardClient() {
                 className="mt-1 input-field"
               />
             </label>
-            <button type="submit" className="btn-primary rounded-lg px-4 py-2.5 text-sm sm:col-span-2">
+            <button type="submit" className="btn-primary mt-1 rounded-lg px-4 py-2.5 text-sm sm:col-span-2">
               Mint trip pack
             </button>
           </form>
         </div>
 
-        <div className="panel rounded-xl p-5">
+        <div className="panel rounded-xl p-6">
           <h2 className="font-display text-sm text-chalk">Top pull from your collection</h2>
           {bestCard ? (
-            <div className="mt-3 flex gap-4">
-              <div className="w-32 shrink-0 sm:w-36">
+            <div className="mt-4 flex gap-5">
+              <div className="w-32 shrink-0 sm:w-36 lg:w-40">
                 <HotelCard
                   hotel={bestCard.hotel}
                   stats={bestCard.stats}
@@ -145,11 +145,11 @@ export function DashboardClient() {
               </div>
               <div className="flex-1">
                 <p className="eyebrow !text-[9px]">Why it wins</p>
-                <div className="mt-2 space-y-1.5">
+                <div className="mt-3 space-y-2">
                   {STAT_META.map(({ key, label, color }) => (
                     <div key={key} className="flex items-center gap-2 text-xs">
                       <span className="w-20 shrink-0 text-chalk-dim">{label}</span>
-                      <div className="stat-bar h-1.5 flex-1 overflow-hidden rounded-full">
+                      <div className="stat-bar h-2 flex-1 overflow-hidden rounded-full">
                         <div
                           className="h-full rounded-full"
                           style={{ width: `${bestCard.stats[key]}%`, background: color }}
@@ -168,13 +168,19 @@ export function DashboardClient() {
       </div>
 
       {scoreBoard.length > 0 && (
-        <div className="panel mt-4 rounded-xl p-5">
-          <h2 className="font-display text-sm text-chalk">Card scores</h2>
-          <div className="mt-3 space-y-2">
+        <div className="panel mt-5 rounded-xl p-6">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-sm text-chalk">Card score breakdown</h2>
+              <p className="mt-1 text-xs text-chalk-dim">Filled bars compare each card against the strongest pull.</p>
+            </div>
+            <span className="eyebrow hidden !text-[9px] sm:block">OVR</span>
+          </div>
+          <div className="mt-4 space-y-3">
             {scoreBoard.map((card) => (
-              <div key={card.id} className="flex items-center gap-3 text-xs">
-                <span className="w-32 shrink-0 truncate text-chalk-dim sm:w-48">{card.hotel.name}</span>
-                <div className="stat-bar h-2 flex-1 overflow-hidden rounded-full">
+              <div key={card.id} className="grid grid-cols-[minmax(0,12rem)_1fr_2rem] items-center gap-3 text-xs sm:grid-cols-[minmax(0,18rem)_1fr_2rem]">
+                <span className="truncate text-chalk-dim">{card.hotel.name}</span>
+                <div className="stat-bar h-2.5 overflow-hidden rounded-full">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${(card.overall / maxScore) * 100}%`, background: "var(--cyan-bright)" }}

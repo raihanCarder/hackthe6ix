@@ -57,7 +57,7 @@ export function Chrome({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen flex-col">
         <MarketingHeader />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-36">{children}</main>
         {FOOTER}
       </div>
     );
@@ -68,7 +68,7 @@ export function Chrome({ children }: { children: React.ReactNode }) {
       <Sidebar profile={profile} authMode={authMode} />
       <div className="flex min-h-screen flex-col pb-14 md:pb-0">
         <Topbar profile={profile} />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-40">{children}</main>
         {FOOTER}
       </div>
     </div>
