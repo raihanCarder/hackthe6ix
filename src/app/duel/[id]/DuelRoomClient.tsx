@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CardBack, HotelCard, STAT_META } from "@/components/HotelCard";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
@@ -52,9 +53,11 @@ interface DuelView {
   rounds: DuelRoundView[];
   cards: Record<string, DuelCardView>;
   rewards: DuelRewardsView | null;
+  karaokeDuel: { id: string; status: string; invitedByMe: boolean } | null;
 }
 
 export function DuelRoomClient({ duelId }: { duelId: string }) {
+  const router = useRouter();
   const [view, setView] = useState<DuelView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [calling, setCalling] = useState(false);
@@ -67,6 +70,13 @@ export function DuelRoomClient({ duelId }: { duelId: string }) {
       void refresh();
     }
   }, [view, refresh]);
+
+  useEffect(() => {
+    const karaokeDuel = view?.karaokeDuel;
+    if (karaokeDuel?.status === "pending" && !karaokeDuel.invitedByMe) {
+      router.push(`/karaoke/${karaokeDuel.id}`);
+    }
+  }, [view, router]);
 
   const refetch = useCallback(async () => {
     const response = await fetch(`/api/duel/${duelId}`);
@@ -278,6 +288,31 @@ function MatchComplete({ view }: { view: DuelView }) {
           Back to collection
         </Link>
       </div>
+      {view.opponent && view.karaokeDuel?.status !== "declined" && (
+        <Link
+          href={
+            view.karaokeDuel ? `/karaoke/${view.karaokeDuel.id}` : `/karaoke?fromDuel=${view.id}`
+          }
+          className="btn-cyan mt-3 inline-block rounded-lg px-5 py-2"
+        >
+          {karaokeButtonLabel(view.karaokeDuel?.status)}
+        </Link>
+      )}
     </div>
   );
+}
+
+function karaokeButtonLabel(status: string | undefined): string {
+  switch (status) {
+    case "pending":
+      return "Karaoke Duel Challenge Pending";
+    case "picking":
+    case "generating":
+    case "judging":
+      return "Resume Karaoke Duel";
+    case "complete":
+      return "View Karaoke Duel Result";
+    default:
+      return "Play Bonus Karaoke Round";
+  }
 }
