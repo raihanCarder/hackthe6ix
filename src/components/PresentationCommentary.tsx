@@ -250,7 +250,7 @@ export function PresentationMuteButton({ compact = false }: { compact?: boolean 
             ? "Mute voice commentary"
             : "Unmute voice commentary"
       }
-      className={`${needsPlayback ? "btn-gold" : "btn-chalk"} inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg ${
+      className={`btn-chalk inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg ${
         compact ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
       }`}
     >
