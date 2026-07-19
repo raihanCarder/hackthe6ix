@@ -193,7 +193,7 @@ function CoinArt({ tierId }: { tierId: CoinTierId }) {
 
   return (
     <div
-      className={`relative h-52 overflow-hidden rounded-xl border ${visual.artClass}`}
+      className={`coin-shop-art relative overflow-hidden rounded-xl border ${visual.artClass}`}
       aria-hidden="true"
     >
       <svg viewBox="0 0 520 240" className="absolute inset-0 h-full w-full" role="presentation">
@@ -304,8 +304,8 @@ export function CoinsClient() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-12">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="coin-shop-screen">
+      <div className="coin-shop-heading flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="eyebrow">Club store · coin shop</p>
           <h1 className="font-display mt-2 text-3xl text-chalk sm:text-4xl">Build your balance</h1>
@@ -331,7 +331,7 @@ export function CoinsClient() {
         </div>
       )}
 
-      <div className="mt-9 grid gap-5 lg:grid-cols-3 lg:items-stretch">
+      <div className="coin-shop-grid">
         {COIN_TIERS.map((pack) => {
           const tierId = pack.id as CoinTierId;
           const visual = TIER_VISUALS[tierId];
@@ -343,10 +343,10 @@ export function CoinsClient() {
           return (
             <section
               key={pack.id}
-              className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-pitch-850/90 p-5 transition duration-300 hover:-translate-y-1 sm:p-6 ${visual.cardClass}`}
+              className={`coin-shop-card group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-pitch-850/90 transition duration-300 hover:-translate-y-1 ${visual.cardClass}`}
             >
               <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full border border-white/5" />
-              <div className="flex min-h-12 items-start justify-between gap-3">
+              <div className="coin-shop-card-head flex items-start justify-between gap-3">
                 <div>
                   <p className="eyebrow !text-[9px]">{visual.kicker}</p>
                   <h2 className="font-display mt-1 text-base text-chalk">{pack.label}</h2>
@@ -358,9 +358,9 @@ export function CoinsClient() {
                 )}
               </div>
 
-              <div className="mt-5 flex items-end justify-between gap-4">
+              <div className="coin-shop-amount-row flex items-end justify-between gap-4">
                 <div>
-                  <p className="font-score text-5xl leading-none text-chalk sm:text-6xl">
+                  <p className="coin-shop-amount font-score leading-none text-chalk">
                     {pack.coins.toLocaleString()}
                   </p>
                   <p className="font-display mt-1 text-sm text-gold-bright">coins</p>
@@ -376,13 +376,13 @@ export function CoinsClient() {
                 </span>
               </div>
 
-              <div className="mt-5">
+              <div className="coin-shop-art-wrap">
                 <CoinArt tierId={tierId} />
               </div>
 
-              <p className="mt-5 min-h-12 text-sm leading-6 text-chalk-dim">{visual.description}</p>
+              <p className="coin-shop-description text-sm leading-6 text-chalk-dim">{visual.description}</p>
 
-              <div className="mt-auto border-t border-chalk/10 pt-5">
+              <div className="coin-shop-purchase mt-auto border-t border-chalk/10">
                 <div className="flex items-end justify-between gap-3">
                   <div>
                     <p className="eyebrow !text-[9px]">One-time purchase</p>

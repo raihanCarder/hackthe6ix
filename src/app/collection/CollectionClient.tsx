@@ -6,40 +6,21 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { artStyle, HotelCard, RARITY_LABEL, STAT_META } from "@/components/HotelCard";
 import type { CardPayload } from "@/components/types";
+import {
+  filterAndSortCards,
+  getCountryOptions,
+  RARITY_ORDER,
+  SORT_OPTIONS,
+  type RarityFilter,
+  type SortKey,
+} from "@/lib/cards/cardFilters";
 import { resolveHotelFlag } from "@/lib/data/hotelFlags";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
-import { cardSellValue, type Rarity } from "@/lib/game/cardStats";
+import { cardSellValue } from "@/lib/game/cardStats";
 import { PACK_COST } from "@/lib/game/economy";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 
 const PAGE_SIZE = 20;
-
-type SortKey = "recent" | "rating" | "price-asc" | "price-desc";
-type RarityFilter = Rarity | "all";
-
-const RARITY_ORDER: Rarity[] = ["common", "rare", "epic", "legendary"];
-
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "recent", label: "Most recent" },
-  { value: "rating", label: "Guest rating" },
-  { value: "price-asc", label: "Price: low to high" },
-  { value: "price-desc", label: "Price: high to low" },
-];
-
-// Nullable numbers always sort to the end regardless of direction.
-function compareNullableDesc(a: number | null, b: number | null): number {
-  if (a === null && b === null) return 0;
-  if (a === null) return 1;
-  if (b === null) return -1;
-  return b - a;
-}
-
-function compareNullableAsc(a: number | null, b: number | null): number {
-  if (a === null && b === null) return 0;
-  if (a === null) return 1;
-  if (b === null) return -1;
-  return a - b;
-}
 
 export function CollectionClient() {
   const [cards, setCards] = useState<CardPayload[] | null>(null);
@@ -94,43 +75,12 @@ export function CollectionClient() {
   // Distinct countries present in the collection, for the filter dropdown.
   const countryOptions = useMemo(() => {
     if (!cards) return [];
-    const byCode = new Map<string, string>();
-    for (const card of cards) {
-      const code = card.hotel.countryCode;
-      if (!code) continue;
-      byCode.set(code, card.hotel.countryName ?? code);
-    }
-    return [...byCode.entries()]
-      .map(([code, name]) => ({ code, name }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    return getCountryOptions(cards);
   }, [cards]);
 
   const filteredSorted = useMemo(() => {
     if (!cards) return [];
-    const filtered = cards.filter(
-      (card) =>
-        (countryFilter === "all" ||
-          card.hotel.countryCode === countryFilter) &&
-        (rarityFilter === "all" || card.rarity === rarityFilter),
-    );
-
-    if (sortBy === "recent") return filtered;
-
-    const sorted = [...filtered];
-    if (sortBy === "rating") {
-      sorted.sort((a, b) =>
-        compareNullableDesc(a.hotel.guestRating, b.hotel.guestRating),
-      );
-    } else if (sortBy === "price-asc") {
-      sorted.sort((a, b) =>
-        compareNullableAsc(a.hotel.nightlyPrice, b.hotel.nightlyPrice),
-      );
-    } else if (sortBy === "price-desc") {
-      sorted.sort((a, b) =>
-        compareNullableDesc(a.hotel.nightlyPrice, b.hotel.nightlyPrice),
-      );
-    }
-    return sorted;
+    return filterAndSortCards(cards, { countryFilter, rarityFilter, sortBy });
   }, [cards, countryFilter, rarityFilter, sortBy]);
 
   const visibleCards = filteredSorted.slice(0, visibleCount);

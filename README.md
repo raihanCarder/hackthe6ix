@@ -33,6 +33,10 @@ Built at Hack the 6ix.
 | ---------- | -------------------- |
 | ![Collection grid with owned hotel cards and filters](documentation/screenshots/collection.png) | ![Tournament broadcast screen with scorebug, pitch, momentum, and hotel cards](documentation/screenshots/tournament-broadcast.png) |
 
+| Play Mode Selection | Coin Shop |
+| ------------------- | --------- |
+| ![Play mode selection screen with Trip Cup, Global Cup, and Duel tiles](documentation/screenshots/play-mode.png) | ![Coin shop screen with three coin pack purchase options](documentation/screenshots/coin-shop.png) |
+
 ## What It Does
 
 Check-In Champions makes hotel booking feel like opening a pack, building a squad, and watching a tournament play out. A traveler searches a real trip, the app turns Stay22 inventory into hotel cards, and those cards compete in a World Cup style bracket. The champion is not just a fun winner. It is a real recommendation backed by a deterministic engine, stored evidence, and a live booking link.
