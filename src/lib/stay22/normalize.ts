@@ -1,4 +1,9 @@
 import type { NormalizedAccommodation } from "@/lib/engine/types";
+import {
+  countryFromCode,
+  countryFromName,
+  type CountryInfo,
+} from "@/lib/data/countries";
 
 /**
  * Runtime validation and canonicalization of one raw Stay22 accommodation
@@ -11,7 +16,7 @@ import type { NormalizedAccommodation } from "@/lib/engine/types";
  */
 export function normalizeStay22Property(
   raw: unknown,
-  context: { nights?: number | null } = {},
+  context: { nights?: number | null; country?: CountryInfo | null } = {},
 ): NormalizedAccommodation | null {
   if (typeof raw !== "object" || raw === null) return null;
   const r = raw as Record<string, unknown>;
@@ -22,6 +27,7 @@ export function normalizeStay22Property(
   const capacity = asRecord(r.capacity);
   const policies = asRecord(r.policies);
   const media = asRecord(r.media);
+  const country = parseCountry(r, location) ?? context.country ?? null;
   const suppliers = parseSuppliers(r.suppliers);
   const quotedTotals = suppliers
     .map((supplier) => supplier.totalPrice)
@@ -55,6 +61,8 @@ export function normalizeStay22Property(
     name: asString(r.name),
     propertyType: asString(r.type ?? r.propertyType)?.toLowerCase() ?? null,
     address: asString(location?.address ?? r.address),
+    countryCode: country?.code ?? null,
+    countryName: country?.name ?? null,
     latitude: asCoordinate(coordinates?.lat ?? r.lat ?? r.latitude, 90),
     longitude: asCoordinate(coordinates?.lng ?? r.lng ?? r.longitude, 180),
     distanceKm: distanceKm(location?.distanceInMeters),
@@ -80,6 +88,18 @@ export function normalizeStay22Property(
     if (value !== null && !(Array.isArray(value) && value.length === 0)) mark(key);
   }
   return result;
+}
+
+function parseCountry(
+  raw: Record<string, unknown>,
+  location: Record<string, unknown> | null,
+): CountryInfo | null {
+  const code = asString(location?.countryCode ?? raw.countryCode ?? raw.country_code);
+  const byCode = countryFromCode(code);
+  if (byCode) return byCode;
+
+  const name = asString(location?.country ?? raw.country ?? raw.countryName);
+  return countryFromName(name);
 }
 
 function asString(v: unknown): string | null {

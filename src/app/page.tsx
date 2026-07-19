@@ -32,6 +32,17 @@ const SHOWCASE: Array<{ hotel: NormalizedAccommodation; stats: CardStats; overal
 ];
 
 function sample(name: string, address: string, nightlyPrice: number): NormalizedAccommodation {
+  const countryCode = address.includes("London")
+    ? "GB"
+    : address.includes("New York")
+      ? "US"
+      : "CA";
+  const countryName = countryCode === "GB"
+    ? "United Kingdom"
+    : countryCode === "US"
+      ? "United States"
+      : "Canada";
+
   return {
     id: name,
     bookingUrl: null,
@@ -41,6 +52,8 @@ function sample(name: string, address: string, nightlyPrice: number): Normalized
     name,
     propertyType: "hotel",
     address,
+    countryCode,
+    countryName,
     latitude: null,
     longitude: null,
     distanceKm: null,

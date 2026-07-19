@@ -41,6 +41,8 @@ export interface NormalizedAccommodation {
   name: string | null;
   propertyType: string | null;
   address: string | null;
+  countryCode: string | null;
+  countryName: string | null;
   latitude: number | null;
   longitude: number | null;
   distanceKm: number | null;

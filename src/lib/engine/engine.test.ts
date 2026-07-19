@@ -29,6 +29,8 @@ function hotel(overrides: Partial<NormalizedAccommodation> & { id: string }): No
     name: overrides.id,
     propertyType: "hotel",
     address: "123 Test St",
+    countryCode: "CA",
+    countryName: "Canada",
     latitude: 43.65,
     longitude: -79.38,
     distanceKm: null,

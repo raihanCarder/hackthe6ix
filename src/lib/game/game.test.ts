@@ -39,6 +39,8 @@ function makePool(count: number, seed = "game-pool"): NormalizedAccommodation[] 
     name: `Hotel ${i}`,
     propertyType: ["hotel", "apartment", "hostel", "bnb"][Math.floor(rng() * 4)],
     address: `${i} Test St`,
+    countryCode: "CA",
+    countryName: "Canada",
     latitude: 43.6532 + (rng() - 0.5) * 0.1,
     longitude: -79.3832 + (rng() - 0.5) * 0.1,
     distanceKm: null,

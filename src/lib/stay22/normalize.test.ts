@@ -33,7 +33,7 @@ describe("normalizeStay22Property", () => {
         policies: { instantBook: true, freeCancellation: false },
         media: { thumbnail: "https://example.com/hotel.jpg" },
       },
-      { nights: 3 },
+      { nights: 3, country: { code: "CA", name: "Canada" } },
     );
 
     expect(hotel).toMatchObject({
@@ -41,6 +41,8 @@ describe("normalizeStay22Property", () => {
       name: "Harbour Hotel",
       propertyType: "hotel",
       address: "1 Lake St, Toronto",
+      countryCode: "CA",
+      countryName: "Canada",
       latitude: 43.65,
       longitude: -79.38,
       distanceKm: 1.25,
@@ -80,6 +82,7 @@ describe("normalizeStay22Property", () => {
     const hotel = normalizeStay22Property({
       id: "mock-1",
       name: "Mock Lodge",
+      country: "Canada",
       lat: 45.5,
       lng: -73.5,
       guestRating: 8.2,
@@ -93,6 +96,8 @@ describe("normalizeStay22Property", () => {
 
     expect(hotel).toMatchObject({
       id: "mock-1",
+      countryCode: "CA",
+      countryName: "Canada",
       latitude: 45.5,
       longitude: -73.5,
       guestRating: 8.2,

@@ -78,7 +78,11 @@ export async function createSearch(user: User, body: z.infer<typeof searchReques
   });
 
   const destination = globalCity
-    ? { ...result.destination, label: `${globalCity.city}, ${globalCity.country}` }
+    ? {
+        ...result.destination,
+        label: `${globalCity.city}, ${globalCity.country}`,
+        country: result.destination.country,
+      }
     : result.destination;
   const trip = {
     destinationLabel: destination.label,
