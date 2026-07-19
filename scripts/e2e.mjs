@@ -4,8 +4,18 @@ const BASE = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 const SHOTS = "./e2e-shots";
 const errors = [];
 
+// The pack-acquisition UI drifts often, so the collection is seeded through the
+// API (dev sign-in + mock Stay22 inventory). Everything the gameplay overhaul
+// touches — the play-page card fold, the match broadcast, the celebration, and
+// the full results — is then exercised through the real UI below.
+const iso = (d) => d.toISOString().slice(0, 10);
+const now = new Date();
+const checkin = iso(new Date(now.getTime() + 30 * 864e5));
+const checkout = iso(new Date(now.getTime() + 33 * 864e5));
+
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1360, height: 900 } });
+const ctx = await browser.newContext({ viewport: { width: 1360, height: 900 } });
+const page = await ctx.newPage();
 page.on("console", (msg) => {
   if (msg.type() === "error") errors.push(msg.text());
 });
@@ -17,78 +27,81 @@ const step = async (name, fn) => {
     console.log(`OK  ${name}`);
   } catch (e) {
     console.log(`FAIL ${name}: ${e.message.split("\n")[0]}`);
-    await page.screenshot({ path: `${SHOTS}/FAIL-${name.replace(/\W+/g, "-")}.png` });
+    await page.screenshot({ path: `${SHOTS}/FAIL-${name.replace(/\W+/g, "-")}.png` }).catch(() => {});
     throw e;
   }
 };
 
+const post = async (path, data) => {
+  const r = await page.request.post(`${BASE}${path}`, { data });
+  if (!r.ok()) throw new Error(`${path} → ${r.status()} ${await r.text()}`);
+  return r.json();
+};
+
 await step("landing", async () => {
   await page.goto(BASE);
-  await page.getByText("HOTELS COMPETE").waitFor();
+  await page.getByText(/turned into a game/i).waitFor();
   await page.screenshot({ path: `${SHOTS}/01-landing.png` });
 });
 
-await step("dev sign-in", async () => {
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.getByPlaceholder("Manager name").fill(`Manager ${Date.now().toString(36)}`);
-  await page.getByRole("button", { name: "Sign in" }).last().click();
-  await page.getByText("coins").waitFor();
+await step("seed collection (dev sign-in + two trip packs)", async () => {
+  await post("/api/dev/login", { username: `Manager ${Date.now().toString(36)}` });
+  for (const destination of ["Toronto, Canada", "Lisbon, Portugal"]) {
+    const search = await post("/api/search", {
+      scope: "trip",
+      destination,
+      checkin,
+      checkout,
+      adults: 2,
+      children: 0,
+      rooms: 1,
+    });
+    await post("/api/packs/open", { searchId: search.searchId, scope: "trip" });
+  }
+  const { cards } = await page.request.get(`${BASE}/api/cards`).then((r) => r.json());
+  if (cards.length < 9) throw new Error(`expected >=9 cards, got ${cards.length}`);
 });
 
-await step("choose trip pack", async () => {
-  await page.goto(`${BASE}/packs`);
-  await page.getByRole("button", { name: "Choose Trip Pack" }).click();
-  await page.getByRole("button", { name: "Scout the field" }).click();
-  await page.getByText("Scouting report").waitFor({ timeout: 20000 });
-  await page.screenshot({ path: `${SHOTS}/02-trip-pack-setup.png` });
-});
-
-await step("open pack", async () => {
-  await page.getByRole("button", { name: /Open your free Trip Pack|Open a Trip Pack/ }).click();
-  await page.waitForURL(/\/pack\//, { timeout: 20000 });
-  await page.getByText("Tap to reveal").waitFor({ timeout: 15000 });
-  await page.screenshot({ path: `${SHOTS}/03-pack-facedown.png` });
-});
-
-await step("reveal cards", async () => {
-  await page.getByRole("button", { name: "Reveal all" }).click();
-  await page.getByRole("link", { name: "Play a match" }).waitFor({ timeout: 10000 });
-  await page.waitForTimeout(900); // let flips finish
-  await page.screenshot({ path: `${SHOTS}/04-pack-revealed.png` });
-});
-
-await step("trip cup card selection", async () => {
-  await page.getByRole("link", { name: "Play a match" }).click();
-  await page.waitForURL(/\/play$/);
-  await page.getByRole("button", { name: "Play Trip Cup" }).click();
+await step("play page — Show More fold", async () => {
+  await page.goto(`${BASE}/play`);
+  await page.getByRole("button", { name: "Play Global Cup" }).click();
   await page.getByText("Pick your card").waitFor();
+  await page.waitForTimeout(400);
+  const folded = await page.locator("button:has(.card-face)").count();
+  if (folded !== 8) throw new Error(`expected 8 cards before Show more, saw ${folded}`);
+  await page.screenshot({ path: `${SHOTS}/02-play-folded.png` });
+  await page.getByRole("button", { name: /Show more/ }).click();
+  await page.waitForTimeout(300);
+  const expanded = await page.locator("button:has(.card-face)").count();
+  if (expanded <= folded) throw new Error(`Show more revealed nothing (${folded} → ${expanded})`);
+  await page.screenshot({ path: `${SHOTS}/03-play-expanded.png` });
+});
+
+await step("enter the tournament", async () => {
   await page.locator("button:has(.card-face)").first().click();
   await page.getByRole("button", { name: /Enter .* into the tournament/ }).click();
-});
-
-await step("trip questionnaire", async () => {
-  await page.getByText("Pre-match interview").waitFor({ timeout: 15000 });
-  await page.screenshot({ path: `${SHOTS}/05-questions.png` });
-  for (let i = 0; i < 8; i++) {
-    const done = await page
-      .waitForURL(/\/tournament\//, { timeout: 1500 })
-      .then(() => true)
-      .catch(() => false);
-    if (done) break;
-    const options = page.locator("button.btn-chalk");
-    if ((await options.count()) === 0) break;
-    await options.first().click();
-  }
   await page.waitForURL(/\/tournament\//, { timeout: 30000 });
 });
 
-await step("tournament + champion", async () => {
-  await page.getByText("Group stage", { exact: false }).first().waitFor({ timeout: 20000 });
-  await page.getByText("Trip champion").waitFor({ timeout: 20000 });
-  await page.screenshot({ path: `${SHOTS}/06-tournament-top.png` });
-  await page.getByText("Trip champion").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(600);
-  await page.screenshot({ path: `${SHOTS}/07-champion.png` });
+await step("broadcast opens on the pitch", async () => {
+  await page.getByRole("button", { name: /Skip to full results/ }).waitFor({ timeout: 20000 });
+  await page.getByText("momentum", { exact: false }).first().waitFor({ timeout: 20000 });
+  await page.locator('[data-testid="soccer-ball"]').waitFor({ state: "visible", timeout: 20000 });
+  await page.waitForTimeout(1200);
+  await page.screenshot({ path: `${SHOTS}/04-broadcast.png` });
+});
+
+await step("skip to champion celebration", async () => {
+  await page.getByRole("button", { name: "Skip to champion" }).click();
+  await page.getByText("lifts the cup").waitFor({ timeout: 15000 });
+  await page.waitForTimeout(900);
+  await page.screenshot({ path: `${SHOTS}/05-celebration.png` });
+});
+
+await step("full results + champion", async () => {
+  await page.getByRole("button", { name: /View full results/ }).click();
+  await page.getByText("World champion").waitFor({ timeout: 15000 });
+  await page.screenshot({ path: `${SHOTS}/06-full-results.png` });
   const bookHref = await page.getByRole("link", { name: /Book the champion/ }).getAttribute("href");
   if (!bookHref || !bookHref.startsWith("https://www.stay22.com")) {
     throw new Error(`unexpected booking href: ${bookHref}`);
@@ -96,55 +109,25 @@ await step("tournament + champion", async () => {
   console.log(`    booking link → ${bookHref.slice(0, 80)}…`);
 });
 
-await step("match highlights", async () => {
+await step("match highlight modal", async () => {
   await page.locator("button.panel").first().click();
   await page.getByText("Back to the bracket").waitFor();
-  await page.screenshot({ path: `${SHOTS}/08-highlights.png` });
+  await page.screenshot({ path: `${SHOTS}/07-highlights.png` });
   await page.getByRole("button", { name: "Back to the bracket" }).click();
 });
 
-await step("collection + rehydrate", async () => {
-  await page.goto(`${BASE}/collection`);
-  await page.getByText("Your collection").waitFor();
-  await page.locator("button:has(.card-face)").first().click();
-  await page.getByText(/Live right now|Transfer pending/).waitFor({ timeout: 20000 });
-  await page.screenshot({ path: `${SHOTS}/09-collection.png` });
+await step("rewatch broadcast toggle", async () => {
+  await page.getByRole("button", { name: /Rewatch broadcast/ }).click();
+  await page.getByRole("button", { name: /Skip to full results/ }).waitFor({ timeout: 15000 });
 });
 
-await step("profile", async () => {
-  await page.goto(`${BASE}/profile`);
-  await page.getByText("Manager profile").waitFor();
-  await page.screenshot({ path: `${SHOTS}/10-profile.png` });
-});
-
-await step("global pack", async () => {
-  await page.goto(`${BASE}/packs`);
-  await page.getByRole("button", { name: "Choose Global Pack" }).click();
-  await page.getByRole("button", { name: "Draw a destination" }).click();
-  await page.getByText("Scouting report").waitFor({ timeout: 20000 });
-  await page.getByRole("button", { name: /Open a Global Pack/ }).click();
-  await page.waitForURL(/\/pack\//, { timeout: 20000 });
-  await page.getByRole("button", { name: "Reveal all" }).click();
-  await page.getByRole("link", { name: "Play a match" }).waitFor({ timeout: 10000 });
-  await page.screenshot({ path: `${SHOTS}/10-global-pack.png` });
-});
-
-await step("global cup", async () => {
-  await page.goto(`${BASE}/play`);
-  await page.getByRole("button", { name: "Play Global Cup" }).click();
-  await page.getByText("Pick your card").waitFor();
-  await page.locator("button:has(.card-face)").first().click();
-  await page.getByRole("button", { name: /Enter .* into the tournament/ }).click();
-  await page.waitForURL(/\/tournament\//, { timeout: 30000 });
-  await page.getByText("World champion").waitFor({ timeout: 20000 });
-  await page.screenshot({ path: `${SHOTS}/11-global-cup.png` });
-});
-
-// Security check: the API never leaks a key (none configured, but check shape anyway)
+// Security check: the API never leaks a key (none configured, but check shape anyway).
 await step("no key leakage", async () => {
   const response = await page.request.get(`${BASE}/api/cards`);
   const text = await response.text();
-  if (/api[_-]?key|authorization|bearer/i.test(text)) throw new Error("suspicious credential-like content in API response");
+  if (/api[_-]?key|authorization|bearer/i.test(text)) {
+    throw new Error("suspicious credential-like content in API response");
+  }
 });
 
 console.log(errors.length ? `CONSOLE ERRORS:\n${errors.join("\n")}` : "no console errors");

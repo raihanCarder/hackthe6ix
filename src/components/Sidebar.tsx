@@ -96,7 +96,7 @@ const NAV_ITEMS: NavItem[] = [
     href: "/play",
     label: "Play",
     icon: IconPlay,
-    match: (p) => p.startsWith("/play") || p.startsWith("/tournament"),
+    match: (p) => p.startsWith("/play") || p.startsWith("/tournament") || p.startsWith("/duel"),
   },
 ];
 

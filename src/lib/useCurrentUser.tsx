@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export interface Profile {
   id: string;
@@ -29,7 +29,15 @@ async function fetchCurrentUser(): Promise<CurrentUserPayload | null> {
   return response.json();
 }
 
-export function useCurrentUser() {
+interface CurrentUserState {
+  profile: Profile | null;
+  authMode: "auth0" | "dev";
+  loaded: boolean;
+  refresh: () => Promise<void>;
+  setProfile: (profile: Profile | null) => void;
+}
+
+function useProvideCurrentUser(): CurrentUserState {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [authMode, setAuthMode] = useState<"auth0" | "dev">("dev");
   const [loaded, setLoaded] = useState(false);
@@ -55,4 +63,17 @@ export function useCurrentUser() {
   }, []);
 
   return { profile, authMode, loaded, refresh, setProfile };
+}
+
+const CurrentUserContext = createContext<CurrentUserState | null>(null);
+
+export function CurrentUserProvider({ children }: { children: React.ReactNode }) {
+  const value = useProvideCurrentUser();
+  return <CurrentUserContext.Provider value={value}>{children}</CurrentUserContext.Provider>;
+}
+
+export function useCurrentUser(): CurrentUserState {
+  const ctx = useContext(CurrentUserContext);
+  if (!ctx) throw new Error("useCurrentUser must be used within a CurrentUserProvider");
+  return ctx;
 }

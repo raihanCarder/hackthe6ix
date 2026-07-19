@@ -393,7 +393,8 @@ export const ModelName = {
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
   PresentationAudio: 'PresentationAudio',
-  PresentationUsage: 'PresentationUsage'
+  PresentationUsage: 'PresentationUsage',
+  Duel: 'Duel'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage"
+    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage" | "duel"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Duel: {
+      payload: Prisma.$DuelPayload<ExtArgs>
+      fields: Prisma.DuelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DuelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DuelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        findFirst: {
+          args: Prisma.DuelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DuelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        findMany: {
+          args: Prisma.DuelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>[]
+        }
+        create: {
+          args: Prisma.DuelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        createMany: {
+          args: Prisma.DuelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DuelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>[]
+        }
+        delete: {
+          args: Prisma.DuelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        update: {
+          args: Prisma.DuelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        deleteMany: {
+          args: Prisma.DuelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DuelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DuelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>[]
+        }
+        upsert: {
+          args: Prisma.DuelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuelPayload>
+        }
+        aggregate: {
+          args: Prisma.DuelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDuel>
+        }
+        groupBy: {
+          args: Prisma.DuelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DuelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DuelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DuelCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1354,6 +1429,25 @@ export const PresentationUsageScalarFieldEnum = {
 export type PresentationUsageScalarFieldEnum = (typeof PresentationUsageScalarFieldEnum)[keyof typeof PresentationUsageScalarFieldEnum]
 
 
+export const DuelScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  player1Id: 'player1Id',
+  player1CardIds: 'player1CardIds',
+  player2Id: 'player2Id',
+  player2CardIds: 'player2CardIds',
+  turnPlayerId: 'turnPlayerId',
+  rounds: 'rounds',
+  player1Wins: 'player1Wins',
+  player2Wins: 'player2Wins',
+  winnerId: 'winnerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DuelScalarFieldEnum = (typeof DuelScalarFieldEnum)[keyof typeof DuelScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1367,6 +1461,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1603,6 +1705,7 @@ export type GlobalOmitConfig = {
   tournament?: Prisma.TournamentOmit
   presentationAudio?: Prisma.PresentationAudioOmit
   presentationUsage?: Prisma.PresentationUsageOmit
+  duel?: Prisma.DuelOmit
 }
 
 /* Types for Logging */

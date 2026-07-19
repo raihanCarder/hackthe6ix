@@ -30,12 +30,14 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  cards         SavedCard[]
-  packOpens     PackOpen[]
-  cityClaims    CityPackClaim[]
-  tournaments   Tournament[]
-  apiCalls      Stay22ApiCall[]
-  coinPurchases CoinPurchase[]
+  cards          SavedCard[]
+  packOpens      PackOpen[]
+  cityClaims     CityPackClaim[]
+  tournaments    Tournament[]
+  apiCalls       Stay22ApiCall[]
+  duelsAsPlayer1 Duel[]          @relation("DuelPlayer1")
+  duelsAsPlayer2 Duel[]          @relation("DuelPlayer2")
+  coinPurchases  CoinPurchase[]
 }
 
 model Stay22ApiCall {
@@ -172,4 +174,26 @@ model PresentationUsage {
   characterCount  Int      @default(0)
   generationCount Int      @default(0)
   updatedAt       DateTime @updatedAt
+}
+
+/// Live 1v1 squad duel: waiting-room matchmaking + turn-based, best-of-3
+/// stat-call rounds (documentation/ideas/IDEA.md "3-card squad quick-match").
+model Duel {
+  id             String   @id @default(cuid())
+  status         String // "waiting" | "active" | "complete"
+  player1Id      String
+  player1        User     @relation("DuelPlayer1", fields: [player1Id], references: [id])
+  player1CardIds Json // [SavedCard.id, SavedCard.id, SavedCard.id], in play order
+  player2Id      String?
+  player2        User?    @relation("DuelPlayer2", fields: [player2Id], references: [id])
+  player2CardIds Json?
+  turnPlayerId   String? // userId who calls the next stat
+  rounds         Json     @default("[]")
+  player1Wins    Int      @default(0)
+  player2Wins    Int      @default(0)
+  winnerId       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status, createdAt])
 }

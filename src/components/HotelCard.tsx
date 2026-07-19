@@ -95,6 +95,7 @@ export function HotelCard({
   rarity,
   cosmeticSeed,
   compact = false,
+  minimal = false,
 }: {
   hotel: NormalizedAccommodation;
   stats: CardStats;
@@ -102,6 +103,12 @@ export function HotelCard({
   rarity: Rarity;
   cosmeticSeed: string;
   compact?: boolean;
+  /**
+   * Drops the price/location line and the stat grid, leaving only the crest,
+   * art, and name. Used where the card renders too small to fit everything
+   * without clipping (e.g. the match pitch).
+   */
+  minimal?: boolean;
 }) {
   const name = hotelName(hotel);
   const statRows = displayStats(stats);
@@ -113,7 +120,7 @@ export function HotelCard({
 
   return (
     <article
-      className={`hotel-card hotel-card-${rarity} card-face relative w-full select-none`}
+      className={`hotel-card hotel-card-${rarity} ${minimal ? "hotel-card-min" : ""} card-face relative w-full select-none`}
     >
       <div
         className="card-sheen pointer-events-none absolute inset-0 z-20"
@@ -170,30 +177,34 @@ export function HotelCard({
             </h3>
           </div>
 
-          <div className="hotel-meta flex items-end justify-between gap-2 border-b border-card-line">
-            <p className="min-w-0 truncate font-bold text-chalk-dim">
-              {location}
-            </p>
-            <p className="font-score shrink-0 whitespace-nowrap font-bold text-card-primary">
-              {priceLabel(hotel)}
-            </p>
-          </div>
-
-          <dl className="hotel-stats grid grid-cols-2">
-            {statRows.map((stat) => (
-              <div
-                key={stat.label}
-                className="hotel-stat-row grid items-baseline"
-              >
-                <dt className="font-score text-right font-bold leading-none text-card-primary">
-                  {stat.value}
-                </dt>
-                <dd className="truncate font-bold uppercase leading-none text-chalk">
-                  {stat.label}
-                </dd>
+          {!minimal && (
+            <>
+              <div className="hotel-meta flex items-end justify-between gap-2 border-b border-card-line">
+                <p className="min-w-0 truncate font-bold text-chalk-dim">
+                  {location}
+                </p>
+                <p className="font-score shrink-0 whitespace-nowrap font-bold text-card-primary">
+                  {priceLabel(hotel)}
+                </p>
               </div>
-            ))}
-          </dl>
+
+              <dl className="hotel-stats grid grid-cols-2">
+                {statRows.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="hotel-stat-row grid items-baseline"
+                  >
+                    <dt className="font-score text-right font-bold leading-none text-card-primary">
+                      {stat.value}
+                    </dt>
+                    <dd className="truncate font-bold uppercase leading-none text-chalk">
+                      {stat.label}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </>
+          )}
         </div>
       </div>
     </article>

@@ -10,7 +10,7 @@ import {
   JourneyCommentaryCue,
   PresentationMuteButton,
 } from "@/components/PresentationCommentary";
-import { useCurrentUser, type Profile } from "@/lib/useCurrentUser";
+import { CurrentUserProvider, useCurrentUser, type Profile } from "@/lib/useCurrentUser";
 
 function MarketingHeader({
   profile,
@@ -83,6 +83,14 @@ function MarketingHeader({
 }
 
 export function Chrome({ children }: { children: React.ReactNode }) {
+  return (
+    <CurrentUserProvider>
+      <ChromeInner>{children}</ChromeInner>
+    </CurrentUserProvider>
+  );
+}
+
+function ChromeInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { profile, authMode, refresh } = useCurrentUser();
   const isMarketing = pathname === "/";
