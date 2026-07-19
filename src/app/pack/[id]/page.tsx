@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CardBack, HotelCard } from "@/components/HotelCard";
 import { usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 interface PackPayload {
   packId: string;
@@ -14,16 +15,21 @@ interface PackPayload {
   scope: "trip" | "global";
   city: string;
   cost: number;
+  repeatPackCost: number;
   cards: CardPayload[];
   trip: { destinationLabel: string; checkin: string; checkout: string };
 }
 
 export default function PackPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { announce } = usePresentation();
+  const { loaded, profile, refresh } = useCurrentUser();
   const [pack, setPack] = useState<PackPayload | null>(null);
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [buyingAgain, setBuyingAgain] = useState(false);
+  const [repeatError, setRepeatError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/packs/${id}`)
@@ -31,6 +37,10 @@ export default function PackPage() {
         const data = await r.json();
         if (!r.ok) throw new Error(data.error ?? "Pack not found");
         setPack(data);
+        setFlipped(new Set());
+        setError(null);
+        setRepeatError(null);
+        setBuyingAgain(false);
         announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
       })
       .catch((e) => setError(e.message));
@@ -51,6 +61,29 @@ export default function PackPage() {
     setFlipped(new Set(pack.cards.map((_, index) => index)));
   }
 
+  async function buyAnotherPack() {
+    if (!pack) return;
+    setBuyingAgain(true);
+    setRepeatError(null);
+    announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
+
+    try {
+      const response = await fetch(`/api/packs/${pack.packId}/repeat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Pack opening failed");
+      void refresh();
+      setPack(null);
+      setFlipped(new Set());
+      router.push(`/pack/${data.packId}`);
+    } catch (caught) {
+      setRepeatError(caught instanceof Error ? caught.message : "Pack opening failed");
+      setBuyingAgain(false);
+    }
+  }
+
   if (error) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
@@ -67,6 +100,8 @@ export default function PackPage() {
   }
 
   const packLabel = pack.scope === "global" ? "Global pack" : "Trip pack";
+  const repeatLabel = pack.scope === "global" ? "Buy another Global Pack" : "Buy another Trip Pack";
+  const canBuyAnother = loaded && profile !== null && profile.currency >= pack.repeatPackCost;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -144,7 +179,22 @@ export default function PackPage() {
             <Link href="/play" className="btn-primary rounded-lg px-8 py-3 text-lg">
               Play a match
             </Link>
+            {canBuyAnother && (
+              <button
+                type="button"
+                onClick={buyAnotherPack}
+                disabled={buyingAgain}
+                className={`${pack.scope === "global" ? "btn-gold" : "btn-primary"} rounded-lg px-6 py-3 text-lg disabled:opacity-60`}
+              >
+                {buyingAgain ? "Opening..." : repeatLabel}
+              </button>
+            )}
           </motion.div>
+        )}
+        {repeatError && (
+          <div className="w-full rounded-lg border border-whistle/50 bg-whistle/10 px-4 py-3 text-sm text-chalk">
+            {repeatError}
+          </div>
         )}
       </div>
     </div>

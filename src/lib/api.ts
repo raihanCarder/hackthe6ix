@@ -4,4 +4,5 @@ export * from "./api/users";
 export * from "./api/packs";
 export * from "./api/cards";
 export * from "./api/tournaments";
+export * from "./api/coins";
 export * from "./api/duel";

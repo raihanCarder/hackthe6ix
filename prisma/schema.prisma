@@ -37,6 +37,7 @@ model User {
   apiCalls       Stay22ApiCall[]
   duelsAsPlayer1 Duel[]          @relation("DuelPlayer1")
   duelsAsPlayer2 Duel[]          @relation("DuelPlayer2")
+  coinPurchases  CoinPurchase[]
 }
 
 model Stay22ApiCall {
@@ -90,6 +91,24 @@ model CityPackClaim {
   createdAt      DateTime @default(now())
 
   @@unique([userId, normalizedCity])
+}
+
+model CoinPurchase {
+  id                      String    @id @default(cuid())
+  userId                  String
+  user                    User      @relation(fields: [userId], references: [id])
+  stripeCheckoutSessionId String    @unique
+  stripePaymentIntentId   String?   @unique
+  tierId                  String
+  coinAmount              Int
+  amountCents             Int
+  currency                String
+  status                  String    @default("pending")
+  fulfilledAt             DateTime?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 model SavedCard {

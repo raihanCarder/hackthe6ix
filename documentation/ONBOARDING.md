@@ -62,6 +62,7 @@ Open http://localhost:3000. With no Stay22 or Auth0 credentials, the app uses de
 - `prisma/schema.prisma`: database schema.
 - `documentation/ARCHITECTURE.md`: product and system architecture.
 - `documentation/AUTH.md`: Auth0/dev auth setup, routes, endpoints, and common redirect issues.
+- `documentation/STRIPE.md`: Stripe sandbox setup, coin purchase endpoints, and webhook flow.
 - `documentation/ideas/ALGORITHM_DESIGN.md`: recommendation algorithm details.
 
 ## Development Rules
@@ -96,7 +97,9 @@ To test real integrations, fill in `.env`:
 
 - `STAY22_API_KEY`, `STAY22_AFFILIATE_ID`, and `STAY22_CAMPAIGN` for live inventory and tracked booking links.
 - `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, and `AUTH0_SECRET` for Auth0 sign-in.
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and optional `STRIPE_CURRENCY` for sandbox coin purchases.
 - `DATABASE_URL` with the deployment database connection string for hosted environments.
 
 When `AUTH0_*` is configured, local dev sign-in disables itself automatically.
 See [`documentation/AUTH.md`](./AUTH.md) for Auth0 callback URLs, Google social login setup, and auth endpoint behavior.
+See [`documentation/STRIPE.md`](./STRIPE.md) for local Stripe webhook setup, coin purchase routes, and test cards.

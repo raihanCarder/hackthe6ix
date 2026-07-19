@@ -14,7 +14,7 @@ import {
 } from "@/lib/game/cardStats";
 import { prisma } from "@/lib/db";
 import { ApiError, asJson, PACK_COST } from "./core";
-import { loadSearch } from "./searches";
+import { createSearch, loadSearch } from "./searches";
 
 const PACK_SIZE = 5;
 
@@ -133,6 +133,37 @@ export async function openPack(user: User, searchId: string, requestedScope: "tr
   };
 }
 
+export async function repeatPack(user: User, packId: string) {
+  const pack = await prisma.packOpen.findFirst({
+    where: { id: packId, userId: user.id },
+  });
+  if (!pack) throw new ApiError(404, "Pack not found");
+  if (pack.scope !== "trip" && pack.scope !== "global") {
+    throw new ApiError(409, "Pack type is not repeatable");
+  }
+
+  const search = await loadSearch(pack.searchApiCallId, user.id);
+  if (pack.scope === "trip") {
+    return openPack(user, pack.searchApiCallId, "trip");
+  }
+
+  const nextSearch = await createSearch(
+    user,
+    {
+      scope: "global",
+      checkin: search.trip.checkin,
+      checkout: search.trip.checkout,
+      adults: search.trip.adults,
+      children: search.trip.children,
+      rooms: search.trip.rooms,
+      minNightly: search.trip.minNightly,
+      maxNightly: search.trip.maxNightly,
+    },
+    { globalSeedSalt: `repeat:${pack.id}`, excludedCity: search.city },
+  );
+  return openPack(user, nextSearch.searchId, "global");
+}
+
 export async function listPackOpens(user: User) {
   const packs = await prisma.packOpen.findMany({
     where: { userId: user.id },
@@ -169,6 +200,7 @@ export async function getPackReplay(user: User, packId: string) {
     scope: pack.scope,
     city: pack.city,
     cost: pack.cost,
+    repeatPackCost: PACK_COST,
     seed: pack.seed,
     trip: search.trip,
     cards: cardIds
