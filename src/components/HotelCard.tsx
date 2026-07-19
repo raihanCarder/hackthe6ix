@@ -6,7 +6,7 @@ import { resolveHotelFlag } from "@/lib/data/hotelFlags";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
 
-const RARITY_LABEL: Record<Rarity, string> = {
+export const RARITY_LABEL: Record<Rarity, string> = {
   common: "Common",
   rare: "Rare",
   epic: "Epic",
@@ -64,7 +64,7 @@ function seededHue(seed: string): number {
   return h;
 }
 
-function artStyle(
+export function artStyle(
   hotel: NormalizedAccommodation,
   cosmeticSeed: string,
 ): CSSProperties {
