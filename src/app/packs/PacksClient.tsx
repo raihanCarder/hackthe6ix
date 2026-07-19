@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
+import { PACK_COST } from "@/lib/game/economy";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 
 type PackKind = "trip" | "global";
@@ -47,8 +48,7 @@ export function PacksClient() {
     rooms: 1,
     maxNightly: "" as string,
   });
-  const [summary, setSummary] = useState<SearchSummary | null>(null);
-  const [busy, setBusy] = useState<"search" | "pack" | null>(null);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -82,7 +82,6 @@ export function PacksClient() {
 
   function choosePack(kind: PackKind) {
     setPack(kind);
-    setSummary(null);
     setError(null);
     announce({
       source: "journey",
@@ -95,19 +94,18 @@ export function PacksClient() {
 
   function backToChoose() {
     setPack(null);
-    setSummary(null);
     setError(null);
   }
 
-  async function runSearch(event: React.FormEvent) {
+  // One click: run the live inventory search, then immediately open the pack.
+  async function openPackFlow(event: React.FormEvent) {
     event.preventDefault();
     if (!pack) return;
-    setBusy("search");
+    setBusy(true);
     setError(null);
-    setSummary(null);
     announce({ source: "journey", cue: { kind: "journey.moment", moment: "search.started" } });
     try {
-      const response = await fetch("/api/search", {
+      const searchResponse = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,35 +119,30 @@ export function PacksClient() {
           maxNightly: form.maxNightly ? Number(form.maxNightly) : null,
         }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? "Search failed");
-      setSummary(data);
+      const search: SearchSummary = await searchResponse.json();
+      if (!searchResponse.ok) {
+        throw new Error((search as { error?: string }).error ?? "Search failed");
+      }
       announce({ source: "journey", cue: { kind: "journey.moment", moment: "search.complete" } });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Search failed");
-    } finally {
-      setBusy(null);
-    }
-  }
 
-  async function openPack() {
-    if (!summary) return;
-    setBusy("pack");
-    setError(null);
-    announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
-    try {
-      const response = await fetch("/api/packs/open", {
+      announce({ source: "journey", cue: { kind: "journey.moment", moment: "pack.opening" } });
+      const openResponse = await fetch("/api/packs/open", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ searchId: summary.searchId, scope: summary.scope }),
+        body: JSON.stringify({ searchId: search.searchId, scope: search.scope ?? pack }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? "Pack opening failed");
+      const opened = await openResponse.json();
+      if (!openResponse.ok) throw new Error(opened.error ?? "Pack opening failed");
       void refresh();
-      router.push(`/pack/${data.packId}`);
+      // Carry the live-inventory count to the reveal page so the signal isn't lost.
+      const params = new URLSearchParams({
+        found: String(search.eligibleCount),
+        total: String(search.totalResults),
+      });
+      router.push(`/pack/${opened.packId}?${params.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Pack opening failed");
-      setBusy(null);
+      setBusy(false);
     }
   }
 
@@ -168,34 +161,93 @@ export function PacksClient() {
           scores, collection progress, and a real checkout path.
         </p>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <motion.button
-            whileHover={{ y: -4 }}
-            onClick={() => choosePack("trip")}
-            className="panel rounded-2xl border-2 border-cyan-bright/40 p-8 text-left transition hover:border-cyan-bright"
-          >
-            <p className="eyebrow">Your trip</p>
-            <h2 className="font-display mt-2 text-2xl text-chalk">Trip Pack</h2>
-            <p className="mt-3 text-sm text-chalk-dim">
-              Built from your real trip — pick a destination, dates, and party size. Five cards,
-              all bookable for that stay. First pack per city is free.
-            </p>
-            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Create first trip pack</span>
-          </motion.button>
+        <div className="mx-auto mt-12 grid max-w-2xl gap-8 sm:grid-cols-2">
+          <div className="foil-pack-slot foil-pack-trip">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -6 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              onClick={() => choosePack("trip")}
+              className="foil-pack"
+              aria-label="Choose Trip Pack"
+            >
+              <span className="foil-pack-crimp" aria-hidden />
+              <span className="foil-pack-crimp foil-pack-crimp-bottom" aria-hidden />
+              <span className="card-sheen pointer-events-none absolute inset-0 z-0" aria-hidden />
+              <div className="relative z-[1] flex justify-center">
+                <svg
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="foil-pack-emblem"
+                  aria-hidden
+                >
+                  <path d="M24 8c-5 0-9 3.8-9 9 0 6.4 9 15 9 15s9-8.6 9-15c0-5.2-4-9-9-9Z" />
+                  <circle cx="24" cy="17" r="3.4" fill="currentColor" stroke="none" />
+                  <path d="M8 40C16 33 32 33 40 40" strokeDasharray="1.5 3.5" />
+                  <circle cx="8" cy="40" r="1.7" fill="currentColor" stroke="none" />
+                  <circle cx="40" cy="40" r="1.7" fill="currentColor" stroke="none" />
+                </svg>
+              </div>
+              <div className="relative z-[1] mt-auto">
+                <p className="eyebrow">Your trip</p>
+                <h2 className="foil-pack-title mt-1 text-2xl">Trip Pack</h2>
+                <p className="foil-pack-desc mt-2 text-sm">
+                  Built from your real trip — five bookable cards for your dates. First pack per
+                  city is free.
+                </p>
+              </div>
+            </motion.button>
+            <p className="foil-pack-label">Choose Trip Pack</p>
+          </div>
 
-          <motion.button
-            whileHover={{ y: -4 }}
-            onClick={() => choosePack("global")}
-            className="panel rounded-2xl border-2 border-gold-bright/40 p-8 text-left transition hover:border-gold-bright"
-          >
-            <p className="eyebrow">Surprise me</p>
-            <h2 className="font-display mt-2 text-2xl text-chalk">Global Pack</h2>
-            <p className="mt-3 text-sm text-chalk-dim">
-              A random destination from around the world — every continent in play. Five cards
-              for the surprise city and dates you choose.
-            </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Choose Global Pack</span>
-          </motion.button>
+          <div className="foil-pack-slot foil-pack-global">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -6 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              onClick={() => choosePack("global")}
+              className="foil-pack"
+              aria-label="Choose Global Pack"
+            >
+              <span className="foil-pack-crimp" aria-hidden />
+              <span className="foil-pack-crimp foil-pack-crimp-bottom" aria-hidden />
+              <span className="card-sheen pointer-events-none absolute inset-0 z-0" aria-hidden />
+              <div className="relative z-[1] flex justify-center">
+                <svg
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="foil-pack-emblem"
+                  aria-hidden
+                >
+                  <circle cx="24" cy="24" r="17" />
+                  <ellipse cx="24" cy="24" rx="7" ry="17" />
+                  <line x1="7" y1="24" x2="41" y2="24" />
+                  <path d="M9.5 16H38.5" />
+                  <path d="M9.5 32H38.5" />
+                  <circle cx="30" cy="15" r="1.5" fill="currentColor" stroke="none" />
+                  <circle cx="17" cy="28" r="1.5" fill="currentColor" stroke="none" />
+                  <circle cx="28" cy="33" r="1.5" fill="currentColor" stroke="none" />
+                </svg>
+              </div>
+              <div className="relative z-[1] mt-auto">
+                <p className="eyebrow">Surprise me</p>
+                <h2 className="foil-pack-title mt-1 text-2xl">Global Pack</h2>
+                <p className="foil-pack-desc mt-2 text-sm">
+                  A random destination from around the world — every continent in play. Five cards
+                  for the surprise city.
+                </p>
+              </div>
+            </motion.button>
+            <p className="foil-pack-label">Choose Global Pack</p>
+          </div>
         </div>
       </div>
     );
@@ -217,7 +269,7 @@ export function PacksClient() {
           : "We'll pick a random city from around the world. Set your dates and party, and let the draw decide the rest."}
       </p>
 
-      <form onSubmit={runSearch} className="panel mt-6 grid gap-4 rounded-xl p-6 sm:grid-cols-2">
+      <form onSubmit={openPackFlow} className="panel mt-6 grid gap-4 rounded-xl p-6 sm:grid-cols-2">
         {pack === "trip" && (
           <label className="sm:col-span-2">
             <span className="eyebrow">Destination</span>
@@ -296,44 +348,22 @@ export function PacksClient() {
           />
         </label>
         <div className="sm:col-span-2">
-          <button type="submit" disabled={busy !== null} className="btn-primary w-full rounded-lg px-6 py-3">
-            {busy === "search"
-              ? "Scanning live inventory…"
+          <button type="submit" disabled={busy} className="btn-primary w-full rounded-lg px-6 py-3 text-lg">
+            {busy
+              ? "Opening pack…"
               : pack === "trip"
-                ? "Scan the field"
-                : "Draw a destination"}
+                ? "Open Trip Pack · first city free"
+                : `Open Global Pack · ${PACK_COST} coins`}
           </button>
+          <p className="mt-2 text-center text-xs text-chalk-dim">
+            One tap runs a live inventory search and opens your pack.
+          </p>
         </div>
       </form>
 
       {error && (
         <div className="mt-4 rounded-lg border border-whistle/50 bg-whistle/10 px-4 py-3 text-sm text-chalk">
           {error} {error.includes("Sign in") && "— use the Sign in button in the sidebar."}
-        </div>
-      )}
-
-      {summary && (
-        <div className="panel mt-6 rounded-xl p-6">
-          <p className="eyebrow">Live inventory · {summary.destination.label}</p>
-          <p className="font-score mt-2 text-2xl text-chalk">
-            {summary.eligibleCount}{" "}
-            <span className="text-sm text-chalk-dim">
-              bookable contenders (of {summary.totalResults} found
-              {summary.mode === "mock" ? " · demo data — add STAY22_API_KEY for live" : " · live Stay22"}
-              )
-            </span>
-          </p>
-          <button
-            onClick={openPack}
-            disabled={busy !== null}
-            className="btn-primary mt-4 w-full rounded-lg px-6 py-3 text-lg"
-          >
-            {busy === "pack"
-              ? "Minting trip pack…"
-              : summary.freePackAvailable
-                ? "Mint your free trip pack"
-                : `Mint a ${pack === "trip" ? "Trip" : "Global"} Pack · ${summary.packCost} coins`}
-          </button>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CardBack, HotelCard } from "@/components/HotelCard";
 import { usePresentation } from "@/components/PresentationCommentary";
@@ -23,6 +23,9 @@ interface PackPayload {
 export default function PackPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const foundCount = searchParams.get("found");
+  const totalCount = searchParams.get("total");
   const { announce } = usePresentation();
   const { loaded, profile, refresh } = useCurrentUser();
   const [pack, setPack] = useState<PackPayload | null>(null);
@@ -114,6 +117,7 @@ export default function PackPage() {
       <p className="mt-1 text-sm text-chalk-dim">
         Every card is a real property, bookable for these dates.
         {pack.cost > 0 ? ` Pack cost: ${pack.cost} coins.` : " First pack in this city — free."}
+        {foundCount ? ` Drawn from ${foundCount} bookable contenders${totalCount ? ` of ${totalCount} found` : ""}.` : ""}
       </p>
 
       <div className="hotel-card-grid mt-8">
@@ -170,8 +174,8 @@ export default function PackPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-wrap gap-3"
           >
-            <Link href="/pack-lab" className="btn-chalk rounded-lg px-6 py-3">
-              Back to Pack Lab
+            <Link href="/pack-history" className="btn-chalk rounded-lg px-6 py-3">
+              Back to Pack History
             </Link>
             <Link href="/collection" className="btn-chalk rounded-lg px-6 py-3">
               View collection

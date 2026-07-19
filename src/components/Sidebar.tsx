@@ -82,12 +82,12 @@ function IconPlay({ className }: { className?: string }) {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: IconDashboard, match: (p) => p === "/dashboard" },
-  { href: "/packs", label: "New trip", icon: IconTrip, match: (p) => p.startsWith("/packs") },
+  { href: "/packs", label: "Pack Lab", icon: IconTrip, match: (p) => p.startsWith("/packs") },
   {
-    href: "/pack-lab",
-    label: "Pack Lab",
+    href: "/pack-history",
+    label: "Pack History",
     icon: IconPackLab,
-    match: (p) => p.startsWith("/pack-lab") || p.startsWith("/pack/"),
+    match: (p) => p.startsWith("/pack-history") || p.startsWith("/pack/"),
   },
   { href: "/collection", label: "Collection", icon: IconCollection, match: (p) => p.startsWith("/collection") },
   { href: "/revenue", label: "Revenue", icon: IconRevenue, match: (p) => p.startsWith("/revenue") },
