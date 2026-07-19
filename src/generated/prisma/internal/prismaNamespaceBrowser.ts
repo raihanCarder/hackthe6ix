@@ -56,6 +56,7 @@ export const ModelName = {
   HotelSnapshot: 'HotelSnapshot',
   PackOpen: 'PackOpen',
   CityPackClaim: 'CityPackClaim',
+  CoinPurchase: 'CoinPurchase',
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
   PresentationAudio: 'PresentationAudio',
@@ -153,6 +154,24 @@ export const CityPackClaimScalarFieldEnum = {
 } as const
 
 export type CityPackClaimScalarFieldEnum = (typeof CityPackClaimScalarFieldEnum)[keyof typeof CityPackClaimScalarFieldEnum]
+
+
+export const CoinPurchaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  tierId: 'tierId',
+  coinAmount: 'coinAmount',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  fulfilledAt: 'fulfilledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CoinPurchaseScalarFieldEnum = (typeof CoinPurchaseScalarFieldEnum)[keyof typeof CoinPurchaseScalarFieldEnum]
 
 
 export const SavedCardScalarFieldEnum = {

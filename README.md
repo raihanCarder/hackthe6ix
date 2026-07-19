@@ -7,7 +7,8 @@ recommendation backed by a deterministic engine and Monte Carlo simulation.
 Built at Hack the 6ix. Architecture in
 [`documentation/ARCHITECTURE.md`](./documentation/ARCHITECTURE.md), engine math in
 [`documentation/ideas/ALGORITHM_DESIGN.md`](./documentation/ideas/ALGORITHM_DESIGN.md), contributor setup in
-[`documentation/ONBOARDING.md`](./documentation/ONBOARDING.md), and optional voice setup in
+[`documentation/ONBOARDING.md`](./documentation/ONBOARDING.md), Stripe coin purchase setup in
+[`documentation/STRIPE.md`](./documentation/STRIPE.md), and optional voice setup in
 [`documentation/ELEVENLABS.md`](./documentation/ELEVENLABS.md).
 
 ## The one rule
@@ -39,6 +40,8 @@ Copy `.env.example` to `.env` and fill in:
   Verify the response schema in `src/lib/stay22/normalize.ts` against the actual integration.
 - `AUTH0_*` → real authentication (dev sign-in disables itself automatically).
 - `DATABASE_URL` → Supabase Postgres for deployment.
+- `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` → sandbox Checkout for buying coins.
+  See [`documentation/STRIPE.md`](./documentation/STRIPE.md) for local webhook setup and endpoints.
 - `ELEVENLABS_API_KEY` + `ELEVENLABS_VOICE_ID` → optional sports-style voice commentary.
   Without them, deterministic captions remain fully functional.
 
@@ -55,3 +58,6 @@ node scripts/e2e.mjs  # full browser demo path (needs `npm run start` + Chromium
 Sign in → search Toronto → open the free Trip Pack → flip five cards → answer 3–5 adaptive
 questions → watch groups + knockouts → champion screen with first-place probability, weight
 bars, decisive-edge evidence, and the **Book the champion** link.
+
+For the coin purchase demo, open **Buy Coins**, choose a tier, and use Stripe test card
+`4242 4242 4242 4242` with any future expiry, CVC, and postal code.
