@@ -4,44 +4,82 @@ import { HotelCard } from "@/components/HotelCard";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
 
-const SHOWCASE: Array<{ hotel: NormalizedAccommodation; stats: CardStats; overall: number; rarity: Rarity }> = [
+const SHOWCASE: Array<{
+  hotel: NormalizedAccommodation;
+  stats: CardStats;
+  overall: number;
+  rarity: Rarity;
+}> = [
   {
     overall: 54,
     rarity: "common",
-    stats: { comfort: 70, amenities: 76, luxury: 70, value: 80, location: 88, service: 78 },
+    stats: {
+      comfort: 70,
+      amenities: 76,
+      luxury: 70,
+      value: 80,
+      location: 88,
+      service: 78,
+    },
     hotel: sample("Card Hotel", "London, UK", 220),
   },
   {
     overall: 66,
     rarity: "rare",
-    stats: { comfort: 78, amenities: 80, luxury: 83, value: 82, location: 91, service: 84 },
+    stats: {
+      comfort: 78,
+      amenities: 80,
+      luxury: 83,
+      value: 82,
+      location: 91,
+      service: 84,
+    },
     hotel: sample("Ace Hotel New York", "New York, USA", 310),
   },
   {
     overall: 82,
     rarity: "epic",
-    stats: { comfort: 89, amenities: 86, luxury: 87, value: 80, location: 92, service: 90 },
+    stats: {
+      comfort: 89,
+      amenities: 86,
+      luxury: 87,
+      value: 80,
+      location: 92,
+      service: 90,
+    },
     hotel: sample("Fairmont Royal York", "Toronto, Canada", 420),
   },
   {
     overall: 95,
     rarity: "legendary",
-    stats: { comfort: 95, amenities: 94, luxury: 91, value: 78, location: 90, service: 96 },
+    stats: {
+      comfort: 95,
+      amenities: 94,
+      luxury: 91,
+      value: 78,
+      location: 90,
+      service: 96,
+    },
     hotel: sample("The Ritz-Carlton Toronto", "Toronto, Canada", 540),
   },
 ];
 
-function sample(name: string, address: string, nightlyPrice: number): NormalizedAccommodation {
+function sample(
+  name: string,
+  address: string,
+  nightlyPrice: number,
+): NormalizedAccommodation {
   const countryCode = address.includes("London")
     ? "GB"
     : address.includes("New York")
       ? "US"
       : "CA";
-  const countryName = countryCode === "GB"
-    ? "United Kingdom"
-    : countryCode === "US"
-      ? "United States"
-      : "Canada";
+  const countryName =
+    countryCode === "GB"
+      ? "United Kingdom"
+      : countryCode === "US"
+        ? "United States"
+        : "Canada";
 
   return {
     id: name,
@@ -77,19 +115,25 @@ export default function Home() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <section className="grid gap-10 py-14 sm:py-20 lg:grid-cols-2 lg:items-center">
         <div>
-          <p className="eyebrow">Stay22 live inventory</p>
           <h1 className="font-display mt-4 text-4xl leading-[1.05] text-chalk sm:text-6xl">
             Hotel data, turned into a game people book from.
           </h1>
           <p className="mt-6 max-w-xl text-base text-chalk-dim sm:text-lg">
-            Anyone can build a booking prompt. This turns Stay22 inventory into hotel cards, trip
-            packs, and recommendations that can earn real commission.
+            Anyone can build a booking prompt. This turns Stay22 inventory into
+            hotel cards, trip packs, and recommendations that can earn real
+            commission.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <ProtectedLink href="/packs" className="btn-primary rounded-lg px-8 py-3 text-lg">
+            <ProtectedLink
+              href="/packs"
+              className="btn-primary rounded-lg px-8 py-3 text-lg"
+            >
               Kick off a trip
             </ProtectedLink>
-            <ProtectedLink href="/collection" className="btn-chalk rounded-lg px-6 py-3">
+            <ProtectedLink
+              href="/collection"
+              className="btn-chalk rounded-lg px-6 py-3"
+            >
               View cards
             </ProtectedLink>
           </div>
@@ -108,7 +152,14 @@ export default function Home() {
                 transform: `rotate(${(i - 1.5) * 4}deg)`,
               }}
             >
-              <HotelCard hotel={card.hotel} stats={card.stats} overall={card.overall} rarity={card.rarity} cosmeticSeed={card.hotel.id} compact />
+              <HotelCard
+                hotel={card.hotel}
+                stats={card.stats}
+                overall={card.overall}
+                rarity={card.rarity}
+                cosmeticSeed={card.hotel.id}
+                compact
+              />
             </div>
           ))}
         </div>
@@ -136,8 +187,12 @@ export default function Home() {
         ].map((item) => (
           <div key={item.title} className="panel rounded-xl p-6">
             <p className="eyebrow">Step {item.step}</p>
-            <h2 className="font-display mt-2 text-lg text-chalk">{item.title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-chalk-dim">{item.body}</p>
+            <h2 className="font-display mt-2 text-lg text-chalk">
+              {item.title}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-chalk-dim">
+              {item.body}
+            </p>
           </div>
         ))}
       </section>
