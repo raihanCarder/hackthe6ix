@@ -577,9 +577,48 @@ body {
 }
 
 /* Minimal card (match pitch): no meta/stats — centre the name in the space. */
+.hotel-card-min .hotel-card-inner {
+  padding: clamp(0.52rem, 3.35cqw, 0.72rem);
+}
+
+.hotel-card-min .hotel-card-inner > .flex {
+  gap: clamp(0.34rem, 2.4cqw, 0.55rem);
+}
+
+.hotel-card-min .hotel-overall {
+  font-size: clamp(2.05rem, 17.5cqw, 2.72rem);
+}
+
+.hotel-card-min .hotel-overall-label {
+  margin-top: clamp(0.16rem, 1.2cqw, 0.26rem);
+  font-size: clamp(0.58rem, 3.5cqw, 0.72rem);
+}
+
+.hotel-card-min .hotel-card-nationality {
+  gap: clamp(0.3rem, 2.15cqw, 0.46rem);
+  max-width: 48%;
+}
+
+.hotel-card-min .hotel-rarity-pill {
+  min-width: min(5.1rem, 40cqw);
+  max-width: 100%;
+  padding: clamp(0.16rem, 1.25cqw, 0.22rem) clamp(0.5rem, 3cqw, 0.66rem);
+  font-size: clamp(0.5rem, 3.8cqw, 0.62rem);
+  line-height: 1.15;
+}
+
+.hotel-card-min .hotel-country-flag {
+  width: clamp(1.34rem, 8.2cqw, 1.72rem);
+}
+
 .hotel-card-min .hotel-name-wrap {
-  margin-block: auto;
+  margin-block: clamp(0.72rem, 5.4cqw, 1.05rem) auto;
   min-height: 0;
+}
+
+.hotel-card-min .hotel-name {
+  font-size: clamp(0.86rem, 5.6cqw, 1.08rem);
+  -webkit-line-clamp: 3;
 }
 
 .hotel-name {

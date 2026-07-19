@@ -18,7 +18,13 @@ interface NavItem {
 
 function IconDashboard({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    >
       <rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.2" />
       <rect x="11" y="2.5" width="6.5" height="4" rx="1.2" />
       <rect x="11" y="9" width="6.5" height="8.5" rx="1.2" />
@@ -29,7 +35,15 @@ function IconDashboard({ className }: { className?: string }) {
 
 function IconTrip({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M2.5 10 17.5 4l-3.4 13-3.6-5.4L2.5 10Z" />
     </svg>
   );
@@ -37,7 +51,14 @@ function IconTrip({ className }: { className?: string }) {
 
 function IconPackLab({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    >
       <path d="M10 2.5 17 6l-7 3.5L3 6l7-3.5Z" />
       <path d="M3 6v8l7 3.5V9.5" />
       <path d="M17 6v8l-7 3.5" />
@@ -47,7 +68,13 @@ function IconPackLab({ className }: { className?: string }) {
 
 function IconCollection({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    >
       <rect x="3" y="4.5" width="9" height="12" rx="1.4" />
       <path d="M14.5 6 17 7v9l-2.5 1" />
     </svg>
@@ -56,7 +83,14 @@ function IconCollection({ className }: { className?: string }) {
 
 function IconRevenue({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    >
       <path d="M3 16.5V9M8 16.5V5M13 16.5v-8M17 16.5V3" />
     </svg>
   );
@@ -64,7 +98,15 @@ function IconRevenue({ className }: { className?: string }) {
 
 function IconCoins({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <ellipse cx="10" cy="5" rx="5.8" ry="2.5" />
       <path d="M4.2 5v4c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5V5" />
       <path d="M4.2 9v4c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5V9" />
@@ -75,15 +117,45 @@ function IconCoins({ className }: { className?: string }) {
 
 function IconPlay({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    >
       <path d="M4 2.5 4 17.5 16 10 4 2.5Z" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconSearch({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+    >
+      <circle cx="8.5" cy="8.5" r="5" />
+      <path d="m12.2 12.2 4.1 4.1" />
     </svg>
   );
 }
 
 function IconTrophy({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
       <path d="M6 3.5h8v4c0 2.5-1.8 4.5-4 4.5s-4-2-4-4.5v-4Z" />
       <path d="M6 4.5H3.8C3.6 6.8 4.6 8.3 6.3 8.5M14 4.5h2.2c.2 2.3-.8 3.8-2.5 4" />
       <path d="M10 12v2.5M7.5 17h5M8.3 14.5h3.4l.3 2.5H8l.3-2.5Z" />
@@ -92,28 +164,56 @@ function IconTrophy({ className }: { className?: string }) {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: IconDashboard, match: (p) => p === "/dashboard" },
-  { href: "/packs", label: "Pack Lab", icon: IconTrip, match: (p) => p.startsWith("/packs") },
+  {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: IconDashboard,
+    match: (p) => p === "/dashboard",
+  },
+  {
+    href: "/packs",
+    label: "Pack Lab",
+    icon: IconTrip,
+    match: (p) => p.startsWith("/packs"),
+  },
   {
     href: "/pack-history",
     label: "Pack History",
     icon: IconPackLab,
     match: (p) => p.startsWith("/pack-history") || p.startsWith("/pack/"),
   },
-  { href: "/collection", label: "Collection", icon: IconCollection, match: (p) => p.startsWith("/collection") },
+  {
+    href: "/collection",
+    label: "Collection",
+    icon: IconCollection,
+    match: (p) => p.startsWith("/collection"),
+  },
   {
     href: "/tournament-history",
     label: "Tournament History",
     icon: IconTrophy,
     match: (p) => p.startsWith("/tournament-history"),
   },
-  { href: "/revenue", label: "Revenue", icon: IconRevenue, match: (p) => p.startsWith("/revenue") },
-  { href: "/coins", label: "Buy Coins", icon: IconCoins, match: (p) => p.startsWith("/coins") },
+  {
+    href: "/revenue",
+    label: "Revenue",
+    icon: IconRevenue,
+    match: (p) => p.startsWith("/revenue"),
+  },
+  {
+    href: "/coins",
+    label: "Buy Coins",
+    icon: IconCoins,
+    match: (p) => p.startsWith("/coins"),
+  },
   {
     href: "/play",
     label: "Play",
     icon: IconPlay,
-    match: (p) => p.startsWith("/play") || p.startsWith("/tournament") || p.startsWith("/duel"),
+    match: (p) =>
+      p.startsWith("/play") ||
+      p.startsWith("/tournament/") ||
+      p.startsWith("/duel"),
   },
 ];
 
@@ -134,7 +234,9 @@ export function Sidebar({
     if (profile) return;
     event.preventDefault();
     if (authMode === "auth0") {
-      window.location.assign(`/auth/login?returnTo=${encodeURIComponent(href)}`);
+      window.location.assign(
+        `/auth/login?returnTo=${encodeURIComponent(href)}`,
+      );
     } else {
       setShowSignIn(true);
     }
@@ -143,7 +245,12 @@ export function Sidebar({
   return (
     <>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-56 flex-col border-r border-chalk/10 bg-pitch-850/80 px-3 py-4 backdrop-blur md:flex">
-        <BrandLink className="px-2" imageClassName="h-7 w-7" textClassName="text-[13px]" gapClassName="gap-1.5" />
+        <BrandLink
+          className="px-2"
+          imageClassName="h-7 w-7"
+          textClassName="text-[13px]"
+          gapClassName="gap-1.5"
+        />
 
         <nav className="mt-8 flex flex-1 flex-col gap-1">
           {NAV_ITEMS.map((item) => {
@@ -154,7 +261,9 @@ export function Sidebar({
                 href={item.href}
                 onClick={(event) => requireAuth(item.href, event)}
                 className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
-                  active ? "bg-pitch-700 text-chalk" : "text-chalk-dim hover:bg-chalk/5 hover:text-chalk"
+                  active
+                    ? "bg-pitch-700 text-chalk"
+                    : "text-chalk-dim hover:bg-chalk/5 hover:text-chalk"
                 }`}
               >
                 <item.icon className="h-4.5 w-4.5 shrink-0" />
@@ -166,9 +275,16 @@ export function Sidebar({
 
         <div className="mt-4">
           {profile ? (
-            <AccountMenu profile={profile} authMode={authMode} onSignedOut={onAuthChanged} />
+            <AccountMenu
+              profile={profile}
+              authMode={authMode}
+              onSignedOut={onAuthChanged}
+            />
           ) : (
-            <button onClick={() => setShowSignIn(true)} className="btn-primary w-full rounded-lg px-4 py-2 text-sm">
+            <button
+              onClick={() => setShowSignIn(true)}
+              className="btn-primary w-full rounded-lg px-4 py-2 text-sm"
+            >
               Sign in
             </button>
           )}
@@ -181,7 +297,11 @@ export function Sidebar({
           { href: "/dashboard", label: "Dashboard", icon: IconDashboard },
           { href: "/packs", label: "Trip", icon: IconTrip },
           { href: "/collection", label: "Cards", icon: IconCollection },
-          { href: profile ? "/settings" : "#", label: "Account", icon: IconRevenue },
+          {
+            href: profile ? "/settings" : "#",
+            label: "Account",
+            icon: IconRevenue,
+          },
         ].map((item) => (
           <Link
             key={item.label}
@@ -230,12 +350,15 @@ export function Topbar({ profile }: { profile: Profile | null }) {
   return (
     <div className="flex items-center gap-3 border-b border-chalk/10 px-4 py-3 sm:px-6">
       <form onSubmit={submitSearch} className="hidden flex-1 sm:block">
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search trips, cities, cards…"
-          className="w-full max-w-sm rounded-lg border border-chalk/15 bg-pitch-950/60 px-3 py-1.5 text-sm text-chalk placeholder:text-chalk-dim/60"
-        />
+        <div className="relative max-w-sm">
+          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-chalk-dim/70" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search trips, cities, cards…"
+            className="w-full rounded-lg border border-chalk/15 bg-pitch-950/60 py-1.5 pr-3 pl-9 text-sm text-chalk placeholder:text-chalk-dim/60"
+          />
+        </div>
       </form>
       <div className="ml-auto flex items-center gap-2">
         {profile && (
