@@ -29,7 +29,8 @@ every cache miss. See the official [create speech API](https://elevenlabs.io/doc
 - Voice is enabled by default and the provider persists across navigation. Browsers may block the
   first autoplay; the UI then shows **Play voice** so one user gesture can unlock playback.
 - Commentary covers the main journey: welcome, pack choice, scouting, reveals, mode and card
-  selection, questionnaire, simulation, matchups, advantages, winners, and champion.
+  selection, questionnaire, simulation, live goals, matchups, advantages, winners, and champion.
+  Goals take priority over stale non-goal narration, while closely timed goals are queued in order.
 - `ELEVENLABS_MONTHLY_CHARACTER_LIMIT` sets an application-level UTC monthly ceiling.
 - `ELEVENLABS_ACCOUNT_CREDIT_RESERVE` protects account-wide allowance when
   `ELEVENLABS_CHECK_ACCOUNT_QUOTA=true`. That optional check requires `user_read` permission.
@@ -43,9 +44,10 @@ every cache miss. See the official [create speech API](https://elevenlabs.io/doc
 
 ## Trusted data boundary
 
-The browser sends only a tournament ID and a lightweight cue, such as two participant IDs. The
-server reloads that user's stored tournament and resolves names, scores, winners, champion, and
-engine advantages from trusted data. Fixed templates then turn the structured event into a caption.
+The browser sends only a tournament ID and a lightweight cue, such as two participant IDs and a
+goal index. The server reloads that user's stored tournament and resolves scorers, running scores,
+names, winners, champion, and engine advantages from trusted data. Fixed templates then turn the
+structured event into a caption.
 ElevenLabs receives that caption only; no LLM is asked to invent commentary or hotel facts.
 
 Public journey cues are a finite server-approved enum and cannot contain client-authored text.

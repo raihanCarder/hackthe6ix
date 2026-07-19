@@ -62,6 +62,16 @@ export type PresentationEvent =
   | {
       version: 1;
       id: string;
+      kind: "match.goal";
+      scorerName: string;
+      opponentName: string;
+      minute: number;
+      scorerGoals: number;
+      opponentGoals: number;
+    }
+  | {
+      version: 1;
+      id: string;
       kind: "competition.champion";
       championName: string;
       competitionName: string;
@@ -73,6 +83,12 @@ export type PresentationCue =
       kind: "matchup.introduction" | "match.winner";
       homeId: string;
       awayId: string;
+    }
+  | {
+      kind: "match.goal";
+      homeId: string;
+      awayId: string;
+      goalIndex: number;
     }
   | { kind: "hotel.advantage"; advantageIndex: number }
   | { kind: "competition.champion" };

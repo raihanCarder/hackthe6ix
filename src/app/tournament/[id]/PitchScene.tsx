@@ -36,6 +36,7 @@ interface PitchSceneProps {
   speed: number;
   seed: string;
   onFinished: () => void;
+  onGoal: (event: PlaybackEvent, goalIndex: number) => void;
 }
 
 export function PitchScene({
@@ -49,6 +50,7 @@ export function PitchScene({
   speed,
   seed,
   onFinished,
+  onGoal,
 }: PitchSceneProps) {
   const reduce = useReducedMotion();
   const timeline = useMemo(
@@ -71,6 +73,7 @@ export function PitchScene({
   const firedRef = useRef(0);
   const clockRef = useRef(0);
   const shootingRef = useRef(false);
+  const goalVisualKeyRef = useRef(0);
   const shotRef = useRef<ReturnType<typeof animate> | null>(null);
   const homeCtrl = useAnimationControls();
   const awayCtrl = useAnimationControls();
@@ -113,7 +116,7 @@ export function PitchScene({
     shootingRef.current = true;
     shotRef.current?.stop();
     const target = side === "home" ? 96 : 4; // into the net: home scores right, away left
-    const key = Date.now() + Math.random();
+    const key = ++goalVisualKeyRef.current;
     shotRef.current = animate(ballLeft, target, { duration: 0.32, ease: "easeIn" });
     shotRef.current.then(() => {
       setBurst({ side, key });
@@ -161,9 +164,13 @@ export function PitchScene({
 
     const handleFired = (from: number, to: number) => {
       const newlyFired = events.slice(from, to);
-      for (const event of newlyFired) {
+      for (const [offset, event] of newlyFired.entries()) {
         if (event.kind === "goal") {
           shootBall(event.side); // burst + celebration fire when the ball hits the net
+          const eventIndex = from + offset;
+          const goalIndex = events.slice(0, eventIndex + 1)
+            .filter((candidate) => candidate.kind === "goal").length - 1;
+          onGoal(event, goalIndex);
         } else {
           nudge(event.side);
         }
@@ -265,7 +272,7 @@ export function PitchScene({
         {/* Net flash on the scoring side's goal */}
         {netFlash && (
           <motion.div
-            key={netFlash.key}
+            key={`net-${netFlash.key}`}
             className="net-flash pointer-events-none absolute top-1/2 -translate-y-1/2"
             style={{ [netFlash.side === "home" ? "right" : "left"]: "0.5%" }}
             initial={{ opacity: 0, scale: 0.75 }}
@@ -286,7 +293,7 @@ export function PitchScene({
         {/* Goal burst */}
         {burst && (
           <motion.div
-            key={burst.key}
+            key={`burst-${burst.key}`}
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: [0, 1, 1, 0], scale: [0.6, 1.15, 1.1, 1] }}
             transition={{ duration: 1.1, times: [0, 0.2, 0.7, 1] }}

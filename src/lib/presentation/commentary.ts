@@ -55,6 +55,14 @@ export function commentaryCandidates(event: PresentationEvent): string[] {
         `Full time. ${event.winnerName} beats ${event.loserName}, ${event.winnerGoals} to ${event.loserGoals}.`,
         `The final whistle goes. ${event.winnerName} takes the matchup over ${event.loserName}, ${event.winnerGoals} to ${event.loserGoals}.`,
       ];
+    case "match.goal": {
+      const minute = ordinal(event.minute);
+      return [
+        `Goal! ${event.scorerName} scores in the ${minute}. It is ${event.scorerGoals} to ${event.opponentGoals} against ${event.opponentName}.`,
+        `${event.scorerName} finds the net! ${event.scorerGoals} to ${event.opponentGoals}, and ${event.opponentName} needs an answer.`,
+        `What a finish from ${event.scorerName}! Room service delivery: perfect. ${event.scorerGoals} to ${event.opponentGoals}.`,
+      ];
+    }
     case "competition.champion":
       return [
         `${event.championName} lifts the trophy as the ${event.competitionName} champion.`,
@@ -71,6 +79,15 @@ export function renderCommentary(event: PresentationEvent, selectedIndex?: numbe
 
 export function commentaryTemplateVersion(): string {
   return TEMPLATE_VERSION;
+}
+
+function ordinal(value: number): string {
+  const mod100 = value % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${value}th`;
+  if (value % 10 === 1) return `${value}st`;
+  if (value % 10 === 2) return `${value}nd`;
+  if (value % 10 === 3) return `${value}rd`;
+  return `${value}th`;
 }
 
 const JOURNEY_COMMENTARY: Record<

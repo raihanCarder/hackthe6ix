@@ -15,7 +15,6 @@ import type {
 } from "@/lib/presentation/types";
 
 type MusicCue = "intro" | "final" | "victory";
-const AUDIO_PREFERENCE_KEY = "check-in-champions:commentary-audio";
 
 const MUSIC_URLS: Record<MusicCue, string | undefined> = {
   intro: process.env.NEXT_PUBLIC_PRESENTATION_INTRO_MUSIC_URL,
@@ -40,15 +39,15 @@ export function usePresentation(): PresentationContextValue {
 }
 
 export function PresentationProvider({ children }: { children: React.ReactNode }) {
+  type QueuedAnnouncement = { request: CommentaryRequest; nonce: number };
   const [announcement, setAnnouncement] = useState<{
     request: CommentaryRequest;
     nonce: number;
   } | null>(null);
-  const [enabled, setEnabled] = useState(() =>
-    typeof window === "undefined"
-      ? true
-      : window.localStorage.getItem(AUDIO_PREFERENCE_KEY) !== "muted",
-  );
+  // A fresh login/page session always starts with commentary enabled. The
+  // provider persists across client-side navigation, so mute still applies
+  // throughout the current journey without becoming a hidden permanent state.
+  const [enabled, setEnabled] = useState(true);
   const [commentary, setCommentary] = useState<CommentaryResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [playbackBlocked, setPlaybackBlocked] = useState(false);
@@ -56,9 +55,40 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
   const voiceRef = useRef<HTMLAudioElement | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const requestSequence = useRef(0);
+  const announcementNonce = useRef(0);
+  const activeAnnouncement = useRef<QueuedAnnouncement | null>(null);
+  const announcementQueue = useRef<QueuedAnnouncement[]>([]);
+  const enabledRef = useRef(enabled);
+
+  const finishAnnouncement = useCallback(() => {
+    const next = announcementQueue.current.shift() ?? null;
+    activeAnnouncement.current = next;
+    setAnnouncement(next);
+  }, []);
 
   const announce = useCallback((request: CommentaryRequest) => {
-    setAnnouncement((previous) => ({ request, nonce: (previous?.nonce ?? 0) + 1 }));
+    if (!enabledRef.current) return;
+    const queued = { request, nonce: ++announcementNonce.current };
+    const active = activeAnnouncement.current;
+    if (active && isGoalRequest(request) && !isGoalRequest(active.request)) {
+      voiceRef.current?.pause();
+      requestSequence.current++;
+      announcementQueue.current = announcementQueue.current.filter(({ request: pending }) =>
+        isGoalRequest(pending),
+      );
+      activeAnnouncement.current = queued;
+      setAnnouncement(queued);
+      setCommentary(null);
+      setLoading(false);
+      setPlaybackBlocked(false);
+      return;
+    }
+    if (active) {
+      announcementQueue.current.push(queued);
+      return;
+    }
+    activeAnnouncement.current = queued;
+    setAnnouncement(queued);
   }, []);
 
   const loadAnnouncement = useCallback(
@@ -74,18 +104,21 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error ?? "Commentary is unavailable");
         if (sequence !== requestSequence.current) return;
-        setCommentary(payload as CommentaryResponse);
+        const nextCommentary = payload as CommentaryResponse;
+        setCommentary(nextCommentary);
         setPlayNonce(current.nonce);
+        if (!requestAudio || !nextCommentary.audioUrl) finishAnnouncement();
       } catch {
         if (sequence === requestSequence.current) {
           setCommentary(null);
           setPlaybackBlocked(false);
+          finishAnnouncement();
         }
       } finally {
         if (sequence === requestSequence.current) setLoading(false);
       }
     },
-    [],
+    [finishAnnouncement],
   );
 
   useEffect(() => {
@@ -100,12 +133,15 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const voice = voiceRef.current;
     if (!voice || !commentary?.audioUrl || !enabled) return;
+    const currentNonce = playNonce;
     voice.src = commentary.audioUrl;
     voice.currentTime = 0;
     void voice.play()
       .then(() => setPlaybackBlocked(false))
       .catch(() => {
-        setPlaybackBlocked(true);
+        if (activeAnnouncement.current?.nonce === currentNonce) {
+          setPlaybackBlocked(true);
+        }
       });
   }, [commentary?.audioUrl, enabled, playNonce]);
 
@@ -133,11 +169,17 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
 
   function toggleAudio() {
     const next = !enabled;
+    enabledRef.current = next;
     setEnabled(next);
-    window.localStorage.setItem(AUDIO_PREFERENCE_KEY, next ? "on" : "muted");
     if (!next) {
       voiceRef.current?.pause();
       musicRef.current?.pause();
+      requestSequence.current++;
+      announcementQueue.current = [];
+      activeAnnouncement.current = null;
+      setAnnouncement(null);
+      setCommentary(null);
+      setLoading(false);
       setPlaybackBlocked(false);
     }
   }
@@ -169,10 +211,21 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
       }}
     >
       {children}
-      <audio ref={voiceRef} />
+      <audio
+        ref={voiceRef}
+        onEnded={finishAnnouncement}
+        onError={() => {
+          setPlaybackBlocked(false);
+          finishAnnouncement();
+        }}
+      />
       <audio ref={musicRef} />
     </PresentationContext.Provider>
   );
+}
+
+function isGoalRequest(request: CommentaryRequest): boolean {
+  return request.source === "tournament" && request.cue.kind === "match.goal";
 }
 
 export function PresentationMuteButton({ compact = false }: { compact?: boolean }) {
@@ -197,11 +250,12 @@ export function PresentationMuteButton({ compact = false }: { compact?: boolean 
             ? "Mute voice commentary"
             : "Unmute voice commentary"
       }
-      className={`${needsPlayback ? "btn-gold" : "btn-chalk"} inline-flex shrink-0 items-center justify-center rounded-lg ${
-        compact ? "h-8 w-8" : "h-9 w-9"
+      className={`${needsPlayback ? "btn-gold" : "btn-chalk"} inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg ${
+        compact ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
       }`}
     >
       <Icon className={compact ? "h-4 w-4" : "h-5 w-5"} />
+      <span>{needsPlayback ? "Play voice" : enabled ? "Mute voice" : "Unmute voice"}</span>
     </button>
   );
 }
