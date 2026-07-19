@@ -265,7 +265,7 @@ export function PitchScene({
         {/* Net flash on the scoring side's goal */}
         {netFlash && (
           <motion.div
-            key={netFlash.key}
+            key={`flash-${netFlash.key}`}
             className="net-flash pointer-events-none absolute top-1/2 -translate-y-1/2"
             style={{ [netFlash.side === "home" ? "right" : "left"]: "0.5%" }}
             initial={{ opacity: 0, scale: 0.75 }}
@@ -286,7 +286,7 @@ export function PitchScene({
         {/* Goal burst */}
         {burst && (
           <motion.div
-            key={burst.key}
+            key={`burst-${burst.key}`}
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: [0, 1, 1, 0], scale: [0.6, 1.15, 1.1, 1] }}
             transition={{ duration: 1.1, times: [0, 0.2, 0.7, 1] }}
