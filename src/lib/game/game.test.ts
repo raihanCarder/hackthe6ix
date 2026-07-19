@@ -6,6 +6,7 @@ import { buildBracketContenders } from "./bracket";
 import { assignRarity, computeCardStats, deriveCosmeticSeed, poolPriceContext } from "./cardStats";
 import { simulateTournament } from "./matchSim";
 import { computeTournamentRewards } from "./rewards";
+import { computeDuelRewards, resolveRoundWinner, type DuelRound } from "./duelRewards";
 
 const trip: TripContext = {
   destinationLabel: "Toronto",
@@ -224,5 +225,104 @@ describe("rewards", () => {
     expect(losing.userWon).toBe(false);
     expect(losing.cardOutcomes.every((c) => !c.becameMvp)).toBe(true);
     expect(losing.userXp).toBeGreaterThan(0);
+  });
+});
+
+describe("duel: round resolution", () => {
+  it("the higher stat value always wins, regardless of the tiebreak draw", () => {
+    for (const tieBreakRandom of [0, 0.25, 0.49, 0.5, 0.75, 0.999]) {
+      expect(resolveRoundWinner(80, 40, "p1", "p2", tieBreakRandom)).toEqual({
+        winnerId: "p1",
+        tieBroken: false,
+      });
+      expect(resolveRoundWinner(40, 80, "p1", "p2", tieBreakRandom)).toEqual({
+        winnerId: "p2",
+        tieBroken: false,
+      });
+    }
+  });
+
+  it("an exact tie is broken by the supplied random draw", () => {
+    expect(resolveRoundWinner(60, 60, "p1", "p2", 0)).toEqual({ winnerId: "p1", tieBroken: true });
+    expect(resolveRoundWinner(60, 60, "p1", "p2", 0.49)).toEqual({
+      winnerId: "p1",
+      tieBroken: true,
+    });
+    expect(resolveRoundWinner(60, 60, "p1", "p2", 0.5)).toEqual({
+      winnerId: "p2",
+      tieBroken: true,
+    });
+    expect(resolveRoundWinner(60, 60, "p1", "p2", 0.99)).toEqual({
+      winnerId: "p2",
+      tieBroken: true,
+    });
+  });
+});
+
+describe("duel: rewards", () => {
+  const rounds: DuelRound[] = [
+    {
+      round: 0,
+      callerId: "p1",
+      stat: "comfort",
+      player1CardId: "c1a",
+      player2CardId: "c2a",
+      player1Value: 80,
+      player2Value: 40,
+      winnerId: "p1",
+      tieBroken: false,
+    },
+    {
+      round: 1,
+      callerId: "p2",
+      stat: "value",
+      player1CardId: "c1b",
+      player2CardId: "c2b",
+      player1Value: 30,
+      player2Value: 70,
+      winnerId: "p2",
+      tieBroken: false,
+    },
+    {
+      round: 2,
+      callerId: "p1",
+      stat: "luxury",
+      player1CardId: "c1c",
+      player2CardId: "c2c",
+      player1Value: 90,
+      player2Value: 20,
+      winnerId: "p1",
+      tieBroken: false,
+    },
+  ];
+
+  it("the winner gets more XP and currency than the loser, plus a per-card record", () => {
+    const winner = computeDuelRewards(rounds, "p1", "p1", true, ["c1a", "c1b", "c1c"]);
+    const loser = computeDuelRewards(rounds, "p1", "p2", false, ["c2a", "c2b", "c2c"]);
+
+    expect(winner.userWon).toBe(true);
+    expect(loser.userWon).toBe(false);
+    expect(winner.userXp).toBeGreaterThan(loser.userXp);
+    expect(winner.userCurrency).toBeGreaterThan(loser.userCurrency);
+
+    expect(winner.cardOutcomes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ cardId: "c1a", wins: 1, losses: 0 }),
+        expect.objectContaining({ cardId: "c1b", wins: 0, losses: 1 }),
+        expect.objectContaining({ cardId: "c1c", wins: 1, losses: 0 }),
+      ]),
+    );
+    expect(loser.cardOutcomes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ cardId: "c2a", wins: 0, losses: 1 }),
+        expect.objectContaining({ cardId: "c2b", wins: 1, losses: 0 }),
+        expect.objectContaining({ cardId: "c2c", wins: 0, losses: 1 }),
+      ]),
+    );
+  });
+
+  it("is deterministic for the same inputs", () => {
+    const run = () => computeDuelRewards(rounds, "p1", "p1", true, ["c1a", "c1b", "c1c"]);
+    expect(run()).toEqual(run());
   });
 });

@@ -59,7 +59,8 @@ export const ModelName = {
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
   PresentationAudio: 'PresentationAudio',
-  PresentationUsage: 'PresentationUsage'
+  PresentationUsage: 'PresentationUsage',
+  Duel: 'Duel'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -222,6 +223,25 @@ export const PresentationUsageScalarFieldEnum = {
 export type PresentationUsageScalarFieldEnum = (typeof PresentationUsageScalarFieldEnum)[keyof typeof PresentationUsageScalarFieldEnum]
 
 
+export const DuelScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  player1Id: 'player1Id',
+  player1CardIds: 'player1CardIds',
+  player2Id: 'player2Id',
+  player2CardIds: 'player2CardIds',
+  turnPlayerId: 'turnPlayerId',
+  rounds: 'rounds',
+  player1Wins: 'player1Wins',
+  player2Wins: 'player2Wins',
+  winnerId: 'winnerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DuelScalarFieldEnum = (typeof DuelScalarFieldEnum)[keyof typeof DuelScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -235,6 +255,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

@@ -87,3 +87,9 @@ export type PresentationAudio = Prisma.PresentationAudioModel
  * Application-side generation ceiling. Cache hits do not consume this budget.
  */
 export type PresentationUsage = Prisma.PresentationUsageModel
+/**
+ * Model Duel
+ * Live 1v1 squad duel: waiting-room matchmaking + turn-based, best-of-3
+ * stat-call rounds (documentation/ideas/IDEA.md "3-card squad quick-match").
+ */
+export type Duel = Prisma.DuelModel
