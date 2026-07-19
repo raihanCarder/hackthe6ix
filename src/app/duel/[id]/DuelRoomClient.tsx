@@ -6,8 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CardBack, HotelCard, STAT_META } from "@/components/HotelCard";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
-import { subscribeToDuel } from "@/lib/supabase/browserClient";
 import { useCurrentUser } from "@/lib/useCurrentUser";
+
+const POLL_INTERVAL_MS = 2000;
 
 interface DuelCardView {
   id: string;
@@ -86,10 +87,10 @@ export function DuelRoomClient({ duelId }: { duelId: string }) {
         if (!ok) setError(data.error ?? "Could not load this duel");
         else setView(data);
       });
-    const unsubscribe = subscribeToDuel(duelId, refetch);
+    const interval = setInterval(refetch, POLL_INTERVAL_MS);
     return () => {
       cancelled = true;
-      unsubscribe();
+      clearInterval(interval);
     };
   }, [duelId, refetch]);
 

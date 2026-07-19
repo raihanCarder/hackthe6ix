@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { HotelCard } from "@/components/HotelCard";
 import type { CardPayload } from "@/components/types";
-import { subscribeToDuel } from "@/lib/supabase/browserClient";
 
 const SQUAD_SIZE = 3;
+const POLL_INTERVAL_MS = 2000;
 type Step = "squad" | "waiting";
 
 export function DuelClient() {
@@ -60,10 +60,10 @@ export function DuelClient() {
     }
 
     checkStatus();
-    const unsubscribe = subscribeToDuel(duelId, checkStatus);
+    const interval = setInterval(checkStatus, POLL_INTERVAL_MS);
     return () => {
       cancelledRef.current = true;
-      unsubscribe();
+      clearInterval(interval);
     };
   }, [step, duelId, router]);
 
