@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AccountMenu } from "@/components/AccountMenu";
+import { BrandLink } from "@/components/BrandLink";
 import { PresentationMuteButton } from "@/components/PresentationCommentary";
 import { SignInModal } from "@/components/SignInModal";
 import type { Profile } from "@/lib/useCurrentUser";
@@ -126,9 +127,7 @@ export function Sidebar({
   return (
     <>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-56 flex-col border-r border-chalk/10 bg-pitch-850/80 px-3 py-4 backdrop-blur md:flex">
-        <Link href="/" className="font-display px-2 text-sm leading-tight tracking-tight">
-          <span className="text-cyan-bright">CHECK-IN CHAMPIONS</span> 
-        </Link>
+        <BrandLink className="px-2" imageClassName="h-7 w-7" textClassName="text-[13px]" gapClassName="gap-1.5" />
 
         <nav className="mt-8 flex flex-1 flex-col gap-1">
           {NAV_ITEMS.map((item) => {
