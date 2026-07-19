@@ -389,6 +389,7 @@ export const ModelName = {
   HotelSnapshot: 'HotelSnapshot',
   PackOpen: 'PackOpen',
   CityPackClaim: 'CityPackClaim',
+  CoinPurchase: 'CoinPurchase',
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
   PresentationAudio: 'PresentationAudio',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage"
+    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -779,6 +780,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CityPackClaimCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CityPackClaimCountAggregateOutputType> | number
+        }
+      }
+    }
+    CoinPurchase: {
+      payload: Prisma.$CoinPurchasePayload<ExtArgs>
+      fields: Prisma.CoinPurchaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CoinPurchaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CoinPurchaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        findFirst: {
+          args: Prisma.CoinPurchaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CoinPurchaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        findMany: {
+          args: Prisma.CoinPurchaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>[]
+        }
+        create: {
+          args: Prisma.CoinPurchaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        createMany: {
+          args: Prisma.CoinPurchaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CoinPurchaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>[]
+        }
+        delete: {
+          args: Prisma.CoinPurchaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        update: {
+          args: Prisma.CoinPurchaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        deleteMany: {
+          args: Prisma.CoinPurchaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CoinPurchaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CoinPurchaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>[]
+        }
+        upsert: {
+          args: Prisma.CoinPurchaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoinPurchasePayload>
+        }
+        aggregate: {
+          args: Prisma.CoinPurchaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCoinPurchase>
+        }
+        groupBy: {
+          args: Prisma.CoinPurchaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoinPurchaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CoinPurchaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoinPurchaseCountAggregateOutputType> | number
         }
       }
     }
@@ -1193,6 +1268,24 @@ export const CityPackClaimScalarFieldEnum = {
 export type CityPackClaimScalarFieldEnum = (typeof CityPackClaimScalarFieldEnum)[keyof typeof CityPackClaimScalarFieldEnum]
 
 
+export const CoinPurchaseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stripeCheckoutSessionId: 'stripeCheckoutSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  tierId: 'tierId',
+  coinAmount: 'coinAmount',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  status: 'status',
+  fulfilledAt: 'fulfilledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CoinPurchaseScalarFieldEnum = (typeof CoinPurchaseScalarFieldEnum)[keyof typeof CoinPurchaseScalarFieldEnum]
+
+
 export const SavedCardScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1367,14 +1460,14 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'Bytes'
  */
 export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
-
+    
 
 
 /**
  * Reference to a field of type 'Bytes[]'
  */
 export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
-
+    
 
 
 /**
@@ -1505,6 +1598,7 @@ export type GlobalOmitConfig = {
   hotelSnapshot?: Prisma.HotelSnapshotOmit
   packOpen?: Prisma.PackOpenOmit
   cityPackClaim?: Prisma.CityPackClaimOmit
+  coinPurchase?: Prisma.CoinPurchaseOmit
   savedCard?: Prisma.SavedCardOmit
   tournament?: Prisma.TournamentOmit
   presentationAudio?: Prisma.PresentationAudioOmit
@@ -1571,3 +1665,4 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
+

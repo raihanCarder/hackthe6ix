@@ -61,6 +61,17 @@ function IconRevenue({ className }: { className?: string }) {
   );
 }
 
+function IconCoins({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="10" cy="5" rx="5.8" ry="2.5" />
+      <path d="M4.2 5v4c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5V5" />
+      <path d="M4.2 9v4c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5V9" />
+      <path d="M8.5 5h3" />
+    </svg>
+  );
+}
+
 function IconPlay({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -80,6 +91,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   { href: "/collection", label: "Collection", icon: IconCollection, match: (p) => p.startsWith("/collection") },
   { href: "/revenue", label: "Revenue", icon: IconRevenue, match: (p) => p.startsWith("/revenue") },
+  { href: "/coins", label: "Buy Coins", icon: IconCoins, match: (p) => p.startsWith("/coins") },
   {
     href: "/play",
     label: "Play",

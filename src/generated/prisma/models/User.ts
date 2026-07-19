@@ -393,6 +393,7 @@ export type UserWhereInput = {
   cityClaims?: Prisma.CityPackClaimListRelationFilter
   tournaments?: Prisma.TournamentListRelationFilter
   apiCalls?: Prisma.Stay22ApiCallListRelationFilter
+  coinPurchases?: Prisma.CoinPurchaseListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -422,6 +423,7 @@ export type UserOrderByWithRelationInput = {
   cityClaims?: Prisma.CityPackClaimOrderByRelationAggregateInput
   tournaments?: Prisma.TournamentOrderByRelationAggregateInput
   apiCalls?: Prisma.Stay22ApiCallOrderByRelationAggregateInput
+  coinPurchases?: Prisma.CoinPurchaseOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -454,6 +456,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   cityClaims?: Prisma.CityPackClaimListRelationFilter
   tournaments?: Prisma.TournamentListRelationFilter
   apiCalls?: Prisma.Stay22ApiCallListRelationFilter
+  coinPurchases?: Prisma.CoinPurchaseListRelationFilter
 }, "id" | "auth0Sub">
 
 export type UserOrderByWithAggregationInput = {
@@ -539,6 +542,7 @@ export type UserCreateInput = {
   cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -568,6 +572,7 @@ export type UserUncheckedCreateInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -597,6 +602,7 @@ export type UserUpdateInput = {
   cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -626,6 +632,7 @@ export type UserUncheckedUpdateInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -876,6 +883,20 @@ export type UserUpdateOneRequiredWithoutCityClaimsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCityClaimsInput, Prisma.UserUpdateWithoutCityClaimsInput>, Prisma.UserUncheckedUpdateWithoutCityClaimsInput>
 }
 
+export type UserCreateNestedOneWithoutCoinPurchasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCoinPurchasesInput, Prisma.UserUncheckedCreateWithoutCoinPurchasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCoinPurchasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCoinPurchasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCoinPurchasesInput, Prisma.UserUncheckedCreateWithoutCoinPurchasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCoinPurchasesInput
+  upsert?: Prisma.UserUpsertWithoutCoinPurchasesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCoinPurchasesInput, Prisma.UserUpdateWithoutCoinPurchasesInput>, Prisma.UserUncheckedUpdateWithoutCoinPurchasesInput>
+}
+
 export type UserCreateNestedOneWithoutCardsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCardsInput, Prisma.UserUncheckedCreateWithoutCardsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCardsInput
@@ -930,6 +951,7 @@ export type UserCreateWithoutApiCallsInput = {
   packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
   cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApiCallsInput = {
@@ -958,6 +980,7 @@ export type UserUncheckedCreateWithoutApiCallsInput = {
   packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
   cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApiCallsInput = {
@@ -1002,6 +1025,7 @@ export type UserUpdateWithoutApiCallsInput = {
   packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
   cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApiCallsInput = {
@@ -1030,6 +1054,7 @@ export type UserUncheckedUpdateWithoutApiCallsInput = {
   packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
   cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPackOpensInput = {
@@ -1058,6 +1083,7 @@ export type UserCreateWithoutPackOpensInput = {
   cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPackOpensInput = {
@@ -1086,6 +1112,7 @@ export type UserUncheckedCreateWithoutPackOpensInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPackOpensInput = {
@@ -1130,6 +1157,7 @@ export type UserUpdateWithoutPackOpensInput = {
   cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPackOpensInput = {
@@ -1158,6 +1186,7 @@ export type UserUncheckedUpdateWithoutPackOpensInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCityClaimsInput = {
@@ -1186,6 +1215,7 @@ export type UserCreateWithoutCityClaimsInput = {
   packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCityClaimsInput = {
@@ -1214,6 +1244,7 @@ export type UserUncheckedCreateWithoutCityClaimsInput = {
   packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCityClaimsInput = {
@@ -1258,6 +1289,7 @@ export type UserUpdateWithoutCityClaimsInput = {
   packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCityClaimsInput = {
@@ -1284,6 +1316,139 @@ export type UserUncheckedUpdateWithoutCityClaimsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cards?: Prisma.SavedCardUncheckedUpdateManyWithoutUserNestedInput
   packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCoinPurchasesInput = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCoinPurchasesInput = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardUncheckedCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCoinPurchasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCoinPurchasesInput, Prisma.UserUncheckedCreateWithoutCoinPurchasesInput>
+}
+
+export type UserUpsertWithoutCoinPurchasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCoinPurchasesInput, Prisma.UserUncheckedUpdateWithoutCoinPurchasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCoinPurchasesInput, Prisma.UserUncheckedCreateWithoutCoinPurchasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCoinPurchasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCoinPurchasesInput, Prisma.UserUncheckedUpdateWithoutCoinPurchasesInput>
+}
+
+export type UserUpdateWithoutCoinPurchasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCoinPurchasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUncheckedUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1314,6 +1479,7 @@ export type UserCreateWithoutCardsInput = {
   cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCardsInput = {
@@ -1342,6 +1508,7 @@ export type UserUncheckedCreateWithoutCardsInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
   tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCardsInput = {
@@ -1386,6 +1553,7 @@ export type UserUpdateWithoutCardsInput = {
   cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCardsInput = {
@@ -1414,6 +1582,7 @@ export type UserUncheckedUpdateWithoutCardsInput = {
   cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTournamentsInput = {
@@ -1442,6 +1611,7 @@ export type UserCreateWithoutTournamentsInput = {
   packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
   cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTournamentsInput = {
@@ -1470,6 +1640,7 @@ export type UserUncheckedCreateWithoutTournamentsInput = {
   packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
   cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTournamentsInput = {
@@ -1514,6 +1685,7 @@ export type UserUpdateWithoutTournamentsInput = {
   packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
   cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentsInput = {
@@ -1542,6 +1714,7 @@ export type UserUncheckedUpdateWithoutTournamentsInput = {
   packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
   cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1555,6 +1728,7 @@ export type UserCountOutputType = {
   cityClaims: number
   tournaments: number
   apiCalls: number
+  coinPurchases: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1563,6 +1737,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   cityClaims?: boolean | UserCountOutputTypeCountCityClaimsArgs
   tournaments?: boolean | UserCountOutputTypeCountTournamentsArgs
   apiCalls?: boolean | UserCountOutputTypeCountApiCallsArgs
+  coinPurchases?: boolean | UserCountOutputTypeCountCoinPurchasesArgs
 }
 
 /**
@@ -1610,6 +1785,13 @@ export type UserCountOutputTypeCountApiCallsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.Stay22ApiCallWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCoinPurchasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CoinPurchaseWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1638,6 +1820,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   cityClaims?: boolean | Prisma.User$cityClaimsArgs<ExtArgs>
   tournaments?: boolean | Prisma.User$tournamentsArgs<ExtArgs>
   apiCalls?: boolean | Prisma.User$apiCallsArgs<ExtArgs>
+  coinPurchases?: boolean | Prisma.User$coinPurchasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1720,6 +1903,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   cityClaims?: boolean | Prisma.User$cityClaimsArgs<ExtArgs>
   tournaments?: boolean | Prisma.User$tournamentsArgs<ExtArgs>
   apiCalls?: boolean | Prisma.User$apiCallsArgs<ExtArgs>
+  coinPurchases?: boolean | Prisma.User$coinPurchasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1733,6 +1917,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     cityClaims: Prisma.$CityPackClaimPayload<ExtArgs>[]
     tournaments: Prisma.$TournamentPayload<ExtArgs>[]
     apiCalls: Prisma.$Stay22ApiCallPayload<ExtArgs>[]
+    coinPurchases: Prisma.$CoinPurchasePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2155,6 +2340,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   cityClaims<T extends Prisma.User$cityClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cityClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CityPackClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tournaments<T extends Prisma.User$tournamentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tournamentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TournamentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   apiCalls<T extends Prisma.User$apiCallsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$apiCallsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$Stay22ApiCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  coinPurchases<T extends Prisma.User$coinPurchasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$coinPurchasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoinPurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2715,6 +2901,30 @@ export type User$apiCallsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.Stay22ApiCallScalarFieldEnum | Prisma.Stay22ApiCallScalarFieldEnum[]
+}
+
+/**
+ * User.coinPurchases
+ */
+export type User$coinPurchasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CoinPurchase
+   */
+  select?: Prisma.CoinPurchaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CoinPurchase
+   */
+  omit?: Prisma.CoinPurchaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CoinPurchaseInclude<ExtArgs> | null
+  where?: Prisma.CoinPurchaseWhereInput
+  orderBy?: Prisma.CoinPurchaseOrderByWithRelationInput | Prisma.CoinPurchaseOrderByWithRelationInput[]
+  cursor?: Prisma.CoinPurchaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CoinPurchaseScalarFieldEnum | Prisma.CoinPurchaseScalarFieldEnum[]
 }
 
 /**

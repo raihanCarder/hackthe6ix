@@ -43,6 +43,11 @@ export type PackOpen = Prisma.PackOpenModel
  */
 export type CityPackClaim = Prisma.CityPackClaimModel
 /**
+ * Model CoinPurchase
+ * 
+ */
+export type CoinPurchase = Prisma.CoinPurchaseModel
+/**
  * Model SavedCard
  * 
  */
