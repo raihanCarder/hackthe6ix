@@ -211,12 +211,12 @@ export function Topbar({ profile }: { profile: Profile | null }) {
         />
       </form>
       <div className="ml-auto flex items-center gap-2">
-        {profile && <PresentationMuteButton compact />}
         {profile && (
           <span className="font-score hidden rounded bg-pitch-800 px-2 py-1 text-xs text-gold-bright sm:inline">
             {profile.currency} coins
           </span>
         )}
+        {profile && <PresentationMuteButton compact />}
         <Link href="/packs" className="btn-primary rounded-lg px-4 py-2 text-sm">
           Kick off a trip
         </Link>

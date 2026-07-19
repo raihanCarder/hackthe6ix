@@ -12,13 +12,6 @@ import {
 } from "@/components/PresentationCommentary";
 import { useCurrentUser, type Profile } from "@/lib/useCurrentUser";
 
-const FOOTER = (
-  <footer className="px-6 py-8 text-center text-xs text-chalk-dim">
-    Check-In Champions · Hack the 6ix · powered by live Stay22 data — the
-    champion is a real, bookable recommendation.
-  </footer>
-);
-
 function MarketingHeader({
   profile,
   authMode,
@@ -41,19 +34,27 @@ function MarketingHeader({
         </Link>
 
         <nav className="ml-auto flex items-center gap-4">
-          {profile && <PresentationMuteButton />}
-          <Link
-            href="/dashboard"
-            className="text-sm text-chalk-dim hover:text-chalk"
-          >
-            Game loop
-          </Link>
+          {profile && (
+            <Link
+              href="/dashboard"
+              className="text-sm text-chalk-dim hover:text-chalk"
+            >
+              Dashboard
+            </Link>
+          )}
           {profile ? (
-            <AccountMenu
-              profile={profile}
-              authMode={authMode}
-              onSignedOut={onAuthChanged}
-            />
+            <>
+              <span className="font-score hidden rounded bg-pitch-800 px-2 py-1 text-xs text-gold-bright sm:inline">
+                {profile.currency} coins
+              </span>
+              <PresentationMuteButton />
+              <AccountMenu
+                profile={profile}
+                authMode={authMode}
+                onSignedOut={onAuthChanged}
+                placement="down"
+              />
+            </>
           ) : authMode === "auth0" ? (
             <a
               href="/auth/login"
@@ -96,8 +97,7 @@ export function Chrome({ children }: { children: React.ReactNode }) {
           onAuthChanged={authChanged}
         />
         {profile && <JourneyCommentaryCue moment="welcome" />}
-        <main className="flex-1 pb-12">{children}</main>
-        {FOOTER}
+        <main className="flex-1">{children}</main>
       </div>
     );
   }
@@ -109,11 +109,10 @@ export function Chrome({ children }: { children: React.ReactNode }) {
         authMode={authMode}
         onAuthChanged={authChanged}
       />
-      <div className="flex min-h-screen flex-col pb-14 md:pb-0">
+      <div className="flex min-h-screen flex-col">
         <Topbar profile={profile} />
         {profile && <JourneyCommentaryCue moment="welcome" />}
-        <main className="flex-1 pb-12">{children}</main>
-        {FOOTER}
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );
