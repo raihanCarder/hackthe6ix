@@ -1,5 +1,4 @@
 import { ProtectedLink } from "@/components/ProtectedLink";
-import { JourneyCommentaryCue } from "@/components/PresentationCommentary";
 import { LandingStats } from "@/app/LandingStats";
 import { HotelCard } from "@/components/HotelCard";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
@@ -7,25 +6,25 @@ import type { CardStats, Rarity } from "@/lib/game/cardStats";
 
 const SHOWCASE: Array<{ hotel: NormalizedAccommodation; stats: CardStats; overall: number; rarity: Rarity }> = [
   {
-    overall: 79,
+    overall: 54,
     rarity: "common",
     stats: { comfort: 70, amenities: 76, luxury: 70, value: 80, location: 88, service: 78 },
     hotel: sample("Card Hotel", "London, UK", 220),
   },
   {
-    overall: 84,
+    overall: 66,
     rarity: "rare",
     stats: { comfort: 78, amenities: 80, luxury: 83, value: 82, location: 91, service: 84 },
     hotel: sample("Ace Hotel New York", "New York, USA", 310),
   },
   {
-    overall: 88,
+    overall: 82,
     rarity: "epic",
     stats: { comfort: 89, amenities: 86, luxury: 87, value: 80, location: 92, service: 90 },
     hotel: sample("Fairmont Royal York", "Toronto, Canada", 420),
   },
   {
-    overall: 92,
+    overall: 95,
     rarity: "legendary",
     stats: { comfort: 95, amenities: 94, luxury: 91, value: 78, location: 90, service: 96 },
     hotel: sample("The Ritz-Carlton Toronto", "Toronto, Canada", 540),
@@ -63,7 +62,6 @@ function sample(name: string, address: string, nightlyPrice: number): Normalized
 export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <JourneyCommentaryCue moment="welcome" />
       <section className="grid gap-10 py-14 sm:py-20 lg:grid-cols-2 lg:items-center">
         <div>
           <p className="eyebrow">Stay22 live inventory</p>

@@ -6,79 +6,114 @@ import { useState } from "react";
 import { AccountMenu } from "@/components/AccountMenu";
 import { SignInModal } from "@/components/SignInModal";
 import { Sidebar, Topbar } from "@/components/Sidebar";
-import { useCurrentUser } from "@/lib/useCurrentUser";
+import {
+  JourneyCommentaryCue,
+  PresentationMuteButton,
+} from "@/components/PresentationCommentary";
+import { useCurrentUser, type Profile } from "@/lib/useCurrentUser";
 
 const FOOTER = (
   <footer className="px-6 py-8 text-center text-xs text-chalk-dim">
-    Check-In Champions · Hack the 6ix · powered by live Stay22 data — the champion is a real,
-    bookable recommendation.
+    Check-In Champions · Hack the 6ix · powered by live Stay22 data — the
+    champion is a real, bookable recommendation.
   </footer>
 );
 
-function MarketingHeader() {
-  const { profile, authMode, refresh } = useCurrentUser();
+function MarketingHeader({
+  profile,
+  authMode,
+  onAuthChanged,
+}: {
+  profile: Profile | null;
+  authMode: "auth0" | "dev";
+  onAuthChanged: () => void;
+}) {
   const [showSignIn, setShowSignIn] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-chalk/10 bg-pitch-900/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="font-display text-sm leading-tight tracking-tight sm:text-base">
+        <Link
+          href="/"
+          className="font-display text-sm leading-tight tracking-tight sm:text-base"
+        >
           <span className="text-cyan-bright">CHECK-IN CHAMPIONS</span>
         </Link>
 
         <nav className="ml-auto flex items-center gap-4">
-          {profile && (
-            <Link href="/dashboard" className="text-sm text-chalk-dim hover:text-chalk">
-              Dashboard
-            </Link>
-          )}
+          {profile && <PresentationMuteButton />}
+          <Link
+            href="/dashboard"
+            className="text-sm text-chalk-dim hover:text-chalk"
+          >
+            Game loop
+          </Link>
           {profile ? (
-            <AccountMenu profile={profile} authMode={authMode} onSignedOut={refresh} placement="down" />
+            <AccountMenu
+              profile={profile}
+              authMode={authMode}
+              onSignedOut={onAuthChanged}
+            />
           ) : authMode === "auth0" ? (
-            <a href="/auth/login" className="btn-primary rounded-lg px-4 py-1.5 text-sm">
+            <a
+              href="/auth/login"
+              className="btn-primary rounded-lg px-4 py-1.5 text-sm"
+            >
               Sign in
             </a>
           ) : (
-            <button onClick={() => setShowSignIn(true)} className="btn-primary rounded-lg px-4 py-1.5 text-sm">
+            <button
+              onClick={() => setShowSignIn(true)}
+              className="btn-primary rounded-lg px-4 py-1.5 text-sm"
+            >
               Sign in
             </button>
           )}
         </nav>
       </div>
-      {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} onSignedIn={refresh} />}
+      {showSignIn && (
+        <SignInModal
+          onClose={() => setShowSignIn(false)}
+          onSignedIn={onAuthChanged}
+        />
+      )}
     </header>
   );
 }
 
 export function Chrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { profile, authMode } = useCurrentUser();
+  const { profile, authMode, refresh } = useCurrentUser();
   const isMarketing = pathname === "/";
-  const isNewTrip = pathname.startsWith("/packs");
-  const isPlay = pathname.startsWith("/play") || pathname.startsWith("/tournament");
-  const isDashboard = pathname === "/dashboard";
-  const isCollection = pathname.startsWith("/collection");
-  const isRevenue = pathname.startsWith("/revenue");
-  const hidesFooter = isNewTrip || isPlay || isDashboard || isCollection || isRevenue;
+  const authChanged = () => void refresh();
 
   if (isMarketing) {
     return (
       <div className="flex min-h-screen flex-col">
-        <MarketingHeader />
-        <main className="flex-1">{children}</main>
+        <MarketingHeader
+          profile={profile}
+          authMode={authMode}
+          onAuthChanged={authChanged}
+        />
+        {profile && <JourneyCommentaryCue moment="welcome" />}
+        <main className="flex-1 pb-12">{children}</main>
+        {FOOTER}
       </div>
     );
   }
 
   return (
     <div className="min-h-screen md:pl-56">
-      <Sidebar profile={profile} authMode={authMode} />
+      <Sidebar
+        profile={profile}
+        authMode={authMode}
+        onAuthChanged={authChanged}
+      />
       <div className="flex min-h-screen flex-col pb-14 md:pb-0">
         <Topbar profile={profile} />
-        <main className={`flex-1 ${hidesFooter ? "" : "pb-40"}`}>
-          {children}
-        </main>
-        {!hidesFooter && FOOTER}
+        {profile && <JourneyCommentaryCue moment="welcome" />}
+        <main className="flex-1 pb-12">{children}</main>
+        {FOOTER}
       </div>
     </div>
   );

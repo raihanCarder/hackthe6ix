@@ -15,6 +15,7 @@ import type {
 } from "@/lib/presentation/types";
 
 type MusicCue = "intro" | "final" | "victory";
+const AUDIO_PREFERENCE_KEY = "check-in-champions:commentary-audio";
 
 const MUSIC_URLS: Record<MusicCue, string | undefined> = {
   intro: process.env.NEXT_PUBLIC_PRESENTATION_INTRO_MUSIC_URL,
@@ -24,6 +25,10 @@ const MUSIC_URLS: Record<MusicCue, string | undefined> = {
 
 interface PresentationContextValue {
   announce: (request: CommentaryRequest) => void;
+  enabled: boolean;
+  playbackBlocked: boolean;
+  toggleAudio: () => void;
+  togglePlayback: () => void;
 }
 
 const PresentationContext = createContext<PresentationContextValue | null>(null);
@@ -39,11 +44,13 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     request: CommentaryRequest;
     nonce: number;
   } | null>(null);
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(() =>
+    typeof window === "undefined"
+      ? true
+      : window.localStorage.getItem(AUDIO_PREFERENCE_KEY) !== "muted",
+  );
   const [commentary, setCommentary] = useState<CommentaryResponse | null>(null);
-  const [commentaryError, setCommentaryError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [playing, setPlaying] = useState(false);
   const [playbackBlocked, setPlaybackBlocked] = useState(false);
   const [playNonce, setPlayNonce] = useState(0);
   const voiceRef = useRef<HTMLAudioElement | null>(null);
@@ -58,7 +65,6 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     async (current: { request: CommentaryRequest; nonce: number }, requestAudio: boolean) => {
       const sequence = ++requestSequence.current;
       setLoading(true);
-      setCommentaryError(null);
       try {
         const response = await fetch("/api/presentation/commentary", {
           method: "POST",
@@ -70,12 +76,9 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
         if (sequence !== requestSequence.current) return;
         setCommentary(payload as CommentaryResponse);
         setPlayNonce(current.nonce);
-      } catch (error) {
+      } catch {
         if (sequence === requestSequence.current) {
           setCommentary(null);
-          setCommentaryError(
-            error instanceof Error ? error.message : "Commentary is unavailable",
-          );
           setPlaybackBlocked(false);
         }
       } finally {
@@ -102,7 +105,6 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     void voice.play()
       .then(() => setPlaybackBlocked(false))
       .catch(() => {
-        setPlaying(false);
         setPlaybackBlocked(true);
       });
   }, [commentary?.audioUrl, enabled, playNonce]);
@@ -132,10 +134,10 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
   function toggleAudio() {
     const next = !enabled;
     setEnabled(next);
+    window.localStorage.setItem(AUDIO_PREFERENCE_KEY, next ? "on" : "muted");
     if (!next) {
       voiceRef.current?.pause();
       musicRef.current?.pause();
-      setPlaying(false);
       setPlaybackBlocked(false);
     }
   }
@@ -156,68 +158,43 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     }
   }
 
-  const fallback =
-    enabled && commentary && commentary.audioStatus !== "ready"
-      ? commentary.audioStatus === "quota"
-        ? "Voice budget reached — captions remain active."
-        : "Voice unavailable — captions remain active."
-      : null;
-  const voiceButtonLabel = loading
-    ? "Loading voice"
-    : commentary?.audioUrl
-      ? playing
-        ? "Pause"
-        : playbackBlocked
-          ? "Play voice"
-          : "Replay"
-      : commentaryError || fallback
-        ? "Retry voice"
-        : announcement
-          ? "Voice pending"
-          : "Awaiting cue";
-  const voiceActionDisabled = loading || !announcement;
-
   return (
-    <PresentationContext.Provider value={{ announce }}>
+    <PresentationContext.Provider
+      value={{
+        announce,
+        enabled,
+        playbackBlocked,
+        toggleAudio,
+        togglePlayback,
+      }}
+    >
       {children}
-      <aside className="panel fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-xl p-3 shadow-2xl shadow-black/50">
-          <div className="flex items-center gap-3">
-            <div className="min-w-0 flex-1" aria-live="polite">
-              <p className="eyebrow !text-[9px]">Matchday commentary</p>
-              <p className="mt-0.5 text-sm text-chalk-dim">
-                {loading
-                  ? "The commentator is checking the team sheet…"
-                  : commentary?.caption ?? commentaryError ?? "Voice commentary is ready."}
-              </p>
-              {fallback && <p className="mt-0.5 text-[10px] text-gold-bright">{fallback}</p>}
-              {playbackBlocked && (
-                <p className="mt-0.5 text-[10px] text-gold-bright">
-                  Your browser blocked autoplay — press Play voice once.
-                </p>
-              )}
-            </div>
-            {enabled && (
-              <button
-                onClick={togglePlayback}
-                disabled={voiceActionDisabled}
-                className="btn-chalk shrink-0 rounded px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {voiceButtonLabel}
-              </button>
-            )}
-            <button onClick={toggleAudio} className="btn-gold shrink-0 rounded px-3 py-1.5 text-xs">
-              Voice {enabled ? "on" : "off"}
-            </button>
-          </div>
-          <audio
-            ref={voiceRef}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            onEnded={() => setPlaying(false)}
-          />
-          <audio ref={musicRef} />
-        </aside>
+      <audio ref={voiceRef} />
+      <audio ref={musicRef} />
     </PresentationContext.Provider>
+  );
+}
+
+export function PresentationMuteButton({ compact = false }: { compact?: boolean }) {
+  const { enabled, playbackBlocked, toggleAudio, togglePlayback } = usePresentation();
+  const needsPlayback = enabled && playbackBlocked;
+  return (
+    <button
+      onClick={needsPlayback ? togglePlayback : toggleAudio}
+      aria-pressed={needsPlayback ? undefined : !enabled}
+      aria-label={
+        needsPlayback
+          ? "Play voice commentary"
+          : enabled
+            ? "Mute voice commentary"
+            : "Unmute voice commentary"
+      }
+      className={`${enabled && !needsPlayback ? "btn-chalk" : "btn-gold"} shrink-0 rounded-lg ${
+        compact ? "px-2.5 py-1.5 text-xs" : "px-3 py-1.5 text-sm"
+      }`}
+    >
+      {needsPlayback ? "Play voice" : enabled ? "Mute voice" : "Unmute voice"}
+    </button>
   );
 }
 

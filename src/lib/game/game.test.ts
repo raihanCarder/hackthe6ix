@@ -3,7 +3,13 @@ import { runEngine } from "@/lib/engine";
 import { createRng } from "@/lib/engine/seed";
 import type { NormalizedAccommodation, TripContext } from "@/lib/engine/types";
 import { buildBracketContenders } from "./bracket";
-import { assignRarity, computeCardStats, deriveCosmeticSeed, poolPriceContext } from "./cardStats";
+import {
+  assignRarity,
+  collectibleOverallRating,
+  computeCardStats,
+  deriveCosmeticSeed,
+  poolPriceContext,
+} from "./cardStats";
 import { simulateTournament } from "./matchSim";
 import { computeTournamentRewards } from "./rewards";
 
@@ -83,6 +89,26 @@ describe("card stats and rarity", () => {
         expect(value).toBeLessThanOrEqual(99);
       }
     }
+  });
+
+  it("keeps collectible OVR inside its rarity band", () => {
+    const stats = computeCardStats(makePool(1)[0], null);
+    expect(collectibleOverallRating(stats, "common")).toBeGreaterThanOrEqual(40);
+    expect(collectibleOverallRating(stats, "common")).toBeLessThanOrEqual(59);
+    expect(collectibleOverallRating(stats, "rare")).toBeGreaterThanOrEqual(60);
+    expect(collectibleOverallRating(stats, "rare")).toBeLessThanOrEqual(69);
+    expect(collectibleOverallRating(stats, "epic")).toBeGreaterThanOrEqual(70);
+    expect(collectibleOverallRating(stats, "epic")).toBeLessThanOrEqual(89);
+    expect(collectibleOverallRating(stats, "legendary")).toBeGreaterThanOrEqual(90);
+    expect(collectibleOverallRating(stats, "legendary")).toBeLessThanOrEqual(99);
+  });
+
+  it("preserves hotel quality ordering within the same rarity", () => {
+    const weak = { comfort: 20, amenities: 20, luxury: 20, value: 20, location: 20, service: 20 };
+    const strong = { comfort: 90, amenities: 90, luxury: 90, value: 90, location: 90, service: 90 };
+    expect(collectibleOverallRating(strong, "legendary")).toBeGreaterThan(
+      collectibleOverallRating(weak, "legendary"),
+    );
   });
 });
 
