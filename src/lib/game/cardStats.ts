@@ -19,6 +19,13 @@ export interface CardStats {
 
 export type Rarity = "common" | "rare" | "epic" | "legendary";
 
+const COLLECTIBLE_OVR_BANDS: Record<Rarity, readonly [min: number, max: number]> = {
+  common: [40, 59],
+  rare: [60, 69],
+  epic: [70, 89],
+  legendary: [90, 99],
+};
+
 const clampStat = (x: number) => Math.max(1, Math.min(99, Math.round(x)));
 
 export interface PoolPriceContext {
@@ -80,6 +87,20 @@ export function overallRating(stats: CardStats): number {
       0.12 * stats.amenities +
       0.08 * stats.service,
   );
+}
+
+/**
+ * Presentation-only OVR for collectible cards. Rarity chooses the visible
+ * rating band while the hotel-derived overall preserves ordering inside it.
+ * Match winners and recommendations continue to use `overallRating` directly.
+ */
+export function collectibleOverallRating(stats: CardStats, rarity: string): number {
+  const rawOverall = overallRating(stats);
+  const band = COLLECTIBLE_OVR_BANDS[rarity as Rarity];
+  if (!band) return rawOverall;
+  const [min, max] = band;
+  const position = (rawOverall - 1) / 98;
+  return Math.round(min + position * (max - min));
 }
 
 /**

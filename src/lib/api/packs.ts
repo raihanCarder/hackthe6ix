@@ -7,9 +7,9 @@ import { DEFAULT_ENGINE_CONFIG } from "@/lib/engine/types";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 import {
   assignRarity,
+  collectibleOverallRating,
   computeCardStats,
   deriveCosmeticSeed,
-  overallRating,
   poolPriceContext,
 } from "@/lib/game/cardStats";
 import { prisma } from "@/lib/db";
@@ -126,7 +126,7 @@ export async function openPack(user: User, searchId: string, requestedScope: "tr
         rarity: card.rarity,
         cosmeticSeed: card.cosmeticSeed,
         stats,
-        overall: overallRating(stats),
+        overall: collectibleOverallRating(stats, card.rarity),
         hotel,
       };
     }),
@@ -183,7 +183,7 @@ export async function getPackReplay(user: User, packId: string) {
           rarity: card.rarity,
           cosmeticSeed: card.cosmeticSeed,
           stats,
-          overall: overallRating(stats),
+          overall: collectibleOverallRating(stats, card.rarity),
           hotel,
         };
       }),

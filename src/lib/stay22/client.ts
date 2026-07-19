@@ -1,5 +1,6 @@
 import "server-only";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
+import { inferCountryFromText, type CountryInfo } from "@/lib/data/countries";
 import { dedupeAccommodations } from "./dedupe";
 import { generateMockResults, resolveDestination } from "./mock";
 import { normalizeStay22Property } from "./normalize";
@@ -28,7 +29,7 @@ export interface Stay22SearchResult {
   /** Raw response body — persisted for history/audit (never contains credentials). */
   responseBody: unknown;
   status: number;
-  destination: { lat: number; lng: number; label: string };
+  destination: { lat: number; lng: number; label: string; country: CountryInfo | null };
   hotels: NormalizedAccommodation[];
   mode: "live" | "mock";
 }
@@ -39,6 +40,7 @@ export function isLiveMode(): boolean {
 
 export async function searchAccommodations(params: Stay22SearchParams): Promise<Stay22SearchResult> {
   const destination = resolveDestination(params.address);
+  const country = inferCountryFromText(params.address, destination.label);
   const requestParams: Record<string, unknown> = {
     address: params.address,
     checkin: params.checkin,
@@ -91,11 +93,19 @@ export async function searchAccommodations(params: Stay22SearchParams): Promise<
   const responseMeta = asRecord(responseBody)?.meta;
   const nights = asPositiveNumber(asRecord(responseMeta)?.nights);
   const normalized = rawList
-    .map((raw) => normalizeStay22Property(raw, { nights }))
+    .map((raw) => normalizeStay22Property(raw, { nights, country }))
     .filter((h): h is NormalizedAccommodation => h !== null);
   const hotels = dedupeAccommodations(normalized);
 
-  return { endpoint, requestParams, responseBody, status, destination, hotels, mode };
+  return {
+    endpoint,
+    requestParams,
+    responseBody,
+    status,
+    destination: { ...destination, country },
+    hotels,
+    mode,
+  };
 }
 
 /** Live rehydration for booking CTAs (fresh price/policies/links). */

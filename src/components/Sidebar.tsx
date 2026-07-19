@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AccountMenu } from "@/components/AccountMenu";
+import { PresentationMuteButton } from "@/components/PresentationCommentary";
 import { SignInModal } from "@/components/SignInModal";
 import type { Profile } from "@/lib/useCurrentUser";
 
@@ -101,7 +102,15 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-export function Sidebar({ profile, authMode }: { profile: Profile | null; authMode: "auth0" | "dev" }) {
+export function Sidebar({
+  profile,
+  authMode,
+  onAuthChanged,
+}: {
+  profile: Profile | null;
+  authMode: "auth0" | "dev";
+  onAuthChanged: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [showSignIn, setShowSignIn] = useState(false);
@@ -144,7 +153,7 @@ export function Sidebar({ profile, authMode }: { profile: Profile | null; authMo
 
         <div className="mt-4">
           {profile ? (
-            <AccountMenu profile={profile} authMode={authMode} onSignedOut={() => router.refresh()} />
+            <AccountMenu profile={profile} authMode={authMode} onSignedOut={onAuthChanged} />
           ) : (
             <button onClick={() => setShowSignIn(true)} className="btn-primary w-full rounded-lg px-4 py-2 text-sm">
               Sign in
@@ -186,6 +195,7 @@ export function Sidebar({ profile, authMode }: { profile: Profile | null; authMo
         <SignInModal
           onClose={() => setShowSignIn(false)}
           onSignedIn={() => {
+            onAuthChanged();
             router.refresh();
           }}
         />
@@ -220,6 +230,7 @@ export function Topbar({ profile }: { profile: Profile | null }) {
             {profile.currency} coins
           </span>
         )}
+        {profile && <PresentationMuteButton compact />}
         <Link href="/packs" className="btn-primary rounded-lg px-4 py-2 text-sm">
           Kick off a trip
         </Link>

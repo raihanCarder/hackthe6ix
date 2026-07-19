@@ -9,14 +9,20 @@ export function AccountMenu({
   profile,
   authMode,
   onSignedOut,
+  placement = "up",
 }: {
   profile: Profile;
   authMode: "auth0" | "dev";
   onSignedOut: () => void;
+  placement?: "up" | "down";
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const menuPosition =
+    placement === "down"
+      ? "absolute top-full right-0 mt-2"
+      : "absolute bottom-full left-0 mb-2";
 
   useEffect(() => {
     if (!open) return;
@@ -67,7 +73,7 @@ export function AccountMenu({
 
       {open && (
         <div
-          className="panel absolute bottom-full left-0 z-50 mb-2 w-52 rounded-lg p-2 shadow-2xl shadow-black/40"
+          className={`panel ${menuPosition} z-50 w-52 rounded-lg p-2 shadow-2xl shadow-black/40`}
           role="menu"
         >
           <Link

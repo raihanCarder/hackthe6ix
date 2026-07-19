@@ -15,6 +15,7 @@ import type {
 } from "@/lib/presentation/types";
 
 type MusicCue = "intro" | "final" | "victory";
+const AUDIO_PREFERENCE_KEY = "check-in-champions:commentary-audio";
 
 const MUSIC_URLS: Record<MusicCue, string | undefined> = {
   intro: process.env.NEXT_PUBLIC_PRESENTATION_INTRO_MUSIC_URL,
@@ -24,6 +25,10 @@ const MUSIC_URLS: Record<MusicCue, string | undefined> = {
 
 interface PresentationContextValue {
   announce: (request: CommentaryRequest) => void;
+  enabled: boolean;
+  playbackBlocked: boolean;
+  toggleAudio: () => void;
+  togglePlayback: () => void;
 }
 
 const PresentationContext = createContext<PresentationContextValue | null>(null);
@@ -39,10 +44,13 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     request: CommentaryRequest;
     nonce: number;
   } | null>(null);
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(() =>
+    typeof window === "undefined"
+      ? true
+      : window.localStorage.getItem(AUDIO_PREFERENCE_KEY) !== "muted",
+  );
   const [commentary, setCommentary] = useState<CommentaryResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [playing, setPlaying] = useState(false);
   const [playbackBlocked, setPlaybackBlocked] = useState(false);
   const [playNonce, setPlayNonce] = useState(0);
   const voiceRef = useRef<HTMLAudioElement | null>(null);
@@ -69,7 +77,10 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
         setCommentary(payload as CommentaryResponse);
         setPlayNonce(current.nonce);
       } catch {
-        if (sequence === requestSequence.current) setPlaybackBlocked(false);
+        if (sequence === requestSequence.current) {
+          setCommentary(null);
+          setPlaybackBlocked(false);
+        }
       } finally {
         if (sequence === requestSequence.current) setLoading(false);
       }
@@ -94,7 +105,6 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     void voice.play()
       .then(() => setPlaybackBlocked(false))
       .catch(() => {
-        setPlaying(false);
         setPlaybackBlocked(true);
       });
   }, [commentary?.audioUrl, enabled, playNonce]);
@@ -124,17 +134,23 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
   function toggleAudio() {
     const next = !enabled;
     setEnabled(next);
+    window.localStorage.setItem(AUDIO_PREFERENCE_KEY, next ? "on" : "muted");
     if (!next) {
       voiceRef.current?.pause();
       musicRef.current?.pause();
-      setPlaying(false);
       setPlaybackBlocked(false);
     }
   }
 
   function togglePlayback() {
     const voice = voiceRef.current;
-    if (!voice || !commentary?.audioUrl) return;
+    if (!commentary?.audioUrl) {
+      if (announcement && enabled && !loading) {
+        void loadAnnouncement(announcement, true);
+      }
+      return;
+    }
+    if (!voice) return;
     if (voice.paused) {
       void voice.play().then(() => setPlaybackBlocked(false)).catch(() => setPlaybackBlocked(true));
     } else {
@@ -142,52 +158,51 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     }
   }
 
-  const fallback =
-    enabled && commentary && commentary.audioStatus !== "ready"
-      ? commentary.audioStatus === "quota"
-        ? "Voice budget reached — captions remain active."
-        : "Voice unavailable — captions remain active."
-      : null;
-
   return (
-    <PresentationContext.Provider value={{ announce }}>
+    <PresentationContext.Provider
+      value={{
+        announce,
+        enabled,
+        playbackBlocked,
+        toggleAudio,
+        togglePlayback,
+      }}
+    >
       {children}
-      {announcement && (
-        <aside className="panel fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-xl p-3 shadow-2xl shadow-black/50">
-          <div className="flex items-center gap-3">
-            <div className="min-w-0 flex-1" aria-live="polite">
-              <p className="eyebrow !text-[9px]">Matchday commentary</p>
-              <p className="mt-0.5 text-sm text-chalk-dim">
-                {loading
-                  ? "The commentator is checking the team sheet…"
-                  : commentary?.caption ?? "Commentary is warming up…"}
-              </p>
-              {fallback && <p className="mt-0.5 text-[10px] text-gold-bright">{fallback}</p>}
-              {playbackBlocked && (
-                <p className="mt-0.5 text-[10px] text-gold-bright">
-                  Your browser blocked autoplay — press Play voice once.
-                </p>
-              )}
-            </div>
-            {commentary?.audioUrl && enabled && (
-              <button onClick={togglePlayback} className="btn-chalk shrink-0 rounded px-3 py-1.5 text-xs">
-                {playing ? "Pause" : playbackBlocked ? "Play voice" : "Replay"}
-              </button>
-            )}
-            <button onClick={toggleAudio} className="btn-gold shrink-0 rounded px-3 py-1.5 text-xs">
-              Voice {enabled ? "on" : "off"}
-            </button>
-          </div>
-          <audio
-            ref={voiceRef}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            onEnded={() => setPlaying(false)}
-          />
-          <audio ref={musicRef} />
-        </aside>
-      )}
+      <audio ref={voiceRef} />
+      <audio ref={musicRef} />
     </PresentationContext.Provider>
+  );
+}
+
+export function PresentationMuteButton({ compact = false }: { compact?: boolean }) {
+  const { enabled, playbackBlocked, toggleAudio, togglePlayback } = usePresentation();
+  const needsPlayback = enabled && playbackBlocked;
+  const Icon = enabled || needsPlayback ? IconVolumeOn : IconVolumeMuted;
+  return (
+    <button
+      onClick={needsPlayback ? togglePlayback : toggleAudio}
+      aria-pressed={needsPlayback ? undefined : !enabled}
+      aria-label={
+        needsPlayback
+          ? "Play voice commentary"
+          : enabled
+            ? "Mute voice commentary"
+            : "Unmute voice commentary"
+      }
+      title={
+        needsPlayback
+          ? "Play voice commentary"
+          : enabled
+            ? "Mute voice commentary"
+            : "Unmute voice commentary"
+      }
+      className={`${needsPlayback ? "btn-gold" : "btn-chalk"} inline-flex shrink-0 items-center justify-center rounded-lg ${
+        compact ? "h-8 w-8" : "h-9 w-9"
+      }`}
+    >
+      <Icon className={compact ? "h-4 w-4" : "h-5 w-5"} />
+    </button>
   );
 }
 
@@ -213,4 +228,42 @@ function musicCueFor(commentary: CommentaryResponse | null): MusicCue | null {
   }
   if (commentary.event.moment === "tournament.simulating") return "final";
   return null;
+}
+
+function IconVolumeOn({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8v4h3.2L10 15.2V4.8L6.2 8H3Z" />
+      <path d="M13 7.2a4 4 0 0 1 0 5.6" />
+      <path d="M15.6 4.8a7.5 7.5 0 0 1 0 10.4" />
+    </svg>
+  );
+}
+
+function IconVolumeMuted({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8v4h3.2L10 15.2V4.8L6.2 8H3Z" />
+      <path d="m13.2 7.8 4 4" />
+      <path d="m17.2 7.8-4 4" />
+    </svg>
+  );
 }

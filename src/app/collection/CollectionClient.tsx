@@ -11,18 +11,26 @@ export function CollectionClient() {
   const [cards, setCards] = useState<CardPayload[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<CardPayload | null>(null);
-  const [live, setLive] = useState<{ loading: boolean; available?: boolean; hotel?: NormalizedAccommodation }>({ loading: false });
+  const [live, setLive] = useState<{
+    loading: boolean;
+    available?: boolean;
+    hotel?: NormalizedAccommodation;
+  }>({ loading: false });
 
   useEffect(() => {
     let cancelled = false;
 
     fetch("/api/me")
       .then((response) => (response.ok ? response.json() : null))
-      .then((data: { user: unknown | null; authMode: "auth0" | "dev" } | null) => {
-        if (!cancelled && data?.authMode === "auth0" && !data.user) {
-          window.location.assign(`/auth/login?returnTo=${encodeURIComponent("/collection")}`);
-        }
-      });
+      .then(
+        (data: { user: unknown | null; authMode: "auth0" | "dev" } | null) => {
+          if (!cancelled && data?.authMode === "auth0" && !data.user) {
+            window.location.assign(
+              `/auth/login?returnTo=${encodeURIComponent("/collection")}`,
+            );
+          }
+        },
+      );
 
     return () => {
       cancelled = true;
@@ -62,9 +70,14 @@ export function CollectionClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <p className="eyebrow">Collection</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">Your collection</h1>
+      {cards !== null && (
+        <p className="mt-1 text-sm text-chalk-dim">
+          {cards.length} {cards.length === 1 ? "card" : "cards"} collected
+        </p>
+      )}
 
       {cards === null ? (
         <p className="mt-8 text-chalk-dim">Loading your collection…</p>
@@ -74,14 +87,21 @@ export function CollectionClient() {
           <p className="mt-2 text-sm text-chalk-dim">
             Mint your first Trip Pack — the first one in every city is free.
           </p>
-          <Link href="/packs" className="btn-primary mt-5 inline-block rounded-lg px-6 py-2.5">
+          <Link
+            href="/packs"
+            className="btn-primary mt-5 inline-block rounded-lg px-6 py-2.5"
+          >
             Kick off a trip
           </Link>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="hotel-card-grid mt-8">
           {cards.map((card) => (
-            <button key={card.id} onClick={() => openCard(card)} className="text-left transition hover:-translate-y-1">
+            <button
+              key={card.id}
+              onClick={() => openCard(card)}
+              className="text-left transition hover:-translate-y-1"
+            >
               <HotelCard
                 hotel={card.hotel}
                 stats={card.stats}
@@ -92,7 +112,12 @@ export function CollectionClient() {
               />
               <p className="font-score mt-1.5 px-1 text-[11px] text-chalk-dim">
                 {card.wins ?? 0}W–{card.losses ?? 0}L
-                {(card.timesMvp ?? 0) > 0 && <span className="text-gold-bright"> · {card.timesMvp}× MVP</span>}
+                {(card.timesMvp ?? 0) > 0 && (
+                  <span className="text-gold-bright">
+                    {" "}
+                    · {card.timesMvp}× MVP
+                  </span>
+                )}
               </p>
             </button>
           ))}
@@ -114,7 +139,9 @@ export function CollectionClient() {
               onClick={(e) => e.stopPropagation()}
               className="panel max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl p-6"
             >
-              <h3 className="font-display text-lg text-chalk">{selected.hotel.name}</h3>
+              <h3 className="font-display text-lg text-chalk">
+                {selected.hotel.name}
+              </h3>
               <p className="text-xs text-chalk-dim">{selected.hotel.address}</p>
 
               <div className="mt-4 rounded-lg bg-pitch-950/60 p-4 text-sm">
@@ -125,11 +152,15 @@ export function CollectionClient() {
                     <p className="eyebrow !text-[9px]">Live right now</p>
                     <div className="mt-2 flex items-baseline justify-between">
                       <span className="font-score text-2xl text-chalk">
-                        {live.hotel.nightlyPrice !== null ? `$${live.hotel.nightlyPrice}/night` : "Price at booking"}
+                        {live.hotel.nightlyPrice !== null
+                          ? `$${live.hotel.nightlyPrice}/night`
+                          : "Price at booking"}
                       </span>
                       <span className="text-xs text-chalk-dim">
-                        {live.hotel.freeCancellation ? "free cancellation" : "standard policy"} ·{" "}
-                        {live.hotel.supplierCount ?? 1} suppliers
+                        {live.hotel.freeCancellation
+                          ? "free cancellation"
+                          : "standard policy"}{" "}
+                        · {live.hotel.supplierCount ?? 1} suppliers
                       </span>
                     </div>
                     {live.hotel.bookingUrl && (
@@ -145,22 +176,30 @@ export function CollectionClient() {
                   </>
                 ) : (
                   <>
-                    <p className="font-display text-sm text-whistle">Transfer pending</p>
+                    <p className="font-display text-sm text-whistle">
+                      Transfer pending
+                    </p>
                     <p className="mt-1 text-xs text-chalk-dim">
-                      This property isn&apos;t currently available for its original dates. The card
-                      stays in your collection.
+                      This property isn&apos;t currently available for its
+                      original dates. The card stays in your collection.
                     </p>
                   </>
                 )}
               </div>
 
               <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                <Stat label="Record" value={`${selected.wins ?? 0}W–${selected.losses ?? 0}L`} />
+                <Stat
+                  label="Record"
+                  value={`${selected.wins ?? 0}W–${selected.losses ?? 0}L`}
+                />
                 <Stat label="Card XP" value={String(selected.xp ?? 0)} />
                 <Stat label="Trophies" value={String(selected.trophies ?? 0)} />
               </div>
 
-              <button onClick={() => setSelected(null)} className="btn-chalk mt-4 w-full rounded-lg px-4 py-2">
+              <button
+                onClick={() => setSelected(null)}
+                className="btn-chalk mt-4 w-full rounded-lg px-4 py-2"
+              >
                 Close
               </button>
             </motion.div>
