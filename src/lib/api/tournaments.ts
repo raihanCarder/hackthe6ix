@@ -38,6 +38,41 @@ export async function createTournamentForCard(
   return { tournamentId: tournament.id };
 }
 
+/** Compact history list — one summary per tournament, newest first. */
+export async function listTournaments(user: User) {
+  const tournaments = await prisma.tournament.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      searchApiCall: {
+        select: {
+          snapshots: {
+            select: { stay22PropertyId: true, normalizedData: true },
+          },
+        },
+      },
+    },
+  });
+
+  return tournaments.map((tournament) => {
+    const rewards = tournament.rewards as unknown as { userWon?: boolean } | null;
+    const championSnapshot = tournament.searchApiCall.snapshots.find(
+      (snapshot) => snapshot.stay22PropertyId === tournament.championPropertyId,
+    );
+    const champion = championSnapshot?.normalizedData as
+      | NormalizedAccommodation
+      | undefined;
+
+    return {
+      tournamentId: tournament.id,
+      mode: tournament.mode as "trip" | "world",
+      createdAt: tournament.createdAt.toISOString(),
+      userWon: Boolean(rewards?.userWon),
+      winner: champion?.name ?? "Champion unavailable",
+    };
+  });
+}
+
 export async function getTournamentReplay(user: User, tournamentId: string) {
   const tournament = await prisma.tournament.findFirst({
     where: { id: tournamentId, userId: user.id },
