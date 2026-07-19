@@ -3,7 +3,11 @@ import { z } from "zod";
 import type { User } from "@/generated/prisma/client";
 import type { EngineResult, NormalizedAccommodation } from "@/lib/engine/types";
 import { normalizeTravelerAnswers } from "@/lib/engine";
-import { computeCardStats, overallRating, poolPriceContext } from "@/lib/game/cardStats";
+import {
+  collectibleOverallRating,
+  computeCardStats,
+  poolPriceContext,
+} from "@/lib/game/cardStats";
 import type { TournamentBracket } from "@/lib/game/matchSim";
 import { createGlobalTournament, createTripTournament } from "@/lib/tournament";
 import { prisma } from "@/lib/db";
@@ -68,7 +72,7 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
         propertyId,
         hotel,
         stats,
-        overall: overallRating(stats),
+        overall: collectibleOverallRating(stats, card?.rarity ?? "legendary"),
         rarity: card?.rarity ?? null,
         isUserCard: Boolean(card),
         engine: engineStats
