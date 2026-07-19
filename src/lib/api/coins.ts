@@ -113,6 +113,19 @@ export async function fulfillCoinCheckoutSession(sessionId: string, expectedUser
   const intentId = paymentIntentId(session);
 
   return prisma.$transaction(async (tx) => {
+    const account = await tx.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+    if (!account) {
+      return {
+        status: "account_reset" as const,
+        coins: 0,
+        balance: null,
+        sessionId: session.id,
+      };
+    }
+
     const purchase = await tx.coinPurchase.upsert({
       where: { stripeCheckoutSessionId: session.id },
       create: {

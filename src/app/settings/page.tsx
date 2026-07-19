@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 interface Settings {
   numberOfKids: number;
@@ -16,11 +17,15 @@ interface CitySuggestion {
 const field = "input-field";
 
 export default function SettingsPage() {
+  const { setProfile } = useCurrentUser();
   const [form, setForm] = useState<Settings | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [resetPhrase, setResetPhrase] = useState("");
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -75,6 +80,27 @@ export default function SettingsPage() {
       setError(err instanceof Error ? err.message : "Could not save settings");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function resetAccount(event: React.FormEvent) {
+    event.preventDefault();
+    if (resetPhrase !== "RESET") return;
+
+    setResetBusy(true);
+    setResetError(null);
+    try {
+      const response = await fetch("/api/account/reset", { method: "POST" });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(data?.error ?? "Could not reset account");
+      }
+
+      setProfile(null);
+      window.location.assign(data?.redirectTo ?? "/");
+    } catch (err) {
+      setResetError(err instanceof Error ? err.message : "Could not reset account");
+      setResetBusy(false);
     }
   }
 
@@ -162,6 +188,43 @@ export default function SettingsPage() {
         </div>
       )}
       {saved && !error && <p className="mt-4 text-sm text-turf-bright">Settings saved.</p>}
+
+      <section className="panel mt-6 rounded-xl border-whistle/30 p-6">
+        <p className="eyebrow text-whistle">Account</p>
+        <h2 className="font-display mt-2 text-xl text-chalk">Reset account</h2>
+        <p className="mt-2 text-sm text-chalk-dim">
+          This permanently removes your Check-In Champions data, including cards, packs,
+          tournaments, searches, coin purchases, stats, and settings. Your Auth0 login is kept.
+        </p>
+
+        <form onSubmit={resetAccount} className="mt-5 grid gap-4">
+          <label>
+            <span className="eyebrow">Type RESET to confirm</span>
+            <input
+              className={`${field} mt-1`}
+              value={resetPhrase}
+              onChange={(e) => {
+                setResetPhrase(e.target.value);
+                setResetError(null);
+              }}
+              autoComplete="off"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={resetBusy || resetPhrase !== "RESET"}
+            className="w-full rounded-lg bg-whistle px-6 py-3 text-sm font-bold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {resetBusy ? "Resetting…" : "Reset account"}
+          </button>
+        </form>
+
+        {resetError && (
+          <div className="mt-4 rounded-lg border border-whistle/50 bg-whistle/10 px-4 py-3 text-sm text-chalk">
+            {resetError}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
