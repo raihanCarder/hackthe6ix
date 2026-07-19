@@ -13,7 +13,7 @@ import type { NormalizedAccommodation, TripContext } from "@/lib/engine/types";
 import { generateAdaptiveQuestion } from "@/lib/gemini/questions";
 import { searchAccommodations } from "@/lib/stay22/client";
 import { prisma } from "@/lib/db";
-import { pickRandomCity } from "@/lib/data/worldCities";
+import { pickRandomCity, WORLD_CITIES } from "@/lib/data/worldCities";
 import { createRng, hashString } from "@/lib/engine/seed";
 import { asJson, ApiError, PACK_COST } from "./core";
 
@@ -59,10 +59,30 @@ export interface SearchRecord {
   pool: NormalizedAccommodation[];
 }
 
-export async function createSearch(user: User, body: z.infer<typeof searchRequestSchema>) {
-  const globalCity = body.scope === "global"
-    ? pickRandomCity(createRng(hashString(`global-pack:${user.id}:${user.packsOpened}`)))
-    : null;
+interface CreateSearchOptions {
+  globalSeedSalt?: string;
+  excludedCity?: string;
+}
+
+function pickGlobalPackCity(user: User, options?: CreateSearchOptions) {
+  if (!options?.globalSeedSalt && !options?.excludedCity) {
+    return pickRandomCity(createRng(hashString(`global-pack:${user.id}:${user.packsOpened}`)));
+  }
+
+  const candidates = options.excludedCity
+    ? WORLD_CITIES.filter((city) => normalizeCity(`${city.city}, ${city.country}`) !== options.excludedCity)
+    : WORLD_CITIES;
+  const rng = createRng(hashString(`global-pack:${user.id}:${user.packsOpened}:${options.globalSeedSalt ?? "repeat"}`));
+  const index = Math.floor(rng() * candidates.length);
+  return candidates[Math.min(index, candidates.length - 1)];
+}
+
+export async function createSearch(
+  user: User,
+  body: z.infer<typeof searchRequestSchema>,
+  options?: CreateSearchOptions,
+) {
+  const globalCity = body.scope === "global" ? pickGlobalPackCity(user, options) : null;
   const address = globalCity ? `${globalCity.city}, ${globalCity.country}` : body.destination!;
 
   const result = await searchAccommodations({
