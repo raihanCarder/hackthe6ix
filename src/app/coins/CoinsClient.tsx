@@ -4,34 +4,27 @@ import { useEffect, useState } from "react";
 import { COIN_TIERS, type CoinTierId } from "@/lib/coins";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 
-interface CoinPosition {
-  left: number;
-  top: number;
-  size: number;
-  rotate: number;
-  depth: number;
+interface StackSpec {
+  x: number;
+  y: number;
+  levels: number;
+  scale: number;
 }
 
-const COIN_PILES: Record<CoinTierId, CoinPosition[]> = {
+const STACK_LAYOUTS: Record<CoinTierId, StackSpec[]> = {
   starter: [
-    { left: 35, top: 60, size: 58, rotate: -12, depth: 2 },
-    { left: 51, top: 46, size: 76, rotate: 4, depth: 3 },
-    { left: 68, top: 61, size: 62, rotate: 11, depth: 4 },
+    { x: 158, y: 194, levels: 3, scale: 0.82 },
+    { x: 270, y: 194, levels: 5, scale: 1 },
   ],
   "pack-night": [
-    { left: 25, top: 63, size: 52, rotate: -18, depth: 2 },
-    { left: 39, top: 49, size: 68, rotate: -5, depth: 4 },
-    { left: 55, top: 62, size: 62, rotate: 10, depth: 5 },
-    { left: 68, top: 42, size: 74, rotate: 4, depth: 3 },
-    { left: 79, top: 66, size: 48, rotate: 17, depth: 6 },
+    { x: 116, y: 198, levels: 4, scale: 0.72 },
+    { x: 220, y: 194, levels: 7, scale: 0.9 },
+    { x: 335, y: 194, levels: 5, scale: 1.02 },
   ],
   "champion-vault": [
-    { left: 21, top: 67, size: 48, rotate: -15, depth: 4 },
-    { left: 34, top: 50, size: 66, rotate: -6, depth: 5 },
-    { left: 48, top: 68, size: 72, rotate: 6, depth: 7 },
-    { left: 61, top: 48, size: 62, rotate: 13, depth: 6 },
-    { left: 73, top: 65, size: 54, rotate: -9, depth: 8 },
-    { left: 83, top: 39, size: 44, rotate: 14, depth: 9 },
+    { x: 105, y: 202, levels: 5, scale: 0.68 },
+    { x: 205, y: 198, levels: 8, scale: 0.86 },
+    { x: 322, y: 197, levels: 6, scale: 0.98 },
   ],
 };
 
@@ -72,65 +65,176 @@ const TIER_VISUALS: Record<
   },
 };
 
-function CoinToken({ coin, tone }: { coin: CoinPosition; tone: "silver" | "gold" }) {
-  const gold = tone === "gold";
+function CoinStack({
+  stack,
+  faceId,
+  edgeId,
+  rimColor,
+}: {
+  stack: StackSpec;
+  faceId: string;
+  edgeId: string;
+  rimColor: string;
+}) {
+  const topY = -(stack.levels - 1) * 12;
 
   return (
-    <span
-      className={`absolute grid place-items-center rounded-full border-[3px] shadow-[0_12px_22px_rgba(0,0,0,0.48)] ${
-        gold
-          ? "border-[#ffe58a] bg-[radial-gradient(circle_at_36%_28%,#ffe999_0%,#f6c443_38%,#c98212_100%)] text-[#211604]"
-          : "border-[#f3fbfa] bg-[radial-gradient(circle_at_36%_28%,#ffffff_0%,#dfe9e8_42%,#8ca09d_100%)] text-[#10191a]"
-      }`}
-      style={{
-        left: `${coin.left}%`,
-        top: `${coin.top}%`,
-        width: coin.size,
-        height: coin.size,
-        zIndex: coin.depth,
-        transform: `translate(-50%, -50%) rotate(${coin.rotate}deg)`,
-      }}
-    >
-      <span
-        className={`grid h-[72%] w-[72%] place-items-center rounded-full border-2 font-display text-[clamp(0.7rem,2vw,1rem)] ${
-          gold ? "border-[#9f6910]/70" : "border-[#657673]/55"
-        }`}
-      >
-        C
-      </span>
-    </span>
+    <g transform={`translate(${stack.x} ${stack.y}) scale(${stack.scale})`}>
+      {Array.from({ length: stack.levels }, (_, level) => {
+        const y = -level * 12;
+        return (
+          <g key={level}>
+            <rect x="-49" y={y} width="98" height="13" fill={`url(#${edgeId})`} />
+            <ellipse cx="0" cy={y + 13} rx="49" ry="16" fill={`url(#${edgeId})`} />
+            <ellipse
+              cx="0"
+              cy={y}
+              rx="49"
+              ry="16"
+              fill={`url(#${faceId})`}
+              stroke={rimColor}
+              strokeWidth="2"
+            />
+            <path
+              d={`M-39 ${y + 2} C-15 ${y + 12}, 15 ${y + 12}, 39 ${y + 2}`}
+              fill="none"
+              stroke="rgba(255,255,255,0.22)"
+              strokeWidth="1.4"
+            />
+          </g>
+        );
+      })}
+      <ellipse
+        cx="0"
+        cy={topY}
+        rx="34"
+        ry="10"
+        fill="none"
+        stroke={rimColor}
+        strokeWidth="2"
+        opacity="0.72"
+      />
+      <path
+        d={`M-8 ${topY - 1} L0 ${topY - 6} L8 ${topY - 1} L5 ${topY + 6} L-5 ${topY + 6} Z`}
+        fill={rimColor}
+        opacity="0.9"
+      />
+    </g>
   );
 }
 
-function Vault() {
+function TrophyStamp({ fill }: { fill: string }) {
   return (
-    <div className="absolute right-[9%] top-[14%] z-[1] h-[43%] w-[34%]" aria-hidden="true">
-      <div className="absolute inset-x-0 top-0 h-[38%] rounded-t-xl border border-gold-bright/55 bg-[linear-gradient(180deg,#5b461b,#201b0f)] shadow-[0_0_32px_rgba(255,210,94,0.2)]" />
-      <div className="absolute inset-x-0 bottom-0 h-[68%] rounded-b-xl border border-gold-bright/55 bg-[linear-gradient(145deg,#332914,#11120e)]">
-        <div className="absolute left-1/2 top-[34%] h-7 w-7 -translate-x-1/2 rounded-full border-2 border-gold-bright/70 bg-pitch-950">
-          <span className="absolute left-1/2 top-1/2 h-3 w-1 -translate-x-1/2 -translate-y-[10%] rounded-full bg-gold-bright" />
-        </div>
-      </div>
-    </div>
+    <g fill={fill}>
+      <path d="M-18-18H18V-3C18 12 10 22 0 22S-18 12-18-3V-18Z" />
+      <path d="M-18-13H-29V-5C-29 6-21 11-12 11V4C-18 4-22 1-22-5V-7H-18V-13ZM18-13H29V-5C29 6 21 11 12 11V4C18 4 22 1 22-5V-7H18V-13Z" />
+      <rect x="-4" y="20" width="8" height="13" rx="2" />
+      <rect x="-15" y="31" width="30" height="7" rx="3" />
+    </g>
+  );
+}
+
+function HeroMedallion({
+  tierId,
+  faceId,
+  edgeId,
+  rimColor,
+}: {
+  tierId: CoinTierId;
+  faceId: string;
+  edgeId: string;
+  rimColor: string;
+}) {
+  const transform =
+    tierId === "starter"
+      ? "translate(375 105) rotate(8)"
+      : tierId === "pack-night"
+        ? "translate(407 98) rotate(10)"
+        : "translate(420 88) rotate(8)";
+  const radius = tierId === "starter" ? 55 : 61;
+
+  return (
+    <g transform={transform} filter="url(#coin-shadow)">
+      <circle cx="7" cy="8" r={radius} fill={`url(#${edgeId})`} opacity="0.92" />
+      <circle cx="0" cy="0" r={radius} fill={`url(#${faceId})`} stroke={rimColor} strokeWidth="4" />
+      <circle cx="0" cy="0" r={radius - 12} fill="none" stroke={rimColor} strokeWidth="2" opacity="0.72" />
+      <circle cx="-17" cy="-19" r="15" fill="rgba(255,255,255,0.18)" />
+      <g transform="scale(.72)">
+        <TrophyStamp fill={rimColor} />
+      </g>
+    </g>
+  );
+}
+
+function SvgVault() {
+  return (
+    <g transform="translate(320 30)" opacity="0.92">
+      <path
+        d="M18 54V31C18 13 34 0 54 0H130C150 0 166 13 166 31V54"
+        fill="#2d2616"
+        stroke="#e8b33b"
+        strokeWidth="3"
+      />
+      <rect x="6" y="51" width="172" height="112" rx="14" fill="#14140f" stroke="#e8b33b" strokeWidth="3" />
+      <rect x="22" y="68" width="140" height="78" rx="9" fill="#242015" stroke="#75591e" strokeWidth="2" />
+      <circle cx="92" cy="106" r="21" fill="#080b0b" stroke="#ffd25e" strokeWidth="3" />
+      <circle cx="92" cy="106" r="5" fill="#ffd25e" />
+      <path d="M92 110V126" stroke="#ffd25e" strokeWidth="5" strokeLinecap="round" />
+    </g>
   );
 }
 
 function CoinArt({ tierId }: { tierId: CoinTierId }) {
   const visual = TIER_VISUALS[tierId];
+  const gold = visual.coinTone === "gold";
+  const faceId = `coin-face-${tierId}`;
+  const edgeId = `coin-edge-${tierId}`;
+  const rimColor = gold ? "#8d5d0d" : "#5d7472";
 
   return (
     <div
       className={`relative h-52 overflow-hidden rounded-xl border ${visual.artClass}`}
       aria-hidden="true"
     >
-      <div className="absolute inset-x-[8%] top-[12%] h-[76%] rounded-[50%] border border-white/5" />
-      <div className="absolute left-1/2 top-1/2 h-24 w-56 -translate-x-1/2 rounded-full bg-black/45 blur-2xl" />
-      <div className="absolute inset-x-6 bottom-5 h-6 rounded-full bg-black/45 blur-md" />
-      {tierId === "champion-vault" && <Vault />}
-      {COIN_PILES[tierId].map((coin, index) => (
-        <CoinToken key={`${tierId}-${index}`} coin={coin} tone={visual.coinTone} />
-      ))}
-      <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_30%,rgba(255,255,255,0.08)_48%,transparent_62%)] opacity-60" />
+      <svg viewBox="0 0 520 240" className="absolute inset-0 h-full w-full" role="presentation">
+        <defs>
+          <linearGradient id={faceId} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor={gold ? "#fff0a6" : "#f7ffff"} />
+            <stop offset="0.48" stopColor={gold ? "#f3bf3e" : "#cfdddb"} />
+            <stop offset="1" stopColor={gold ? "#b7710d" : "#809593"} />
+          </linearGradient>
+          <linearGradient id={edgeId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={gold ? "#d49319" : "#a9bcba"} />
+            <stop offset="1" stopColor={gold ? "#754607" : "#4d6361"} />
+          </linearGradient>
+          <filter id="coin-shadow" x="-50%" y="-50%" width="220%" height="240%">
+            <feDropShadow dx="0" dy="14" stdDeviation="12" floodColor="#000000" floodOpacity="0.52" />
+          </filter>
+          <radialGradient id={`spot-${tierId}`}>
+            <stop offset="0" stopColor={gold ? "#ffd25e" : "#a7f3f5"} stopOpacity="0.22" />
+            <stop offset="1" stopColor="#000000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        <ellipse cx="270" cy="202" rx="210" ry="28" fill="#000" opacity="0.42" />
+        <ellipse cx="280" cy="105" rx="235" ry="135" fill={`url(#spot-${tierId})`} />
+        {tierId === "champion-vault" && <SvgVault />}
+        {STACK_LAYOUTS[tierId].map((stack, index) => (
+          <CoinStack
+            key={`${tierId}-${index}`}
+            stack={stack}
+            faceId={faceId}
+            edgeId={edgeId}
+            rimColor={rimColor}
+          />
+        ))}
+        <HeroMedallion
+          tierId={tierId}
+          faceId={faceId}
+          edgeId={edgeId}
+          rimColor={rimColor}
+        />
+      </svg>
     </div>
   );
 }
@@ -138,7 +242,11 @@ function CoinArt({ tierId }: { tierId: CoinTierId }) {
 function BalanceCoin() {
   return (
     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-gold-bright bg-[radial-gradient(circle_at_35%_28%,#ffe999,#e8b33b_55%,#a56c0f)] text-pitch-950 shadow-[0_0_24px_rgba(255,210,94,0.25)]">
-      <span className="font-display text-sm">C</span>
+      <svg viewBox="0 0 48 48" className="h-6 w-6" aria-hidden="true">
+        <path d="M13 8H35V19C35 28 30 34 24 34S13 28 13 19V8Z" fill="currentColor" />
+        <path d="M13 12H7V17C7 23 11 26 16 26V21C13 21 11 19 11 16H13V12ZM35 12H41V17C41 23 37 26 32 26V21C35 21 37 19 37 16H35V12Z" fill="currentColor" />
+        <path d="M22 33H26V39H34V43H14V39H22V33Z" fill="currentColor" />
+      </svg>
     </span>
   );
 }
