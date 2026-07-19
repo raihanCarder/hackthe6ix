@@ -59,6 +59,7 @@ export const ModelName = {
   CoinPurchase: 'CoinPurchase',
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
+  PresentationRecap: 'PresentationRecap',
   PresentationAudio: 'PresentationAudio',
   PresentationUsage: 'PresentationUsage',
   Duel: 'Duel'
@@ -215,6 +216,16 @@ export const TournamentScalarFieldEnum = {
 } as const
 
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
+
+
+export const PresentationRecapScalarFieldEnum = {
+  tournamentId: 'tournamentId',
+  caption: 'caption',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type PresentationRecapScalarFieldEnum = (typeof PresentationRecapScalarFieldEnum)[keyof typeof PresentationRecapScalarFieldEnum]
 
 
 export const PresentationAudioScalarFieldEnum = {

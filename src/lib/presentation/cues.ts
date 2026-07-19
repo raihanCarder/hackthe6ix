@@ -37,6 +37,7 @@ const tournamentCueSchema = z.discriminatedUnion("kind", [
     advantageIndex: z.number().int().min(0).max(2),
   }).strict(),
   z.object({ kind: z.literal("competition.champion") }).strict(),
+  z.object({ kind: z.literal("competition.recap") }).strict(),
 ]);
 
 export const commentaryRequestSchema = z.discriminatedUnion("source", [

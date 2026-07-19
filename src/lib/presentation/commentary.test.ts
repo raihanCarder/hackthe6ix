@@ -59,6 +59,26 @@ describe("presentation commentary", () => {
       championName: "Hotel Alpha",
       competitionName: "Trip Cup",
     },
+    {
+      version: 1,
+      id: "cup:recap",
+      kind: "competition.recap",
+      tournamentId: "tournament-1",
+      competitionName: "Trip Cup",
+      destinationLabel: "Toronto",
+      championName: "Hotel Alpha",
+      runnerUpName: "Hotel Bravo",
+      championGoals: 2,
+      runnerUpGoals: 1,
+      championWins: 6,
+      championMatches: 6,
+      mainAdvantages: ["location", "value"],
+      winProbabilityPercent: 68,
+      personalized: true,
+      userWon: true,
+      rewardXp: 65,
+      rewardCoins: 100,
+    },
   ];
 
   it("renders every event deterministically", () => {
@@ -132,6 +152,25 @@ describe("presentation commentary", () => {
           goalIndex: 0,
           scorerName: "invented scorer",
         },
+      }),
+    ).toThrow();
+  });
+
+  it("accepts a fact-free recap cue and rejects client-authored recap facts", () => {
+    expect(
+      commentaryRequestSchema.parse({
+        source: "tournament",
+        tournamentId: "tournament-1",
+        audio: true,
+        cue: { kind: "competition.recap" },
+      }),
+    ).toMatchObject({ cue: { kind: "competition.recap" } });
+
+    expect(() =>
+      commentaryRequestSchema.parse({
+        source: "tournament",
+        tournamentId: "tournament-1",
+        cue: { kind: "competition.recap", championName: "invented client value" },
       }),
     ).toThrow();
   });

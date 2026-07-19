@@ -152,6 +152,18 @@ model Tournament {
   bracket              Json
   rewards              Json
   createdAt            DateTime      @default(now())
+
+  presentationRecap PresentationRecap?
+}
+
+/// One grounded, reusable full-time report per tournament. Gemini may author
+/// the prose, but every input fact is resolved from the stored tournament.
+model PresentationRecap {
+  tournamentId String     @id
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  caption      String
+  source       String // "gemini"
+  createdAt    DateTime   @default(now())
 }
 
 /// Reusable ElevenLabs output. The cache key includes template, text, voice,

@@ -224,6 +224,7 @@ export type TournamentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Tournament"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   searchApiCall?: Prisma.XOR<Prisma.Stay22ApiCallScalarRelationFilter, Prisma.Stay22ApiCallWhereInput>
+  presentationRecap?: Prisma.XOR<Prisma.PresentationRecapNullableScalarRelationFilter, Prisma.PresentationRecapWhereInput> | null
 }
 
 export type TournamentOrderByWithRelationInput = {
@@ -242,6 +243,7 @@ export type TournamentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   searchApiCall?: Prisma.Stay22ApiCallOrderByWithRelationInput
+  presentationRecap?: Prisma.PresentationRecapOrderByWithRelationInput
 }
 
 export type TournamentWhereUniqueInput = Prisma.AtLeast<{
@@ -263,6 +265,7 @@ export type TournamentWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Tournament"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   searchApiCall?: Prisma.XOR<Prisma.Stay22ApiCallScalarRelationFilter, Prisma.Stay22ApiCallWhereInput>
+  presentationRecap?: Prisma.XOR<Prisma.PresentationRecapNullableScalarRelationFilter, Prisma.PresentationRecapWhereInput> | null
 }, "id">
 
 export type TournamentOrderByWithAggregationInput = {
@@ -317,6 +320,7 @@ export type TournamentCreateInput = {
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTournamentsInput
   searchApiCall: Prisma.Stay22ApiCallCreateNestedOneWithoutTournamentsInput
+  presentationRecap?: Prisma.PresentationRecapCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateInput = {
@@ -333,6 +337,7 @@ export type TournamentUncheckedCreateInput = {
   bracket: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentUpdateInput = {
@@ -349,6 +354,7 @@ export type TournamentUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTournamentsNestedInput
   searchApiCall?: Prisma.Stay22ApiCallUpdateOneRequiredWithoutTournamentsNestedInput
+  presentationRecap?: Prisma.PresentationRecapUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateInput = {
@@ -365,6 +371,7 @@ export type TournamentUncheckedUpdateInput = {
   bracket?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentCreateManyInput = {
@@ -459,6 +466,11 @@ export type TournamentMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type TournamentScalarRelationFilter = {
+  is?: Prisma.TournamentWhereInput
+  isNot?: Prisma.TournamentWhereInput
+}
+
 export type TournamentCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.TournamentCreateWithoutUserInput, Prisma.TournamentUncheckedCreateWithoutUserInput> | Prisma.TournamentCreateWithoutUserInput[] | Prisma.TournamentUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutUserInput | Prisma.TournamentCreateOrConnectWithoutUserInput[]
@@ -543,6 +555,20 @@ export type TournamentUncheckedUpdateManyWithoutSearchApiCallNestedInput = {
   deleteMany?: Prisma.TournamentScalarWhereInput | Prisma.TournamentScalarWhereInput[]
 }
 
+export type TournamentCreateNestedOneWithoutPresentationRecapInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutPresentationRecapInput, Prisma.TournamentUncheckedCreateWithoutPresentationRecapInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutPresentationRecapInput
+  connect?: Prisma.TournamentWhereUniqueInput
+}
+
+export type TournamentUpdateOneRequiredWithoutPresentationRecapNestedInput = {
+  create?: Prisma.XOR<Prisma.TournamentCreateWithoutPresentationRecapInput, Prisma.TournamentUncheckedCreateWithoutPresentationRecapInput>
+  connectOrCreate?: Prisma.TournamentCreateOrConnectWithoutPresentationRecapInput
+  upsert?: Prisma.TournamentUpsertWithoutPresentationRecapInput
+  connect?: Prisma.TournamentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TournamentUpdateToOneWithWhereWithoutPresentationRecapInput, Prisma.TournamentUpdateWithoutPresentationRecapInput>, Prisma.TournamentUncheckedUpdateWithoutPresentationRecapInput>
+}
+
 export type TournamentCreateWithoutUserInput = {
   id?: string
   mode: string
@@ -556,6 +582,7 @@ export type TournamentCreateWithoutUserInput = {
   rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   searchApiCall: Prisma.Stay22ApiCallCreateNestedOneWithoutTournamentsInput
+  presentationRecap?: Prisma.PresentationRecapCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutUserInput = {
@@ -571,6 +598,7 @@ export type TournamentUncheckedCreateWithoutUserInput = {
   bracket: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutUserInput = {
@@ -631,6 +659,7 @@ export type TournamentCreateWithoutSearchApiCallInput = {
   rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTournamentsInput
+  presentationRecap?: Prisma.PresentationRecapCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentUncheckedCreateWithoutSearchApiCallInput = {
@@ -646,6 +675,7 @@ export type TournamentUncheckedCreateWithoutSearchApiCallInput = {
   bracket: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedCreateNestedOneWithoutTournamentInput
 }
 
 export type TournamentCreateOrConnectWithoutSearchApiCallInput = {
@@ -672,6 +702,86 @@ export type TournamentUpdateWithWhereUniqueWithoutSearchApiCallInput = {
 export type TournamentUpdateManyWithWhereWithoutSearchApiCallInput = {
   where: Prisma.TournamentScalarWhereInput
   data: Prisma.XOR<Prisma.TournamentUpdateManyMutationInput, Prisma.TournamentUncheckedUpdateManyWithoutSearchApiCallInput>
+}
+
+export type TournamentCreateWithoutPresentationRecapInput = {
+  id?: string
+  mode: string
+  contenderPropertyIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  userCardIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  questionnaireAnswers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  engineResult: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  seed: string
+  championPropertyId: string
+  bracket: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTournamentsInput
+  searchApiCall: Prisma.Stay22ApiCallCreateNestedOneWithoutTournamentsInput
+}
+
+export type TournamentUncheckedCreateWithoutPresentationRecapInput = {
+  id?: string
+  userId: string
+  mode: string
+  searchApiCallId: string
+  contenderPropertyIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  userCardIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  questionnaireAnswers: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  engineResult: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  seed: string
+  championPropertyId: string
+  bracket: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  rewards: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+}
+
+export type TournamentCreateOrConnectWithoutPresentationRecapInput = {
+  where: Prisma.TournamentWhereUniqueInput
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutPresentationRecapInput, Prisma.TournamentUncheckedCreateWithoutPresentationRecapInput>
+}
+
+export type TournamentUpsertWithoutPresentationRecapInput = {
+  update: Prisma.XOR<Prisma.TournamentUpdateWithoutPresentationRecapInput, Prisma.TournamentUncheckedUpdateWithoutPresentationRecapInput>
+  create: Prisma.XOR<Prisma.TournamentCreateWithoutPresentationRecapInput, Prisma.TournamentUncheckedCreateWithoutPresentationRecapInput>
+  where?: Prisma.TournamentWhereInput
+}
+
+export type TournamentUpdateToOneWithWhereWithoutPresentationRecapInput = {
+  where?: Prisma.TournamentWhereInput
+  data: Prisma.XOR<Prisma.TournamentUpdateWithoutPresentationRecapInput, Prisma.TournamentUncheckedUpdateWithoutPresentationRecapInput>
+}
+
+export type TournamentUpdateWithoutPresentationRecapInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mode?: Prisma.StringFieldUpdateOperationsInput | string
+  contenderPropertyIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  userCardIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  questionnaireAnswers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  engineResult?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  seed?: Prisma.StringFieldUpdateOperationsInput | string
+  championPropertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  bracket?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTournamentsNestedInput
+  searchApiCall?: Prisma.Stay22ApiCallUpdateOneRequiredWithoutTournamentsNestedInput
+}
+
+export type TournamentUncheckedUpdateWithoutPresentationRecapInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  mode?: Prisma.StringFieldUpdateOperationsInput | string
+  searchApiCallId?: Prisma.StringFieldUpdateOperationsInput | string
+  contenderPropertyIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  userCardIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  questionnaireAnswers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  engineResult?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  seed?: Prisma.StringFieldUpdateOperationsInput | string
+  championPropertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  bracket?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TournamentCreateManyUserInput = {
@@ -702,6 +812,7 @@ export type TournamentUpdateWithoutUserInput = {
   rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   searchApiCall?: Prisma.Stay22ApiCallUpdateOneRequiredWithoutTournamentsNestedInput
+  presentationRecap?: Prisma.PresentationRecapUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutUserInput = {
@@ -717,6 +828,7 @@ export type TournamentUncheckedUpdateWithoutUserInput = {
   bracket?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutUserInput = {
@@ -762,6 +874,7 @@ export type TournamentUpdateWithoutSearchApiCallInput = {
   rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTournamentsNestedInput
+  presentationRecap?: Prisma.PresentationRecapUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateWithoutSearchApiCallInput = {
@@ -777,6 +890,7 @@ export type TournamentUncheckedUpdateWithoutSearchApiCallInput = {
   bracket?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   rewards?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  presentationRecap?: Prisma.PresentationRecapUncheckedUpdateOneWithoutTournamentNestedInput
 }
 
 export type TournamentUncheckedUpdateManyWithoutSearchApiCallInput = {
@@ -812,6 +926,7 @@ export type TournamentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   searchApiCall?: boolean | Prisma.Stay22ApiCallDefaultArgs<ExtArgs>
+  presentationRecap?: boolean | Prisma.Tournament$presentationRecapArgs<ExtArgs>
 }, ExtArgs["result"]["tournament"]>
 
 export type TournamentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -870,6 +985,7 @@ export type TournamentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type TournamentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   searchApiCall?: boolean | Prisma.Stay22ApiCallDefaultArgs<ExtArgs>
+  presentationRecap?: boolean | Prisma.Tournament$presentationRecapArgs<ExtArgs>
 }
 export type TournamentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -885,6 +1001,7 @@ export type $TournamentPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     searchApiCall: Prisma.$Stay22ApiCallPayload<ExtArgs>
+    presentationRecap: Prisma.$PresentationRecapPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1296,6 +1413,7 @@ export interface Prisma__TournamentClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   searchApiCall<T extends Prisma.Stay22ApiCallDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Stay22ApiCallDefaultArgs<ExtArgs>>): Prisma.Prisma__Stay22ApiCallClient<runtime.Types.Result.GetResult<Prisma.$Stay22ApiCallPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  presentationRecap<T extends Prisma.Tournament$presentationRecapArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tournament$presentationRecapArgs<ExtArgs>>): Prisma.Prisma__PresentationRecapClient<runtime.Types.Result.GetResult<Prisma.$PresentationRecapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1736,6 +1854,25 @@ export type TournamentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Tournaments to delete.
    */
   limit?: number
+}
+
+/**
+ * Tournament.presentationRecap
+ */
+export type Tournament$presentationRecapArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PresentationRecap
+   */
+  select?: Prisma.PresentationRecapSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PresentationRecap
+   */
+  omit?: Prisma.PresentationRecapOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PresentationRecapInclude<ExtArgs> | null
+  where?: Prisma.PresentationRecapWhereInput
 }
 
 /**

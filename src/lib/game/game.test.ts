@@ -9,6 +9,7 @@ import {
   computeCardStats,
   deriveCosmeticSeed,
   poolPriceContext,
+  resolveTournamentRarity,
 } from "./cardStats";
 import { simulateTournament } from "./matchSim";
 import { computeTournamentRewards } from "./rewards";
@@ -72,6 +73,21 @@ describe("card stats and rarity", () => {
   it("cosmetic seed derivation is deterministic", () => {
     expect(deriveCosmeticSeed("pack1", "prop1")).toBe(deriveCosmeticSeed("pack1", "prop1"));
     expect(deriveCosmeticSeed("pack1", "prop1")).not.toBe(deriveCosmeticSeed("pack2", "prop1"));
+  });
+
+  it("keeps owned rarity and gives tournament opponents varied stable rarities", () => {
+    expect(resolveTournamentRarity("owned", "cup-seed", "epic")).toBe("epic");
+
+    const first = Array.from({ length: 100 }, (_, i) =>
+      resolveTournamentRarity(`opponent-${i}`, "cup-seed"),
+    );
+    const replay = Array.from({ length: 100 }, (_, i) =>
+      resolveTournamentRarity(`opponent-${i}`, "cup-seed"),
+    );
+
+    expect(replay).toEqual(first);
+    expect(new Set(first).size).toBeGreaterThan(1);
+    expect(first.filter((rarity) => rarity === "legendary").length).toBeLessThan(20);
   });
 
   it("cheaper hotels get higher VALUE within the pool", () => {

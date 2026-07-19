@@ -152,7 +152,7 @@ Open http://localhost:3000. If no external credentials are configured, the app u
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook verification                       | No                      |
 | `ELEVENLABS_API_KEY`    | Optional speech generation                        | No                      |
 | `ELEVENLABS_VOICE_ID`   | Optional voice selection                          | No                      |
-| `GEMINI_API_KEY`        | Optional adaptive question and commentary support | No                      |
+| `GEMINI_API_KEY`        | Optional adaptive questions, commentary, and final recap | No                  |
 
 See `.env.example` for every supported setting.
 

@@ -54,6 +54,13 @@ function findMatch(
   return match;
 }
 
+function allMatches(replay: Awaited<ReturnType<typeof getTournamentReplay>>): MatchResult[] {
+  return [
+    ...replay.groups.flatMap((group) => group.matches),
+    ...replay.knockout.flatMap((round) => round.matches),
+  ];
+}
+
 /** Resolve lightweight client cues against stored, trusted tournament facts. */
 export async function resolvePresentationEvent(
   user: User,
@@ -132,5 +139,46 @@ export async function resolvePresentationEvent(
         championName: hotelName(replay.contenders, replay.championId),
         competitionName,
       };
+    case "competition.recap": {
+      const final = replay.knockout.find((round) => round.round === "final")?.matches[0];
+      if (!final) throw new ApiError(404, "Tournament final not available");
+      if (final.homeId !== replay.championId && final.awayId !== replay.championId) {
+        throw new ApiError(422, "Stored champion is not present in the tournament final");
+      }
+      const championIsHome = final.homeId === replay.championId;
+      const championMatches = allMatches(replay).filter(
+        (match) => match.homeId === replay.championId || match.awayId === replay.championId,
+      );
+      const rewards = replay.rewards as {
+        userWon?: boolean;
+        userXp?: number;
+        userCurrency?: number;
+      };
+      return {
+        version: 1,
+        id: `${replay.id}:recap`,
+        kind: cue.kind,
+        tournamentId: replay.id,
+        competitionName,
+        destinationLabel: replay.mode === "world" ? null : replay.trip.destinationLabel,
+        championName: hotelName(replay.contenders, replay.championId),
+        runnerUpName: hotelName(replay.contenders, replay.runnerUpId),
+        championGoals: championIsHome ? final.homeGoals : final.awayGoals,
+        runnerUpGoals: championIsHome ? final.awayGoals : final.homeGoals,
+        championWins: championMatches.filter((match) => match.winnerId === replay.championId).length,
+        championMatches: championMatches.length,
+        mainAdvantages: replay.champion?.evidence?.mainAdvantages
+          .slice(0, 2)
+          .map((advantage) => advantage.metric) ?? [],
+        winProbabilityPercent:
+          replay.mode === "trip" && replay.champion
+            ? Math.round(replay.champion.winProbability * 100)
+            : null,
+        personalized: replay.mode === "trip",
+        userWon: Boolean(rewards.userWon),
+        rewardXp: Math.max(0, Math.round(rewards.userXp ?? 0)),
+        rewardCoins: Math.max(0, Math.round(rewards.userCurrency ?? 0)),
+      };
+    }
   }
 }

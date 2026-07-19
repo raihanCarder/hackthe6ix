@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { HotelCard } from "@/components/HotelCard";
+import { usePresentation } from "@/components/PresentationCommentary";
 import type { ContenderPayload } from "@/components/types";
 import type { TournamentPayload } from "./types";
 
@@ -19,7 +20,12 @@ export function ChampionCelebration({
   onViewResults: () => void;
 }) {
   const reduce = useReducedMotion();
+  const { commentary, loading, enabled, announce, replayAudio } = usePresentation();
   const isWorld = data.mode === "world";
+  const recap = commentary?.event.kind === "competition.recap"
+    && commentary.event.tournamentId === data.id
+    ? commentary
+    : null;
   const lift = reduce
     ? {}
     : {
@@ -76,6 +82,44 @@ export function ChampionCelebration({
 
       {/* Confetti */}
       {!reduce && <Confetti seed={data.seed} />}
+
+      <section className="panel relative z-10 mt-8 w-full max-w-2xl rounded-2xl border-gold/30 p-5 text-left">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="eyebrow text-gold-bright">Full-time report</p>
+            <p className="mt-1 text-[11px] text-chalk-dim">
+              {recap?.captionSource === "gemini"
+                ? "AI-written from verified tournament facts"
+                : "Verified tournament recap"}
+            </p>
+          </div>
+          {recap?.audioUrl && enabled && (
+            <button onClick={replayAudio} className="btn-chalk rounded-lg px-4 py-2 text-xs">
+              ↺ Replay voice recap
+            </button>
+          )}
+          {recap && enabled && !recap.audioUrl && recap.audioStatus === "not_requested" && (
+            <button
+              onClick={() =>
+                announce({
+                  source: "tournament",
+                  tournamentId: data.id,
+                  cue: { kind: "competition.recap" },
+                })
+              }
+              className="btn-chalk rounded-lg px-4 py-2 text-xs"
+            >
+              Play voice recap
+            </button>
+          )}
+        </div>
+        <p className="mt-3 text-sm leading-6 text-chalk">
+          {recap?.caption ?? (loading ? "Preparing the full-time report…" : "The report is coming in from the commentary desk…")}
+        </p>
+        {recap && !recap.audioUrl && recap.audioStatus !== "not_requested" && (
+          <p className="mt-2 text-[11px] text-chalk-dim">Voice unavailable — the verified recap remains active.</p>
+        )}
+      </section>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         <button onClick={onViewResults} className="btn-gold rounded-lg px-7 py-3 text-lg">

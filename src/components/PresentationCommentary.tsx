@@ -23,9 +23,12 @@ const MUSIC_URLS: Record<MusicCue, string | undefined> = {
 };
 
 interface PresentationContextValue {
-  announce: (request: CommentaryRequest) => void;
+  announce: (request: CommentaryRequest, options?: { captionWhenMuted?: boolean }) => void;
+  commentary: CommentaryResponse | null;
+  loading: boolean;
   enabled: boolean;
   playbackBlocked: boolean;
+  replayAudio: () => void;
   toggleAudio: () => void;
   togglePlayback: () => void;
 }
@@ -66,8 +69,11 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     setAnnouncement(next);
   }, []);
 
-  const announce = useCallback((request: CommentaryRequest) => {
-    if (!enabledRef.current) return;
+  const announce = useCallback((
+    request: CommentaryRequest,
+    options?: { captionWhenMuted?: boolean },
+  ) => {
+    if (!enabledRef.current && !options?.captionWhenMuted) return;
     const queued = { request, nonce: ++announcementNonce.current };
     const active = activeAnnouncement.current;
     if (active && isGoalRequest(request) && !isGoalRequest(active.request)) {
@@ -178,10 +184,18 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
       announcementQueue.current = [];
       activeAnnouncement.current = null;
       setAnnouncement(null);
-      setCommentary(null);
       setLoading(false);
       setPlaybackBlocked(false);
     }
+  }
+
+  function replayAudio() {
+    const voice = voiceRef.current;
+    if (!voice || !commentary?.audioUrl || !enabled) return;
+    voice.currentTime = 0;
+    void voice.play()
+      .then(() => setPlaybackBlocked(false))
+      .catch(() => setPlaybackBlocked(true));
   }
 
   function togglePlayback() {
@@ -204,8 +218,11 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     <PresentationContext.Provider
       value={{
         announce,
+        commentary,
+        loading,
         enabled,
         playbackBlocked,
+        replayAudio,
         toggleAudio,
         togglePlayback,
       }}
@@ -274,7 +291,10 @@ export function JourneyCommentaryCue({ moment }: { moment: JourneyMoment }) {
 
 function musicCueFor(commentary: CommentaryResponse | null): MusicCue | null {
   if (!commentary) return null;
-  if (commentary.event.kind === "competition.champion") return "victory";
+  if (
+    commentary.event.kind === "competition.champion"
+    || commentary.event.kind === "competition.recap"
+  ) return "victory";
   if (commentary.event.kind === "competition.intro") return "final";
   if (commentary.event.kind !== "journey.moment") return null;
   if (commentary.event.moment === "welcome" || commentary.event.moment === "pack.selection") {

@@ -68,6 +68,26 @@ export function commentaryCandidates(event: PresentationEvent): string[] {
         `${event.championName} lifts the trophy as the ${event.competitionName} champion.`,
         `We have a champion. ${event.championName} wins the ${event.competitionName}.`,
       ];
+    case "competition.recap": {
+      const destination = event.destinationLabel ? ` in ${event.destinationLabel}` : "";
+      const record = `${event.championWins} wins from ${event.championMatches} matches`;
+      const final = `${event.championGoals} to ${event.runnerUpGoals}`;
+      const advantages = event.mainAdvantages
+        .map((metric) => METRIC_LABELS[metric] ?? metric)
+        .join(" and ");
+      const decision = event.personalized
+        ? advantages
+          ? `The recommendation engine identified ${advantages} as the decisive edge.`
+          : "The recommendation engine confirmed the result from the traveler's preferences."
+        : "The highest combined card rating decided this casual Global Cup.";
+      const probability = event.winProbabilityPercent !== null
+        ? ` It carried a ${event.winProbabilityPercent}% first-place probability.`
+        : "";
+      return [
+        `Full time${destination}. ${event.championName} completes the ${event.competitionName} with ${record}, defeating ${event.runnerUpName} ${final} in the final. ${decision}${probability}`,
+        `The ${event.competitionName} belongs to ${event.championName}. After ${record}, the champion closes it out ${final} against ${event.runnerUpName}${destination}. ${decision}${probability}`,
+      ];
+    }
   }
 }
 

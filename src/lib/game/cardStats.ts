@@ -19,6 +19,8 @@ export interface CardStats {
 
 export type Rarity = "common" | "rare" | "epic" | "legendary";
 
+const RARITIES: readonly Rarity[] = ["common", "rare", "epic", "legendary"];
+
 const COLLECTIBLE_OVR_BANDS: Record<Rarity, readonly [min: number, max: number]> = {
   common: [40, 59],
   rare: [60, 69],
@@ -139,6 +141,19 @@ export function assignRarity(stay22PropertyId: string, cosmeticSeed: string): Ra
   if (roll < 0.2) return "epic";
   if (roll < 0.5) return "rare";
   return "common";
+}
+
+/**
+ * Owned cards retain their stored rarity. Search-only tournament opponents
+ * receive a stable cosmetic rarity instead of defaulting to legendary.
+ */
+export function resolveTournamentRarity(
+  stay22PropertyId: string,
+  tournamentSeed: string,
+  storedRarity?: string | null,
+): Rarity {
+  if (RARITIES.includes(storedRarity as Rarity)) return storedRarity as Rarity;
+  return assignRarity(stay22PropertyId, `tournament:${tournamentSeed}`);
 }
 
 export function deriveCosmeticSeed(packSeed: string, stay22PropertyId: string): string {

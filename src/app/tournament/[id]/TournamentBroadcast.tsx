@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePresentation } from "@/components/PresentationCommentary";
 import type { ContenderPayload } from "@/components/types";
 import type { GroupResult, MatchResult } from "@/lib/game/matchSim";
@@ -37,6 +37,7 @@ export function TournamentBroadcast({
   const [cursor, setCursor] = useState(0);
   const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const recapPrewarmed = useRef(false);
 
   const byId = useMemo(
     () => new Map<string, ContenderPayload>(data.contenders.map((c) => [c.propertyId, c])),
@@ -102,6 +103,19 @@ export function TournamentBroadcast({
   // Commentary cues at the dramatic beats (kept sparse to avoid audio overlap).
   useEffect(() => {
     if (!current) return;
+    if (current.kind === "match" && current.match.round === "final" && !recapPrewarmed.current) {
+      recapPrewarmed.current = true;
+      void fetch("/api/presentation/commentary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "tournament",
+          tournamentId: data.id,
+          audio: false,
+          cue: { kind: "competition.recap" },
+        }),
+      }).catch(() => undefined);
+    }
     if (current.kind === "match" && current.match.round !== "group") {
       announce({
         source: "tournament",
@@ -109,7 +123,10 @@ export function TournamentBroadcast({
         cue: { kind: "matchup.introduction", homeId: current.match.homeId, awayId: current.match.awayId },
       });
     } else if (current.kind === "champion") {
-      announce({ source: "tournament", tournamentId: data.id, cue: { kind: "competition.champion" } });
+      announce(
+        { source: "tournament", tournamentId: data.id, cue: { kind: "competition.recap" } },
+        { captionWhenMuted: true },
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor]);
