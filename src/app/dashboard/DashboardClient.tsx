@@ -251,10 +251,10 @@ export function DashboardClient() {
           <div className="flex items-end justify-between gap-3">
             <div>
               <h2 className="font-display text-sm text-chalk">
-                Card score breakdown
+                Your Top 8 Cards
               </h2>
               <p className="mt-1 text-xs text-chalk-dim">
-                Filled bars compare each card against the strongest pull.
+                Buy packs to get more cards!
               </p>
             </div>
             <span className="eyebrow hidden !text-[9px] sm:block">OVR</span>
