@@ -12,13 +12,6 @@ import {
 } from "@/components/PresentationCommentary";
 import { useCurrentUser, type Profile } from "@/lib/useCurrentUser";
 
-const FOOTER = (
-  <footer className="px-6 py-8 text-center text-xs text-chalk-dim">
-    Check-In Champions · Hack the 6ix · powered by live Stay22 data — the champion is a real,
-    bookable recommendation.
-  </footer>
-);
-
 function MarketingHeader({
   profile,
   authMode,
@@ -33,30 +26,57 @@ function MarketingHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-chalk/10 bg-pitch-900/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="font-display text-sm leading-tight tracking-tight sm:text-base">
+        <Link
+          href="/"
+          className="font-display text-sm leading-tight tracking-tight sm:text-base"
+        >
           <span className="text-cyan-bright">CHECK-IN CHAMPIONS</span>
         </Link>
 
         <nav className="ml-auto flex items-center gap-4">
-          {profile && <PresentationMuteButton />}
-          <Link href="/dashboard" className="text-sm text-chalk-dim hover:text-chalk">
-            Game loop
-          </Link>
+          {profile && (
+            <Link
+              href="/dashboard"
+              className="text-sm text-chalk-dim hover:text-chalk"
+            >
+              Dashboard
+            </Link>
+          )}
           {profile ? (
-            <AccountMenu profile={profile} authMode={authMode} onSignedOut={onAuthChanged} />
+            <>
+              <span className="font-score hidden rounded bg-pitch-800 px-2 py-1 text-xs text-gold-bright sm:inline">
+                {profile.currency} coins
+              </span>
+              <PresentationMuteButton />
+              <AccountMenu
+                profile={profile}
+                authMode={authMode}
+                onSignedOut={onAuthChanged}
+                placement="down"
+              />
+            </>
           ) : authMode === "auth0" ? (
-            <a href="/auth/login" className="btn-primary rounded-lg px-4 py-1.5 text-sm">
+            <a
+              href="/auth/login"
+              className="btn-primary rounded-lg px-4 py-1.5 text-sm"
+            >
               Sign in
             </a>
           ) : (
-            <button onClick={() => setShowSignIn(true)} className="btn-primary rounded-lg px-4 py-1.5 text-sm">
+            <button
+              onClick={() => setShowSignIn(true)}
+              className="btn-primary rounded-lg px-4 py-1.5 text-sm"
+            >
               Sign in
             </button>
           )}
         </nav>
       </div>
       {showSignIn && (
-        <SignInModal onClose={() => setShowSignIn(false)} onSignedIn={onAuthChanged} />
+        <SignInModal
+          onClose={() => setShowSignIn(false)}
+          onSignedIn={onAuthChanged}
+        />
       )}
     </header>
   );
@@ -71,22 +91,28 @@ export function Chrome({ children }: { children: React.ReactNode }) {
   if (isMarketing) {
     return (
       <div className="flex min-h-screen flex-col">
-        <MarketingHeader profile={profile} authMode={authMode} onAuthChanged={authChanged} />
+        <MarketingHeader
+          profile={profile}
+          authMode={authMode}
+          onAuthChanged={authChanged}
+        />
         {profile && <JourneyCommentaryCue moment="welcome" />}
-        <main className="flex-1 pb-12">{children}</main>
-        {FOOTER}
+        <main className="flex-1">{children}</main>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen md:pl-56">
-      <Sidebar profile={profile} authMode={authMode} onAuthChanged={authChanged} />
-      <div className="flex min-h-screen flex-col pb-14 md:pb-0">
+      <Sidebar
+        profile={profile}
+        authMode={authMode}
+        onAuthChanged={authChanged}
+      />
+      <div className="flex min-h-screen flex-col">
         <Topbar profile={profile} />
         {profile && <JourneyCommentaryCue moment="welcome" />}
-        <main className="flex-1 pb-12">{children}</main>
-        {FOOTER}
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );

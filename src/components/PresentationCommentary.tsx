@@ -178,6 +178,7 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
 export function PresentationMuteButton({ compact = false }: { compact?: boolean }) {
   const { enabled, playbackBlocked, toggleAudio, togglePlayback } = usePresentation();
   const needsPlayback = enabled && playbackBlocked;
+  const Icon = enabled || needsPlayback ? IconVolumeOn : IconVolumeMuted;
   return (
     <button
       onClick={needsPlayback ? togglePlayback : toggleAudio}
@@ -189,11 +190,18 @@ export function PresentationMuteButton({ compact = false }: { compact?: boolean 
             ? "Mute voice commentary"
             : "Unmute voice commentary"
       }
-      className={`${enabled && !needsPlayback ? "btn-chalk" : "btn-gold"} shrink-0 rounded-lg ${
-        compact ? "px-2.5 py-1.5 text-xs" : "px-3 py-1.5 text-sm"
+      title={
+        needsPlayback
+          ? "Play voice commentary"
+          : enabled
+            ? "Mute voice commentary"
+            : "Unmute voice commentary"
+      }
+      className={`${needsPlayback ? "btn-gold" : "btn-chalk"} inline-flex shrink-0 items-center justify-center rounded-lg ${
+        compact ? "h-8 w-8" : "h-9 w-9"
       }`}
     >
-      {needsPlayback ? "Play voice" : enabled ? "Mute voice" : "Unmute voice"}
+      <Icon className={compact ? "h-4 w-4" : "h-5 w-5"} />
     </button>
   );
 }
@@ -220,4 +228,42 @@ function musicCueFor(commentary: CommentaryResponse | null): MusicCue | null {
   }
   if (commentary.event.moment === "tournament.simulating") return "final";
   return null;
+}
+
+function IconVolumeOn({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8v4h3.2L10 15.2V4.8L6.2 8H3Z" />
+      <path d="M13 7.2a4 4 0 0 1 0 5.6" />
+      <path d="M15.6 4.8a7.5 7.5 0 0 1 0 10.4" />
+    </svg>
+  );
+}
+
+function IconVolumeMuted({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 8v4h3.2L10 15.2V4.8L6.2 8H3Z" />
+      <path d="m13.2 7.8 4 4" />
+      <path d="m17.2 7.8-4 4" />
+    </svg>
+  );
 }
