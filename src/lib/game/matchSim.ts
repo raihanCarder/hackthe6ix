@@ -15,10 +15,19 @@ const MAX_NOISE = 4;
 
 export type Round = "group" | "quarterfinal" | "semifinal" | "final";
 
+export type MatchEventKind = "goal" | "chance";
+
 export interface MatchHighlight {
   minute: number;
   propertyId: string;
   text: string;
+  /**
+   * "goal" events sum exactly to the scoreline and drive the live scorebug;
+   * "chance" events are flavor drawn from real listing attributes. Optional so
+   * brackets persisted before canonical goals still type-check (the broadcast
+   * derives goals for those via deriveTimeline).
+   */
+  kind?: MatchEventKind;
 }
 
 export interface MatchResult {
@@ -201,18 +210,49 @@ function playMatch(
     homeGoals,
     awayGoals,
     winnerId,
-    highlights: buildHighlights(homeId, awayId, winnerId, input, rng),
+    highlights: buildTimeline(homeId, awayId, winnerId, homeGoals, awayGoals, input, rng),
   };
 }
 
-/** 5–7 highlight moments referencing only real listing attributes (documentation/ideas/IDEA.md). */
-function buildHighlights(
+/**
+ * The match timeline: canonical goal events (exactly homeGoals + awayGoals,
+ * one per goal) merged with flavor "chance" moments drawn only from real
+ * listing attributes (documentation/ideas/IDEA.md). Goal events let the live
+ * scorebug climb to the exact final score; chances fill the ticker between them.
+ */
+function buildTimeline(
   homeId: string,
   awayId: string,
   winnerId: string,
+  homeGoals: number,
+  awayGoals: number,
   input: SimInput,
   rng: Rng,
 ): MatchHighlight[] {
+  const usedMinutes = new Set<number>();
+  // Distinct minute in 1–89 (90 is reserved for full time).
+  const nextMinute = (): number => {
+    let minute = 1 + Math.floor(rng() * 89);
+    let guard = 0;
+    while (usedMinutes.has(minute) && guard++ < 200) minute = 1 + Math.floor(rng() * 89);
+    usedMinutes.add(minute);
+    return minute;
+  };
+
+  const events: MatchHighlight[] = [];
+
+  // Goals — canonical, one event per goal, summing to the scoreline.
+  for (const [id, goals] of [
+    [homeId, homeGoals],
+    [awayId, awayGoals],
+  ] as const) {
+    const name = input.hotelsById.get(id)?.name ?? "The property";
+    for (let g = 0; g < goals; g++) {
+      events.push({ minute: nextMinute(), propertyId: id, kind: "goal", text: goalText(name, rng) });
+    }
+  }
+
+  // Chances — flavor from real attributes, never affect the score.
   const candidates: Array<{ propertyId: string; text: string }> = [];
   for (const id of [homeId, awayId]) {
     const hotel = input.hotelsById.get(id);
@@ -226,7 +266,7 @@ function buildHighlights(
       candidates.push({ propertyId: id, text: `${suppliers} supplier offers open the Transfer Window for ${name} — +FLEX surge.` });
     }
     if (hotel.instantBooking) {
-      candidates.push({ propertyId: id, text: `Instant Book! ${name} scores with a First-Touch Finish.` });
+      candidates.push({ propertyId: id, text: `Instant Book! ${name} threatens with a First-Touch move.` });
     }
     if ((hotel.reviewCount ?? 0) > 500) {
       candidates.push({ propertyId: id, text: `${hotel.reviewCount} reviews power a veteran LEGACY attack from ${name}.` });
@@ -242,26 +282,38 @@ function buildHighlights(
     }
   }
 
-  const count = Math.min(candidates.length, 5 + Math.floor(rng() * 3));
-  const picked: MatchHighlight[] = [];
+  const chanceCount = Math.min(candidates.length, 4 + Math.floor(rng() * 3));
   const pool = [...candidates];
-  const usedMinutes = new Set<number>();
-  for (let i = 0; i < count && pool.length > 0; i++) {
+  for (let i = 0; i < chanceCount && pool.length > 0; i++) {
     const idx = Math.floor(rng() * pool.length);
     const [candidate] = pool.splice(idx, 1);
-    let minute = 1 + Math.floor(rng() * 90);
-    while (usedMinutes.has(minute)) minute = 1 + Math.floor(rng() * 90);
-    usedMinutes.add(minute);
-    picked.push({ minute, ...candidate });
+    events.push({ minute: nextMinute(), kind: "chance", ...candidate });
   }
-  picked.sort((a, b) => a.minute - b.minute);
-  if (picked.length > 0) {
-    const winner = input.hotelsById.get(winnerId);
-    picked.push({
-      minute: 90,
-      propertyId: winnerId,
-      text: `Full time! ${winner?.name ?? "The winner"} takes the tie.`,
-    });
-  }
-  return picked;
+
+  events.sort((a, b) => a.minute - b.minute);
+
+  const winner = input.hotelsById.get(winnerId);
+  events.push({
+    minute: 90,
+    propertyId: winnerId,
+    kind: "chance",
+    text:
+      homeGoals === awayGoals
+        ? `Full time! ${winner?.name ?? "The winner"} edges it on the day.`
+        : `Full time! ${winner?.name ?? "The winner"} takes the tie.`,
+  });
+  return events;
+}
+
+const GOAL_PHRASES = [
+  "buries it in the top corner!",
+  "finishes clinically!",
+  "slots it home!",
+  "heads it in off the post!",
+  "curls one in from range!",
+  "taps in at the far post!",
+];
+
+function goalText(name: string, rng: Rng): string {
+  return `GOAL! ${name} ${GOAL_PHRASES[Math.floor(rng() * GOAL_PHRASES.length)]}`;
 }
