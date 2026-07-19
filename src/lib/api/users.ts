@@ -16,6 +16,17 @@ export const updateSettingsSchema = z.object({
   defaultAdults: z.number().int().min(1).max(16),
 });
 
+export const DEFAULT_PROFILE_BIO = "Looking for a hotel for my next";
+
+export const updateProfileSchema = z.object({
+  bio: z.string().max(160),
+});
+
+function normalizeBio(bio: string): string {
+  const trimmed = bio.trim();
+  return trimmed.length > 0 ? trimmed : DEFAULT_PROFILE_BIO;
+}
+
 export function getUserSettings(user: User) {
   return {
     numberOfKids: user.numberOfKids,
@@ -44,6 +55,18 @@ export async function updateUserSettings(
   return getUserSettings(user);
 }
 
+export async function updateUserProfile(userId: string, data: z.infer<typeof updateProfileSchema>) {
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      bio: normalizeBio(data.bio),
+    },
+  });
+  return {
+    bio: user.bio,
+  };
+}
+
 export async function getCurrentUserPayload() {
   const session = await getSessionUser();
   if (!session) {
@@ -57,6 +80,7 @@ export async function getCurrentUserPayload() {
       id: user.id,
       username: user.username,
       avatarUrl: user.avatarUrl,
+      bio: user.bio ?? DEFAULT_PROFILE_BIO,
       wins: user.wins,
       losses: user.losses,
       currentWinStreak: user.currentWinStreak,

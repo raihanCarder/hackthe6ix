@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.25.0",
+    "@dicebear/core": "^10.3.0",
+    "@dicebear/styles": "^10.2.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "country-flag-icons": "^1.6.20",
