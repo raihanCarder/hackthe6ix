@@ -8,6 +8,13 @@ function createClient() {
   if (!connectionString) {
     throw new Error("DATABASE_URL is not set");
   }
+
+  // Prisma Postgres direct connections are tightly connection-capped and unfit for
+  // serverless request traffic; route through Accelerate instead when configured for it.
+  if (connectionString.startsWith("prisma+postgres://")) {
+    return new PrismaClient({ accelerateUrl: connectionString });
+  }
+
   const adapter = new PrismaPg({ connectionString });
   return new PrismaClient({ adapter });
 }
