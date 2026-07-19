@@ -8,7 +8,9 @@ import { artStyle, HotelCard, RARITY_LABEL, STAT_META } from "@/components/Hotel
 import type { CardPayload } from "@/components/types";
 import { resolveHotelFlag } from "@/lib/data/hotelFlags";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
-import type { Rarity } from "@/lib/game/cardStats";
+import { cardSellValue, type Rarity } from "@/lib/game/cardStats";
+import { PACK_COST } from "@/lib/game/economy";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 const PAGE_SIZE = 20;
 
@@ -53,6 +55,11 @@ export function CollectionClient() {
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>("all");
   const [sortBy, setSortBy] = useState<SortKey>("recent");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  const [sellMode, setSellMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selling, setSelling] = useState(false);
+  const { profile, refresh } = useCurrentUser();
 
   useEffect(() => {
     let cancelled = false;
@@ -146,6 +153,65 @@ export function CollectionClient() {
     }
   }
 
+  function toggleSellMode() {
+    setSellMode((on) => {
+      if (on) setSelectedIds(new Set());
+      return !on;
+    });
+  }
+
+  function toggleSell(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const sellTotal = useMemo(() => {
+    if (!cards || selectedIds.size === 0) return 0;
+    return cards.reduce(
+      (sum, card) =>
+        selectedIds.has(card.id)
+          ? sum + cardSellValue(card.rarity, card.overall)
+          : sum,
+      0,
+    );
+  }, [cards, selectedIds]);
+
+  async function confirmSell() {
+    if (selectedIds.size === 0 || selling) return;
+    const ids = [...selectedIds];
+    setSelling(true);
+    try {
+      const response = await fetch("/api/cards/sell", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardIds: ids }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not sell cards");
+      const sold = new Set(ids);
+      setCards((prev) => (prev ? prev.filter((c) => !sold.has(c.id)) : prev));
+      setSelectedIds(new Set());
+      setSellMode(false);
+      await refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not sell cards");
+    } finally {
+      setSelling(false);
+    }
+  }
+
+  // Guard against a soft-lock: selling your whole collection into a balance
+  // that can't afford a pack would leave you stuck. Mirrors the server check.
+  const wouldSoftlock =
+    cards !== null &&
+    profile !== null &&
+    cards.length - selectedIds.size === 0 &&
+    profile.currency + sellTotal < PACK_COST;
+
   if (error) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
@@ -156,7 +222,11 @@ export function CollectionClient() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <div
+      className={`mx-auto max-w-7xl px-4 py-10 sm:px-6 ${
+        sellMode && selectedIds.size > 0 ? "pb-40" : ""
+      }`}
+    >
       <p className="eyebrow">Collection</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">Your collection</h1>
       {cards !== null && (
@@ -244,6 +314,15 @@ export function CollectionClient() {
             <p className="ml-auto text-xs text-chalk-dim">
               Showing {visibleCards.length} of {filteredSorted.length}
             </p>
+
+            <button
+              onClick={toggleSellMode}
+              className={`rounded-lg px-5 py-2 ${
+                sellMode ? "btn-chalk" : "btn-gold"
+              }`}
+            >
+              {sellMode ? "Cancel" : "Sell"}
+            </button>
           </div>
 
           {filteredSorted.length === 0 ? (
@@ -265,31 +344,57 @@ export function CollectionClient() {
           ) : (
             <>
               <div className="hotel-card-grid mt-6">
-                {visibleCards.map((card) => (
-                  <button
-                    key={card.id}
-                    onClick={() => openCard(card)}
-                    className="text-left transition hover:-translate-y-1"
-                  >
-                    <HotelCard
-                      hotel={card.hotel}
-                      stats={card.stats}
-                      overall={card.overall}
-                      rarity={card.rarity}
-                      cosmeticSeed={card.cosmeticSeed}
-                      compact
-                    />
-                    <p className="font-score mt-1.5 px-1 text-[11px] text-chalk-dim">
-                      {card.wins ?? 0}W–{card.losses ?? 0}L
-                      {(card.timesMvp ?? 0) > 0 && (
-                        <span className="text-gold-bright">
-                          {" "}
-                          · {card.timesMvp}× MVP
+                {visibleCards.map((card) => {
+                  const isSelected = sellMode && selectedIds.has(card.id);
+                  return (
+                    <button
+                      key={card.id}
+                      onClick={() =>
+                        sellMode ? toggleSell(card.id) : openCard(card)
+                      }
+                      className={`relative rounded-xl text-left transition ${
+                        isSelected
+                          ? "ring-2 ring-gold-bright"
+                          : "hover:-translate-y-1"
+                      }`}
+                    >
+                      {sellMode && (
+                        <span
+                          className={`font-score absolute -left-2 -top-2 z-30 flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
+                            isSelected
+                              ? "bg-gold-bright text-black"
+                              : "bg-pitch-950/80 text-chalk-dim"
+                          }`}
+                        >
+                          {isSelected ? "✓" : "+"}
                         </span>
                       )}
-                    </p>
-                  </button>
-                ))}
+                      <HotelCard
+                        hotel={card.hotel}
+                        stats={card.stats}
+                        overall={card.overall}
+                        rarity={card.rarity}
+                        cosmeticSeed={card.cosmeticSeed}
+                        compact
+                      />
+                      {sellMode ? (
+                        <p className="font-score mt-1.5 px-1 text-[11px] text-gold-bright">
+                          Sell for {cardSellValue(card.rarity, card.overall)} coins
+                        </p>
+                      ) : (
+                        <p className="font-score mt-1.5 px-1 text-[11px] text-chalk-dim">
+                          {card.wins ?? 0}W–{card.losses ?? 0}L
+                          {(card.timesMvp ?? 0) > 0 && (
+                            <span className="text-gold-bright">
+                              {" "}
+                              · {card.timesMvp}× MVP
+                            </span>
+                          )}
+                        </p>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               {visibleCount < filteredSorted.length && (
@@ -441,6 +546,46 @@ export function CollectionClient() {
               </button>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {sellMode && selectedIds.size > 0 && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            className="fixed inset-x-0 bottom-0 z-30 p-4"
+          >
+            <div className="panel mx-auto flex max-w-2xl flex-col items-center gap-3 rounded-2xl px-5 py-4 sm:flex-row sm:justify-between">
+              <div>
+                <p className="eyebrow !text-[9px]">
+                  {selectedIds.size} {selectedIds.size === 1 ? "card" : "cards"}{" "}
+                  selected
+                </p>
+                <p className="font-score text-lg text-gold-bright">
+                  You&apos;ll receive {sellTotal} coins
+                </p>
+                {wouldSoftlock && (
+                  <p className="mt-1 text-xs text-whistle">
+                    Keep at least one card — selling everything would leave you
+                    short of a {PACK_COST}-coin pack.
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={confirmSell}
+                disabled={selling || wouldSoftlock}
+                className="btn-gold w-full rounded-lg px-6 py-2.5 disabled:opacity-40 sm:w-auto"
+              >
+                {selling
+                  ? "Selling…"
+                  : `Confirm Selling ${selectedIds.size} ${
+                      selectedIds.size === 1 ? "Card" : "Cards"
+                    }`}
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
