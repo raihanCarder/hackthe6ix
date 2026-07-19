@@ -229,9 +229,6 @@ export function Topbar({ profile }: { profile: Profile | null }) {
           </span>
         )}
         {profile && <PresentationMuteButton compact />}
-        <Link href="/packs" className="btn-primary rounded-lg px-4 py-2 text-sm">
-          Kick off a trip
-        </Link>
       </div>
     </div>
   );

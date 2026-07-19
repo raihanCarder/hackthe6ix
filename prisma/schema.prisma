@@ -13,6 +13,7 @@ model User {
   username         String
   email            String?
   avatarUrl        String?
+  bio              String   @default("Looking for a hotel for my next")
   wins             Int      @default(0)
   losses           Int      @default(0)
   currentWinStreak Int      @default(0)

@@ -28,6 +28,32 @@ const COLLECTIBLE_OVR_BANDS: Record<Rarity, readonly [min: number, max: number]>
   legendary: [90, 99],
 };
 
+const RARITY_SELL_BASE: Record<Rarity, number> = {
+  common: 0,
+  rare: 15,
+  epic: 130,
+  legendary: 260,
+};
+
+/**
+ * Coins a card sells for: rarity base + half its OVR rating.
+ *
+ * Low rarities stay cheap so opening packs can't be *guaranteed* profit: a pack
+ * (PACK_COST = 250 for 5 cards) can drop as low as 5 commons, which refunds at
+ * most 5 × 30 = 150 < 250, and 5 rares tops out at 5 × 50 = 250 (break-even).
+ *
+ * High rarities are intentionally lucrative — pulling one should feel like a
+ * win. Epic sells for 165–175, and a legendary (305–310) always beats the full
+ * pack cost on its own. Because epics/legendaries are uncommon (15% / 5% drop
+ * rates), a *lucky* pack can net a profit, but there's no guaranteed-profit
+ * floor. Note this raises the average paid-pack sell value above PACK_COST, so
+ * grinding-and-dumping trends slightly positive by design; tighten the epic/
+ * legendary bases here if that should instead be break-even.
+ */
+export function cardSellValue(rarity: Rarity, overall: number): number {
+  return RARITY_SELL_BASE[rarity] + Math.round(overall * 0.5);
+}
+
 const clampStat = (x: number) => Math.max(1, Math.min(99, Math.round(x)));
 
 export interface PoolPriceContext {
