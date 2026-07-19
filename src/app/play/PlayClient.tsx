@@ -212,7 +212,7 @@ export function PlayClient() {
 
   if (step === "card") {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <button onClick={backToMode} className="text-xs text-chalk-dim underline-offset-2 hover:underline">
           ← Back to gamemode selection
         </button>
@@ -243,7 +243,7 @@ export function PlayClient() {
           </div>
         ) : (
           <>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="hotel-card-grid mt-8">
               {cards.map((card) => {
                 const isSelected = selected?.id === card.id;
                 return (

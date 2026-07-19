@@ -273,7 +273,7 @@ export default function TournamentPage() {
             <div>
               <p className="eyebrow text-gold-bright">🏆 {isWorld ? "World champion" : "Trip champion"}</p>
               {championContender && (
-                <div className="mt-3 max-w-[320px]">
+                <div className="mt-3 max-w-[360px]">
                   <HotelCard
                     hotel={championContender.hotel}
                     stats={championContender.stats}

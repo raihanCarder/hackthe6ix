@@ -41,6 +41,7 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
   } | null>(null);
   const [enabled, setEnabled] = useState(true);
   const [commentary, setCommentary] = useState<CommentaryResponse | null>(null);
+  const [commentaryError, setCommentaryError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [playbackBlocked, setPlaybackBlocked] = useState(false);
@@ -57,6 +58,7 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
     async (current: { request: CommentaryRequest; nonce: number }, requestAudio: boolean) => {
       const sequence = ++requestSequence.current;
       setLoading(true);
+      setCommentaryError(null);
       try {
         const response = await fetch("/api/presentation/commentary", {
           method: "POST",
@@ -68,8 +70,14 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
         if (sequence !== requestSequence.current) return;
         setCommentary(payload as CommentaryResponse);
         setPlayNonce(current.nonce);
-      } catch {
-        if (sequence === requestSequence.current) setPlaybackBlocked(false);
+      } catch (error) {
+        if (sequence === requestSequence.current) {
+          setCommentary(null);
+          setCommentaryError(
+            error instanceof Error ? error.message : "Commentary is unavailable",
+          );
+          setPlaybackBlocked(false);
+        }
       } finally {
         if (sequence === requestSequence.current) setLoading(false);
       }
@@ -134,7 +142,13 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
 
   function togglePlayback() {
     const voice = voiceRef.current;
-    if (!voice || !commentary?.audioUrl) return;
+    if (!commentary?.audioUrl) {
+      if (announcement && enabled && !loading) {
+        void loadAnnouncement(announcement, true);
+      }
+      return;
+    }
+    if (!voice) return;
     if (voice.paused) {
       void voice.play().then(() => setPlaybackBlocked(false)).catch(() => setPlaybackBlocked(true));
     } else {
@@ -148,19 +162,32 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
         ? "Voice budget reached — captions remain active."
         : "Voice unavailable — captions remain active."
       : null;
+  const voiceButtonLabel = loading
+    ? "Loading voice"
+    : commentary?.audioUrl
+      ? playing
+        ? "Pause"
+        : playbackBlocked
+          ? "Play voice"
+          : "Replay"
+      : commentaryError || fallback
+        ? "Retry voice"
+        : announcement
+          ? "Voice pending"
+          : "Awaiting cue";
+  const voiceActionDisabled = loading || !announcement;
 
   return (
     <PresentationContext.Provider value={{ announce }}>
       {children}
-      {announcement && (
-        <aside className="panel fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-xl p-3 shadow-2xl shadow-black/50">
+      <aside className="panel fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl rounded-xl p-3 shadow-2xl shadow-black/50">
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1" aria-live="polite">
               <p className="eyebrow !text-[9px]">Matchday commentary</p>
               <p className="mt-0.5 text-sm text-chalk-dim">
                 {loading
                   ? "The commentator is checking the team sheet…"
-                  : commentary?.caption ?? "Commentary is warming up…"}
+                  : commentary?.caption ?? commentaryError ?? "Voice commentary is ready."}
               </p>
               {fallback && <p className="mt-0.5 text-[10px] text-gold-bright">{fallback}</p>}
               {playbackBlocked && (
@@ -169,9 +196,13 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
                 </p>
               )}
             </div>
-            {commentary?.audioUrl && enabled && (
-              <button onClick={togglePlayback} className="btn-chalk shrink-0 rounded px-3 py-1.5 text-xs">
-                {playing ? "Pause" : playbackBlocked ? "Play voice" : "Replay"}
+            {enabled && (
+              <button
+                onClick={togglePlayback}
+                disabled={voiceActionDisabled}
+                className="btn-chalk shrink-0 rounded px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {voiceButtonLabel}
               </button>
             )}
             <button onClick={toggleAudio} className="btn-gold shrink-0 rounded px-3 py-1.5 text-xs">
@@ -186,7 +217,6 @@ export function PresentationProvider({ children }: { children: React.ReactNode }
           />
           <audio ref={musicRef} />
         </aside>
-      )}
     </PresentationContext.Provider>
   );
 }
