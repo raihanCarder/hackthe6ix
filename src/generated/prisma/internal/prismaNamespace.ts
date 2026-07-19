@@ -392,6 +392,7 @@ export const ModelName = {
   CoinPurchase: 'CoinPurchase',
   SavedCard: 'SavedCard',
   Tournament: 'Tournament',
+  PresentationRecap: 'PresentationRecap',
   PresentationAudio: 'PresentationAudio',
   PresentationUsage: 'PresentationUsage',
   Duel: 'Duel'
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationAudio" | "presentationUsage" | "duel"
+    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationRecap" | "presentationAudio" | "presentationUsage" | "duel"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1006,6 +1007,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PresentationRecap: {
+      payload: Prisma.$PresentationRecapPayload<ExtArgs>
+      fields: Prisma.PresentationRecapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PresentationRecapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PresentationRecapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        findFirst: {
+          args: Prisma.PresentationRecapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PresentationRecapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        findMany: {
+          args: Prisma.PresentationRecapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>[]
+        }
+        create: {
+          args: Prisma.PresentationRecapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        createMany: {
+          args: Prisma.PresentationRecapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PresentationRecapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>[]
+        }
+        delete: {
+          args: Prisma.PresentationRecapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        update: {
+          args: Prisma.PresentationRecapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        deleteMany: {
+          args: Prisma.PresentationRecapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PresentationRecapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PresentationRecapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>[]
+        }
+        upsert: {
+          args: Prisma.PresentationRecapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PresentationRecapPayload>
+        }
+        aggregate: {
+          args: Prisma.PresentationRecapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePresentationRecap>
+        }
+        groupBy: {
+          args: Prisma.PresentationRecapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationRecapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PresentationRecapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PresentationRecapCountAggregateOutputType> | number
+        }
+      }
+    }
     PresentationAudio: {
       payload: Prisma.$PresentationAudioPayload<ExtArgs>
       fields: Prisma.PresentationAudioFieldRefs
@@ -1403,6 +1478,16 @@ export const TournamentScalarFieldEnum = {
 export type TournamentScalarFieldEnum = (typeof TournamentScalarFieldEnum)[keyof typeof TournamentScalarFieldEnum]
 
 
+export const PresentationRecapScalarFieldEnum = {
+  tournamentId: 'tournamentId',
+  caption: 'caption',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type PresentationRecapScalarFieldEnum = (typeof PresentationRecapScalarFieldEnum)[keyof typeof PresentationRecapScalarFieldEnum]
+
+
 export const PresentationAudioScalarFieldEnum = {
   cacheKey: 'cacheKey',
   eventType: 'eventType',
@@ -1703,6 +1788,7 @@ export type GlobalOmitConfig = {
   coinPurchase?: Prisma.CoinPurchaseOmit
   savedCard?: Prisma.SavedCardOmit
   tournament?: Prisma.TournamentOmit
+  presentationRecap?: Prisma.PresentationRecapOmit
   presentationAudio?: Prisma.PresentationAudioOmit
   presentationUsage?: Prisma.PresentationUsageOmit
   duel?: Prisma.DuelOmit

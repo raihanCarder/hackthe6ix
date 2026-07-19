@@ -31,6 +31,9 @@ every cache miss. See the official [create speech API](https://elevenlabs.io/doc
 - Commentary covers the main journey: welcome, pack choice, scouting, reveals, mode and card
   selection, questionnaire, simulation, live goals, matchups, advantages, winners, and champion.
   Goals take priority over stale non-goal narration, while closely timed goals are queued in order.
+- The final begins prewarming a short full-time report. Gemini may write its connective sports prose
+  from a closed server-derived fact payload; the caption is cached per tournament, and ElevenLabs
+  narrates it on the victory screen. A deterministic report is always available as fallback.
 - `ELEVENLABS_MONTHLY_CHARACTER_LIMIT` sets an application-level UTC monthly ceiling.
 - `ELEVENLABS_ACCOUNT_CREDIT_RESERVE` protects account-wide allowance when
   `ELEVENLABS_CHECK_ACCOUNT_QUOTA=true`. That optional check requires `user_read` permission.
@@ -55,6 +58,13 @@ Authenticated card-selection cues send a card ID; the server resolves its hotel 
 owner's saved card. When `GEMINI_COMMENTARY_ENABLED=true`, Gemini may choose among existing approved
 lines. It returns only a template index and cannot write facts, scores, or results. Failure falls
 back immediately to deterministic selection.
+
+The separate `competition.recap` cue is also server-resolved. The browser supplies no names, scores,
+advantages, probabilities, or rewards. Gemini receives only the stored final score, champion record,
+engine advantages, result basis, and rewards. Its output must contain the exact finalists and score,
+may use only trusted numeric values, and is rejected if it introduces common unsupported hotel or
+match claims. Accepted prose is stored in `PresentationRecap`; rejected, slow, disabled, or failed
+generation uses deterministic fact-bound commentary.
 
 ## Optional reusable music
 

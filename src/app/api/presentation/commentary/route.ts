@@ -17,14 +17,15 @@ export async function POST(request: NextRequest) {
       : body.source === "card"
         ? await resolveCardSelectionEvent(await requireUser(), body.cardId)
         : await resolvePresentationEvent(await requireUser(), body.tournamentId, body.cue);
-    const caption = await renderPresentationCommentary(event);
+    const rendered = await renderPresentationCommentary(event);
     const audioRequested = body.audio;
     const audio = audioRequested
-      ? await prepareCommentaryAudio(event.kind, caption)
+      ? await prepareCommentaryAudio(event.kind, rendered.caption)
       : { status: "not_requested" as const, cacheKey: null };
     return NextResponse.json({
       event,
-      caption,
+      caption: rendered.caption,
+      captionSource: rendered.source,
       audioUrl: audio.cacheKey ? `/api/presentation/audio/${audio.cacheKey}` : null,
       audioStatus: audio.status,
     });

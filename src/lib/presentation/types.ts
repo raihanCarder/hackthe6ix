@@ -75,6 +75,26 @@ export type PresentationEvent =
       kind: "competition.champion";
       championName: string;
       competitionName: string;
+    }
+  | {
+      version: 1;
+      id: string;
+      kind: "competition.recap";
+      tournamentId: string;
+      competitionName: string;
+      destinationLabel: string | null;
+      championName: string;
+      runnerUpName: string;
+      championGoals: number;
+      runnerUpGoals: number;
+      championWins: number;
+      championMatches: number;
+      mainAdvantages: string[];
+      winProbabilityPercent: number | null;
+      personalized: boolean;
+      userWon: boolean;
+      rewardXp: number;
+      rewardCoins: number;
     };
 
 export type PresentationCue =
@@ -91,7 +111,7 @@ export type PresentationCue =
       goalIndex: number;
     }
   | { kind: "hotel.advantage"; advantageIndex: number }
-  | { kind: "competition.champion" };
+  | { kind: "competition.champion" | "competition.recap" };
 
 export interface JourneyCue {
   kind: "journey.moment";
@@ -106,6 +126,7 @@ export type CommentaryRequest =
 export interface CommentaryResponse {
   event: PresentationEvent;
   caption: string;
+  captionSource: "gemini" | "deterministic";
   audioUrl: string | null;
   audioStatus: "ready" | "not_requested" | "disabled" | "quota" | "unavailable";
 }

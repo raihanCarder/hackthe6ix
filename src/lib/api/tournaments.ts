@@ -7,6 +7,7 @@ import {
   collectibleOverallRating,
   computeCardStats,
   poolPriceContext,
+  resolveTournamentRarity,
 } from "@/lib/game/cardStats";
 import type { TournamentBracket } from "@/lib/game/matchSim";
 import { createGlobalTournament, createTripTournament } from "@/lib/tournament";
@@ -67,13 +68,14 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
       if (!hotel) return null;
       const card = userCardByProperty.get(propertyId);
       const stats = computeCardStats(hotel, prices);
+      const rarity = resolveTournamentRarity(propertyId, tournament.seed, card?.rarity);
       const engineStats = rankById.get(propertyId);
       return {
         propertyId,
         hotel,
         stats,
-        overall: collectibleOverallRating(stats, card?.rarity ?? "legendary"),
-        rarity: card?.rarity ?? null,
+        overall: collectibleOverallRating(stats, rarity),
+        rarity,
         isUserCard: Boolean(card),
         engine: engineStats
           ? {

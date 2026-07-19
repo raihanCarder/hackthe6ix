@@ -58,6 +58,12 @@ export type SavedCard = Prisma.SavedCardModel
  */
 export type Tournament = Prisma.TournamentModel
 /**
+ * Model PresentationRecap
+ * One grounded, reusable full-time report per tournament. Gemini may author
+ * the prose, but every input fact is resolved from the stored tournament.
+ */
+export type PresentationRecap = Prisma.PresentationRecapModel
+/**
  * Model PresentationAudio
  * Reusable ElevenLabs output. The cache key includes template, text, voice,
  * model, and format, so a changed input can never return stale commentary.
