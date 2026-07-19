@@ -2,11 +2,12 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CardBack, HotelCard, STAT_META } from "@/components/HotelCard";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 import { subscribeToDuel } from "@/lib/supabase/browserClient";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 interface DuelCardView {
   id: string;
@@ -56,6 +57,15 @@ export function DuelRoomClient({ duelId }: { duelId: string }) {
   const [view, setView] = useState<DuelView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [calling, setCalling] = useState(false);
+  const { refresh } = useCurrentUser();
+  const rewardedRef = useRef(false);
+
+  useEffect(() => {
+    if (view?.status === "complete" && view.rewards && !rewardedRef.current) {
+      rewardedRef.current = true;
+      void refresh();
+    }
+  }, [view, refresh]);
 
   const refetch = useCallback(async () => {
     const response = await fetch(`/api/duel/${duelId}`);

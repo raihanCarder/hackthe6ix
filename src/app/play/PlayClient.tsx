@@ -8,6 +8,7 @@ import { HotelCard } from "@/components/HotelCard";
 import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
 import type { PreferenceQuestion, TravelerAnswer } from "@/lib/engine/types";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 type Mode = "trip" | "world";
 type Step = "mode" | "card" | "questions" | "simulating";
@@ -15,6 +16,7 @@ type Step = "mode" | "card" | "questions" | "simulating";
 export function PlayClient() {
   const router = useRouter();
   const { announce } = usePresentation();
+  const { refresh } = useCurrentUser();
   const [step, setStep] = useState<Step>("mode");
   const [mode, setMode] = useState<Mode | null>(null);
   const [cards, setCards] = useState<CardPayload[] | null>(null);
@@ -156,6 +158,7 @@ export function PlayClient() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Tournament failed");
+      void refresh();
       router.push(`/tournament/${data.tournamentId}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Tournament failed");
