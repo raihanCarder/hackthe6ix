@@ -6,7 +6,6 @@ import { computeCardStats, type CardStats } from "@/lib/game/cardStats";
 import { computeDuelRewards, resolveRoundWinner, type DuelRound } from "@/lib/game/duelRewards";
 import { levelForXp } from "@/lib/game/rewards";
 import { ApiError, asJson } from "@/lib/api/core";
-import { broadcastDuelChange } from "@/lib/supabase/serverBroadcast";
 import { prisma } from "@/lib/db";
 
 const SQUAD_SIZE = 3;
@@ -15,8 +14,7 @@ const ROUNDS_TO_WIN = 2; // best-of-3
 /**
  * Waiting-room matchmaking + turn-based, best-of-3 stat-call duel
  * (documentation/ideas/IDEA.md "3-card squad quick-match"). Server-authoritative:
- * every state transition is a Duel row write, followed by a best-effort
- * realtime ping (src/lib/supabase/serverBroadcast.ts) so both clients refetch.
+ * every state transition is a Duel row write; clients poll for updates.
  */
 
 export async function startOrJoinDuel(
@@ -59,7 +57,6 @@ export async function startOrJoinDuel(
     return { duel: created, matched: false };
   });
 
-  if (matched) await broadcastDuelChange(duel.id);
   return { duelId: duel.id, matched };
 }
 
@@ -168,8 +165,6 @@ export async function callStat(user: User, duelId: string, stat: keyof CardStats
       });
     }
   });
-
-  await broadcastDuelChange(duel.id);
 }
 
 async function assertOwnsSquad(userId: string, cardIds: string[]): Promise<void> {
