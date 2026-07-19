@@ -1,5 +1,5 @@
-import { PackLabClient } from "@/app/pack-lab/PackLabClient";
+import { PackHistoryClient } from "@/app/pack-history/PackHistoryClient";
 
-export default function PackLabPage() {
-  return <PackLabClient />;
+export default function PackHistoryPage() {
+  return <PackHistoryClient />;
 }

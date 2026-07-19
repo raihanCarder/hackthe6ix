@@ -858,6 +858,168 @@ body {
   background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 72%);
 }
 
+/* ===== Foil booster packs (packs selection screen) ===== */
+.foil-pack-slot {
+  display: flex;
+  flex-direction: column;
+  /* Glow lives on the (unmasked) slot so it follows the pack's serrated silhouette */
+  transition: filter 180ms ease;
+  filter:
+    drop-shadow(0 15px 24px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 16px var(--pack-glow));
+}
+.foil-pack-slot:hover,
+.foil-pack-slot:focus-within {
+  filter:
+    drop-shadow(0 22px 34px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 34px var(--pack-glow));
+}
+
+.foil-pack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 15rem;
+  margin-inline: auto;
+  aspect-ratio: 3 / 4.3;
+  padding: 2.7rem 1.4rem 2.7rem;
+  background: var(--pack-grad);
+  color: var(--pack-ink);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 40px rgba(255, 255, 255, 0.08);
+  /* Triangular tear-crimp: the pack's own top and bottom edges are cut into a zigzag */
+  -webkit-mask:
+    linear-gradient(#000 0 0) center / 100% calc(100% - 24px) no-repeat,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 17px 12px repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 17px 12px repeat-x;
+  mask:
+    linear-gradient(#000 0 0) center / 100% calc(100% - 24px) no-repeat,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 17px 12px repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 17px 12px repeat-x;
+}
+/* Soft vertical foil spine */
+.foil-pack::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 58%
+  );
+  pointer-events: none;
+}
+/* Bottom scrim: keeps the label readable over any foil colour */
+.foil-pack::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64%;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 8, 7, 0) 0%,
+    rgba(2, 8, 7, 0.45) 34%,
+    rgba(2, 8, 7, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+.foil-pack-trip {
+  --pack-grad: linear-gradient(155deg, #34ead0 0%, #1f9b8f 38%, #0c4f45 78%, #06312b 100%);
+  --pack-crimp: linear-gradient(180deg, #7ff4e0, #1f9b8f);
+  --pack-glow: rgba(34, 211, 238, 0.4);
+  --pack-ink: #04302a;
+  --pack-ink-dim: rgba(4, 48, 42, 0.72);
+}
+.foil-pack-global {
+  --pack-grad: linear-gradient(155deg, #ffe79f 0%, #ffd25e 34%, #c8901f 72%, #4e370a 100%);
+  --pack-crimp: linear-gradient(180deg, #fff1c4, #ffd25e);
+  --pack-glow: rgba(255, 210, 94, 0.45);
+  --pack-ink: #35240a;
+  --pack-ink-dim: rgba(53, 36, 10, 0.74);
+}
+
+/* Pressed seal strip that sits just inside each serrated edge (ridged foil) */
+.foil-pack-crimp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 26px;
+  z-index: 2;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 5px),
+    var(--pack-crimp);
+  box-shadow: inset 0 -2px 3px -2px rgba(0, 0, 0, 0.5);
+}
+/* Mirror the seal strip at the bottom edge */
+.foil-pack-crimp-bottom {
+  top: auto;
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+.foil-pack .eyebrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(238, 244, 242, 0.82);
+}
+.foil-pack-emblem {
+  position: relative;
+  z-index: 1;
+  width: 4.6rem;
+  height: 4.6rem;
+  margin: 0.3rem 0 1.1rem;
+  color: var(--pack-ink);
+  opacity: 0.92;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.28));
+}
+.foil-pack-title {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-archivo-black), sans-serif;
+  color: #f4faf8;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+.foil-pack-desc {
+  position: relative;
+  z-index: 1;
+  color: rgba(238, 244, 242, 0.9);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Hover/focus-revealed "Choose … Pack" label beneath the pack */
+.foil-pack-label {
+  margin-top: 0.9rem;
+  text-align: center;
+  font-family: var(--font-oswald), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.82rem;
+  color: var(--chalk);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+.foil-pack-slot:hover .foil-pack-label,
+.foil-pack-slot:focus-within .foil-pack-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 :focus-visible {
   outline: 2px solid var(--cyan-bright);
   outline-offset: 2px;

@@ -13,7 +13,7 @@ interface PackHistoryItem {
   createdAt: string;
 }
 
-export function PackLabClient() {
+export function PackHistoryClient() {
   const { profile, authMode, loaded } = useCurrentUser();
   const [packs, setPacks] = useState<PackHistoryItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +22,7 @@ export function PackLabClient() {
     if (!loaded) return;
     if (authMode === "auth0" && !profile) {
       window.location.assign(
-        `/auth/login?returnTo=${encodeURIComponent("/pack-lab")}`,
+        `/auth/login?returnTo=${encodeURIComponent("/pack-history")}`,
       );
     }
   }, [loaded, authMode, profile]);
@@ -41,7 +41,7 @@ export function PackLabClient() {
   if (!loaded || (profile && packs === null && !error)) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-14 text-center text-chalk-dim sm:px-6">
-        Loading Pack Lab…
+        Loading Pack History…
       </div>
     );
   }
@@ -50,7 +50,7 @@ export function PackLabClient() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6">
         <p className="font-display text-xl text-chalk">
-          Sign in to see your Pack Lab.
+          Sign in to see your Pack History.
         </p>
       </div>
     );
@@ -58,7 +58,7 @@ export function PackLabClient() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <p className="eyebrow">Pack Lab</p>
+      <p className="eyebrow">Pack History</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">
         Relive that dopamine hit without spending Coins!
       </h1>
