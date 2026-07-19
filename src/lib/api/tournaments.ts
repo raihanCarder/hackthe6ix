@@ -38,6 +38,61 @@ export async function createTournamentForCard(
   return { tournamentId: tournament.id };
 }
 
+/** History list — one row per tournament played, newest first, with the champion card resolved. */
+export async function listTournaments(user: User) {
+  const tournaments = await prisma.tournament.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return Promise.all(
+    tournaments.map(async (tournament) => {
+      const rewards = tournament.rewards as unknown as { userWon?: boolean } | null;
+      const base = {
+        tournamentId: tournament.id,
+        mode: tournament.mode as "trip" | "world",
+        createdAt: tournament.createdAt.toISOString(),
+        userWon: Boolean(rewards?.userWon),
+      };
+
+      try {
+        const search = await loadSearch(tournament.searchApiCallId, user.id);
+        const engine = tournament.engineResult as unknown as EngineResult;
+        const championHotel = search.pool.find(
+          (h) => h.id === tournament.championPropertyId,
+        );
+        if (!championHotel) return { ...base, champion: null };
+
+        const prices = poolPriceContext(
+          search.pool.filter((h) => engine.eligibleIds.includes(h.id)),
+        );
+        const championCard = await prisma.savedCard.findFirst({
+          where: { userId: user.id, stay22PropertyId: tournament.championPropertyId },
+        });
+        const rarity = resolveTournamentRarity(
+          tournament.championPropertyId,
+          tournament.seed,
+          championCard?.rarity,
+        );
+        const stats = computeCardStats(championHotel, prices);
+
+        return {
+          ...base,
+          champion: {
+            hotel: championHotel,
+            stats,
+            overall: collectibleOverallRating(stats, rarity),
+            rarity,
+            cosmeticSeed: `champ:${tournament.seed}`,
+          },
+        };
+      } catch {
+        return { ...base, champion: null };
+      }
+    }),
+  );
+}
+
 export async function getTournamentReplay(user: User, tournamentId: string) {
   const tournament = await prisma.tournament.findFirst({
     where: { id: tournamentId, userId: user.id },

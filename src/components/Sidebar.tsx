@@ -80,6 +80,16 @@ function IconPlay({ className }: { className?: string }) {
   );
 }
 
+function IconTrophy({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+      <path d="M6 3.5h8v4c0 2.5-1.8 4.5-4 4.5s-4-2-4-4.5v-4Z" />
+      <path d="M6 4.5H3.8C3.6 6.8 4.6 8.3 6.3 8.5M14 4.5h2.2c.2 2.3-.8 3.8-2.5 4" />
+      <path d="M10 12v2.5M7.5 17h5M8.3 14.5h3.4l.3 2.5H8l.3-2.5Z" />
+    </svg>
+  );
+}
+
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: IconDashboard, match: (p) => p === "/dashboard" },
   { href: "/packs", label: "Pack Lab", icon: IconTrip, match: (p) => p.startsWith("/packs") },
@@ -90,6 +100,12 @@ const NAV_ITEMS: NavItem[] = [
     match: (p) => p.startsWith("/pack-history") || p.startsWith("/pack/"),
   },
   { href: "/collection", label: "Collection", icon: IconCollection, match: (p) => p.startsWith("/collection") },
+  {
+    href: "/tournament-history",
+    label: "Tournament History",
+    icon: IconTrophy,
+    match: (p) => p.startsWith("/tournament-history"),
+  },
   { href: "/revenue", label: "Revenue", icon: IconRevenue, match: (p) => p.startsWith("/revenue") },
   { href: "/coins", label: "Buy Coins", icon: IconCoins, match: (p) => p.startsWith("/coins") },
   {
