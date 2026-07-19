@@ -1,7 +1,7 @@
 import "server-only";
 import type { User } from "@/generated/prisma/client";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
-import { computeCardStats, overallRating } from "@/lib/game/cardStats";
+import { collectibleOverallRating, computeCardStats } from "@/lib/game/cardStats";
 import { rehydrateProperty } from "@/lib/stay22/client";
 import { prisma } from "@/lib/db";
 import { ApiError } from "./core";
@@ -32,7 +32,7 @@ export async function getUserCollection(user: User) {
         timesMvp: card.timesMvp,
         dateAcquired: card.dateAcquired,
         stats,
-        overall: overallRating(stats),
+        overall: collectibleOverallRating(stats, card.rarity),
         hotel,
       };
     }),
