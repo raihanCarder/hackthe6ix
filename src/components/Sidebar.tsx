@@ -212,7 +212,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: IconPlay,
     match: (p) =>
       p.startsWith("/play") ||
-      p.startsWith("/tournament") ||
+      p.startsWith("/tournament/") ||
       p.startsWith("/duel"),
   },
 ];
