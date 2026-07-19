@@ -8,6 +8,7 @@ import { HotelCard } from "@/components/HotelCard";
 import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
 import type { PreferenceQuestion, TravelerAnswer } from "@/lib/engine/types";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 type Mode = "trip" | "world";
 type Step = "mode" | "card" | "questions" | "simulating";
@@ -15,6 +16,7 @@ type Step = "mode" | "card" | "questions" | "simulating";
 export function PlayClient() {
   const router = useRouter();
   const { announce } = usePresentation();
+  const { refresh } = useCurrentUser();
   const [step, setStep] = useState<Step>("mode");
   const [mode, setMode] = useState<Mode | null>(null);
   const [cards, setCards] = useState<CardPayload[] | null>(null);
@@ -156,6 +158,7 @@ export function PlayClient() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Tournament failed");
+      void refresh();
       router.push(`/tournament/${data.tournamentId}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Tournament failed");
@@ -176,34 +179,54 @@ export function PlayClient() {
           matches as you like.
         </p>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <motion.button
             whileHover={{ y: -4 }}
             onClick={() => chooseMode("trip")}
-            className="panel rounded-2xl border-2 border-turf-bright/40 p-8 text-left transition hover:border-turf-bright"
+            className="panel flex h-full flex-col rounded-2xl border-2 border-turf-bright/40 p-8 text-left transition hover:border-turf-bright"
           >
-            <p className="eyebrow">Real recommendations</p>
-            <h2 className="font-display mt-2 text-2xl text-chalk">Trip Cup Mode</h2>
-            <p className="mt-3 text-sm text-chalk-dim">
-              Your card faces opponents from the same live search that produced it. A pre-match
-              interview drives a real recommendation engine — the winner is a genuine pick for
-              your trip.
-            </p>
-            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Trip Cup</span>
+            <div className="flex-1">
+              <p className="eyebrow">Real recommendations</p>
+              <h2 className="font-display mt-2 text-2xl text-chalk">Trip Cup Mode</h2>
+              <p className="mt-3 text-sm text-chalk-dim">
+                Your card faces opponents from the same live search that produced it. A pre-match
+                interview drives a real recommendation engine — the winner is a genuine pick for
+                your trip.
+              </p>
+            </div>
+            <span className="btn-primary mt-6 inline-block self-start rounded-lg px-6 py-2.5">Play Trip Cup</span>
           </motion.button>
 
           <motion.button
             whileHover={{ y: -4 }}
             onClick={() => chooseMode("world")}
-            className="panel rounded-2xl border-2 border-gold-bright/40 p-8 text-left transition hover:border-gold-bright"
+            className="panel flex h-full flex-col rounded-2xl border-2 border-gold-bright/40 p-8 text-left transition hover:border-gold-bright"
           >
-            <p className="eyebrow">Casual · for fun</p>
-            <h2 className="font-display mt-2 text-2xl text-chalk">Global Cup Mode</h2>
-            <p className="mt-3 text-sm text-chalk-dim">
-              Your card takes on 15 opponents from 15 different countries around the world. No
-              interview, no wait — just bragging rights.
-            </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
+            <div className="flex-1">
+              <p className="eyebrow">Casual · for fun</p>
+              <h2 className="font-display mt-2 text-2xl text-chalk">Global Cup Mode</h2>
+              <p className="mt-3 text-sm text-chalk-dim">
+                Your card takes on 15 opponents from 15 different countries around the world. No
+                interview, no wait — just bragging rights.
+              </p>
+            </div>
+            <span className="btn-gold mt-6 inline-block self-start rounded-lg px-6 py-2.5">Play Global Cup</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ y: -4 }}
+            onClick={() => router.push("/duel")}
+            className="panel flex h-full flex-col rounded-2xl border-2 border-cyan-bright/40 p-8 text-left transition hover:border-cyan-bright"
+          >
+            <div className="flex-1">
+              <p className="eyebrow">1v1 · live matchmaking</p>
+              <h2 className="font-display mt-2 text-2xl text-chalk">Duel Mode</h2>
+              <p className="mt-3 text-sm text-chalk-dim">
+                Pick a squad of three and go head-to-head against another traveler in real time.
+                No bracket, no simulation — just the two of you.
+              </p>
+            </div>
+            <span className="btn-cyan mt-6 inline-block self-start rounded-lg px-6 py-2.5">Play Duel</span>
           </motion.button>
         </div>
       </div>

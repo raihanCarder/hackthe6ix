@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 type PackKind = "trip" | "global";
 
@@ -33,6 +34,7 @@ export function PacksClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { announce } = usePresentation();
+  const { refresh } = useCurrentUser();
   const today = new Date();
   const prefilledDestination = searchParams.get("destination");
   const [pack, setPack] = useState<PackKind | null>(prefilledDestination ? "trip" : null);
@@ -143,6 +145,7 @@ export function PacksClient() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Pack opening failed");
+      void refresh();
       router.push(`/pack/${data.packId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Pack opening failed");
