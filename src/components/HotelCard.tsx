@@ -11,34 +11,34 @@ const RARITY_LABEL: Record<Rarity, string> = {
   legendary: "Legendary",
 };
 
+export const STAT_META: {
+  key: keyof CardStats;
+  label: string;
+  color: string;
+}[] = [
+  { key: "luxury", label: "Luxury", color: "var(--stat-vibe)" },
+  { key: "amenities", label: "Amenities", color: "var(--stat-flex)" },
+  { key: "comfort", label: "Comfort", color: "var(--stat-squad)" },
+  { key: "value", label: "Value", color: "var(--stat-value)" },
+  { key: "location", label: "Location", color: "var(--stat-chaos)" },
+  { key: "service", label: "Service", color: "var(--stat-legacy)" },
+];
+
 interface DisplayStat {
   label: string;
   value: number;
 }
 
-function clampStat(value: number): number {
-  return Math.max(1, Math.min(99, Math.round(value)));
-}
-
-function locationDisplayScore(
-  hotel: NormalizedAccommodation,
-  fallback: number,
-): number {
-  if (hotel.distanceKm === null) return fallback;
-  return clampStat(99 - Math.min(18, hotel.distanceKm) * 4.5);
-}
-
 function displayStats(
-  hotel: NormalizedAccommodation,
   stats: CardStats,
 ): DisplayStat[] {
   return [
-    { label: "Luxury", value: stats.vibe },
-    { label: "Amenities", value: stats.flex },
-    { label: "Comfort", value: stats.squad },
+    { label: "Luxury", value: stats.luxury },
+    { label: "Amenities", value: stats.amenities },
+    { label: "Comfort", value: stats.comfort },
     { label: "Value", value: stats.value },
-    { label: "Location", value: locationDisplayScore(hotel, stats.chaos) },
-    { label: "Service", value: stats.legacy },
+    { label: "Location", value: stats.location },
+    { label: "Service", value: stats.service },
   ];
 }
 
@@ -102,7 +102,7 @@ export function HotelCard({
   compact?: boolean;
 }) {
   const name = hotelName(hotel);
-  const statRows = displayStats(hotel, stats);
+  const statRows = displayStats(stats);
   const location = compact
     ? compactLocation(hotel.address)
     : (hotel.address ?? compactLocation(hotel.address));
