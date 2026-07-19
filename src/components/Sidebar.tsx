@@ -81,6 +81,15 @@ function IconPlay({ className }: { className?: string }) {
   );
 }
 
+function IconSearch({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+      <circle cx="8.5" cy="8.5" r="5" />
+      <path d="m12.2 12.2 4.1 4.1" />
+    </svg>
+  );
+}
+
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: IconDashboard, match: (p) => p === "/dashboard" },
   { href: "/packs", label: "Pack Lab", icon: IconTrip, match: (p) => p.startsWith("/packs") },
@@ -214,12 +223,15 @@ export function Topbar({ profile }: { profile: Profile | null }) {
   return (
     <div className="flex items-center gap-3 border-b border-chalk/10 px-4 py-3 sm:px-6">
       <form onSubmit={submitSearch} className="hidden flex-1 sm:block">
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search trips, cities, cards…"
-          className="w-full max-w-sm rounded-lg border border-chalk/15 bg-pitch-950/60 px-3 py-1.5 text-sm text-chalk placeholder:text-chalk-dim/60"
-        />
+        <div className="relative max-w-sm">
+          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-chalk-dim/70" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search trips, cities, cards…"
+            className="w-full rounded-lg border border-chalk/15 bg-pitch-950/60 py-1.5 pr-3 pl-9 text-sm text-chalk placeholder:text-chalk-dim/60"
+          />
+        </div>
       </form>
       <div className="ml-auto flex items-center gap-2">
         {profile && (
