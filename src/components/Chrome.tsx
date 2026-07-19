@@ -27,11 +27,13 @@ function MarketingHeader() {
         </Link>
 
         <nav className="ml-auto flex items-center gap-4">
-          <Link href="/dashboard" className="text-sm text-chalk-dim hover:text-chalk">
-            Game loop
-          </Link>
+          {profile && (
+            <Link href="/dashboard" className="text-sm text-chalk-dim hover:text-chalk">
+              Dashboard
+            </Link>
+          )}
           {profile ? (
-            <AccountMenu profile={profile} authMode={authMode} onSignedOut={refresh} />
+            <AccountMenu profile={profile} authMode={authMode} onSignedOut={refresh} placement="down" />
           ) : authMode === "auth0" ? (
             <a href="/auth/login" className="btn-primary rounded-lg px-4 py-1.5 text-sm">
               Sign in
@@ -52,13 +54,18 @@ export function Chrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { profile, authMode } = useCurrentUser();
   const isMarketing = pathname === "/";
+  const isNewTrip = pathname.startsWith("/packs");
+  const isPlay = pathname.startsWith("/play") || pathname.startsWith("/tournament");
+  const isDashboard = pathname === "/dashboard";
+  const isCollection = pathname.startsWith("/collection");
+  const isRevenue = pathname.startsWith("/revenue");
+  const hidesFooter = isNewTrip || isPlay || isDashboard || isCollection || isRevenue;
 
   if (isMarketing) {
     return (
       <div className="flex min-h-screen flex-col">
         <MarketingHeader />
-        <main className="flex-1 pb-36">{children}</main>
-        {FOOTER}
+        <main className="flex-1">{children}</main>
       </div>
     );
   }
@@ -68,8 +75,10 @@ export function Chrome({ children }: { children: React.ReactNode }) {
       <Sidebar profile={profile} authMode={authMode} />
       <div className="flex min-h-screen flex-col pb-14 md:pb-0">
         <Topbar profile={profile} />
-        <main className="flex-1 pb-40">{children}</main>
-        {FOOTER}
+        <main className={`flex-1 ${hidesFooter ? "" : "pb-40"}`}>
+          {children}
+        </main>
+        {!hidesFooter && FOOTER}
       </div>
     </div>
   );

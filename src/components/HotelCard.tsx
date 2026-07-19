@@ -16,12 +16,12 @@ export const STAT_META: {
   label: string;
   color: string;
 }[] = [
-  { key: "luxury", label: "Luxury", color: "var(--stat-vibe)" },
-  { key: "amenities", label: "Amenities", color: "var(--stat-flex)" },
-  { key: "comfort", label: "Comfort", color: "var(--stat-squad)" },
+  { key: "luxury", label: "Luxury", color: "var(--stat-luxury)" },
+  { key: "amenities", label: "Amenities", color: "var(--stat-amenities)" },
+  { key: "comfort", label: "Comfort", color: "var(--stat-comfort)" },
   { key: "value", label: "Value", color: "var(--stat-value)" },
-  { key: "location", label: "Location", color: "var(--stat-chaos)" },
-  { key: "service", label: "Service", color: "var(--stat-legacy)" },
+  { key: "location", label: "Location", color: "var(--stat-location)" },
+  { key: "service", label: "Service", color: "var(--stat-service)" },
 ];
 
 interface DisplayStat {
