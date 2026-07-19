@@ -5,7 +5,7 @@ import type { Prisma, User } from "@/generated/prisma/client";
 import { getSessionUser } from "@/lib/auth";
 import { syncUser } from "@/lib/userSync";
 
-export const PACK_COST = 250;
+export { PACK_COST } from "@/lib/game/economy";
 
 export class ApiError extends Error {
   constructor(
