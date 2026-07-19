@@ -155,6 +155,18 @@ export function TournamentBroadcast({
                 speed={speed}
                 seed={data.seed}
                 onFinished={advance}
+                onGoal={(_, goalIndex) => {
+                  announce({
+                    source: "tournament",
+                    tournamentId: data.id,
+                    cue: {
+                      kind: "match.goal",
+                      homeId: current.match.homeId,
+                      awayId: current.match.awayId,
+                      goalIndex,
+                    },
+                  });
+                }}
               />
             )}
             {current?.kind === "group-result" && <GroupResultView group={current.group} byId={byId} />}

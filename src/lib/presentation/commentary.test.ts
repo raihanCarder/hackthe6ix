@@ -44,6 +44,16 @@ describe("presentation commentary", () => {
     },
     {
       version: 1,
+      id: "cup:goal:0",
+      kind: "match.goal",
+      scorerName: "Hotel Alpha",
+      opponentName: "Hotel Bravo",
+      minute: 31,
+      scorerGoals: 1,
+      opponentGoals: 0,
+    },
+    {
+      version: 1,
       id: "cup:champion",
       kind: "competition.champion",
       championName: "Hotel Alpha",
@@ -66,6 +76,14 @@ describe("presentation commentary", () => {
     expect(winner).toContain("Hotel Bravo");
     expect(winner).toContain("2");
     expect(winner).toContain("1");
+  });
+
+  it("calls a goal with the trusted scorer and running score", () => {
+    const goalEvent = events.find((event) => event.kind === "match.goal");
+    const goal = renderCommentary(goalEvent as PresentationEvent);
+    expect(goal).toContain("Hotel Alpha");
+    expect(goal).toContain("1");
+    expect(goal).toContain("0");
   });
 
   it("rejects client-authored hotel facts", () => {
@@ -97,6 +115,23 @@ describe("presentation commentary", () => {
       commentaryRequestSchema.parse({
         source: "journey",
         cue: { kind: "journey.moment", moment: "say-any-client-text" },
+      }),
+    ).toThrow();
+  });
+
+  it("rejects client-authored goal facts", () => {
+    expect(() =>
+      commentaryRequestSchema.parse({
+        source: "tournament",
+        tournamentId: "tournament-1",
+        audio: true,
+        cue: {
+          kind: "match.goal",
+          homeId: "hotel-a",
+          awayId: "hotel-b",
+          goalIndex: 0,
+          scorerName: "invented scorer",
+        },
       }),
     ).toThrow();
   });

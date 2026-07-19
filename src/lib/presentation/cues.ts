@@ -28,6 +28,11 @@ const tournamentCueSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("matchup.introduction"), ...matchCueFields }).strict(),
   z.object({ kind: z.literal("match.winner"), ...matchCueFields }).strict(),
   z.object({
+    kind: z.literal("match.goal"),
+    ...matchCueFields,
+    goalIndex: z.number().int().min(0).max(12),
+  }).strict(),
+  z.object({
     kind: z.literal("hotel.advantage"),
     advantageIndex: z.number().int().min(0).max(2),
   }).strict(),

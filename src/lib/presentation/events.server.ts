@@ -2,6 +2,7 @@ import "server-only";
 import type { User } from "@/generated/prisma/client";
 import { getTournamentReplay } from "@/lib/api/tournaments";
 import type { MatchResult } from "@/lib/game/matchSim";
+import { buildPlaybackTimeline } from "@/lib/presentation/matchPlayback";
 import { ApiError } from "@/lib/api/core";
 import { prisma } from "@/lib/db";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
@@ -92,6 +93,23 @@ export async function resolvePresentationEvent(
         loserName: hotelName(replay.contenders, loserId),
         winnerGoals: match.winnerId === match.homeId ? match.homeGoals : match.awayGoals,
         loserGoals: match.winnerId === match.homeId ? match.awayGoals : match.homeGoals,
+      };
+    }
+    case "match.goal": {
+      const match = findMatch(replay, cue.homeId, cue.awayId);
+      const goal = buildPlaybackTimeline(match, { seed: replay.seed }).events
+        .filter((event) => event.kind === "goal")[cue.goalIndex];
+      if (!goal) throw new ApiError(404, "Goal not found in this match");
+      const opponentId = goal.propertyId === match.homeId ? match.awayId : match.homeId;
+      return {
+        version: 1,
+        id: `${replay.id}:goal:${match.homeId}:${match.awayId}:${cue.goalIndex}`,
+        kind: cue.kind,
+        scorerName: hotelName(replay.contenders, goal.propertyId),
+        opponentName: hotelName(replay.contenders, opponentId),
+        minute: goal.minute,
+        scorerGoals: goal.side === "home" ? goal.homeScore : goal.awayScore,
+        opponentGoals: goal.side === "home" ? goal.awayScore : goal.homeScore,
       };
     }
     case "hotel.advantage": {
