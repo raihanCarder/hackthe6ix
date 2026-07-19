@@ -440,6 +440,28 @@ body {
     inset 0 -8px 12px rgba(0, 0, 0, 0.08);
 }
 
+.hotel-card-nationality {
+  max-width: 49%;
+}
+
+.hotel-card-nationality .hotel-rarity-pill {
+  max-width: 100%;
+}
+
+.hotel-country-flag {
+  display: block;
+  width: clamp(1.8rem, 10.4cqw, 2.2rem);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  border: 1px solid color-mix(in srgb, var(--card-line-soft) 82%, black 18%);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
+  object-fit: cover;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18),
+    0 5px 10px rgba(0, 0, 0, 0.18);
+}
+
 .hotel-art {
   position: relative;
   flex: 0 0 auto;

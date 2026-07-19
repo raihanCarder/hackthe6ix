@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import type { CSSProperties } from "react";
+import { resolveHotelFlag } from "@/lib/data/hotelFlags";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
 import type { CardStats, Rarity } from "@/lib/game/cardStats";
 
@@ -107,6 +109,7 @@ export function HotelCard({
     ? compactLocation(hotel.address)
     : (hotel.address ?? compactLocation(hotel.address));
   const hasThumbnail = Boolean(hotel.thumbnailUrl);
+  const countryFlag = resolveHotelFlag(hotel);
 
   return (
     <article
@@ -127,9 +130,22 @@ export function HotelCard({
                 OVR
               </div>
             </div>
-            <span className="hotel-rarity-pill font-score shrink-0 truncate px-4 py-1 text-[10px] font-bold uppercase">
-              {RARITY_LABEL[rarity]}
-            </span>
+            <div className="hotel-card-nationality flex shrink-0 flex-col items-end gap-2">
+              <span className="hotel-rarity-pill font-score truncate px-4 py-1 text-[10px] font-bold uppercase">
+                {RARITY_LABEL[rarity]}
+              </span>
+              {countryFlag && (
+                <Image
+                  src={countryFlag.src}
+                  alt={countryFlag.alt}
+                  className="hotel-country-flag"
+                  width={32}
+                  height={21}
+                  loading="lazy"
+                  unoptimized
+                />
+              )}
+            </div>
           </div>
 
           <div

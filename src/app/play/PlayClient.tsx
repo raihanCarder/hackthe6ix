@@ -203,7 +203,7 @@ export function PlayClient() {
               Your card takes on 15 opponents from 15 different countries around the world. No
               interview, no wait — just bragging rights.
             </p>
-            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
+            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
           </motion.button>
         </div>
       </div>
