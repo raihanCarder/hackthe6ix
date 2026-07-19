@@ -7,3 +7,4 @@ export * from "./api/tournaments";
 export * from "./api/coins";
 export * from "./api/duel";
 export * from "./api/account";
+export * from "./api/karaoke";

@@ -104,3 +104,26 @@ export type PresentationUsage = Prisma.PresentationUsageModel
  * stat-call rounds (documentation/ideas/IDEA.md "3-card squad quick-match").
  */
 export type Duel = Prisma.DuelModel
+/**
+ * Model KaraokeDuel
+ * Bonus mode, unlocked only after finishing a PvP card Duel, against the same
+ * opponent. sourceDuelId pins the pairing to the two players who just
+ * finished that Duel, so both players are known immediately — no open
+ * matchmaking. Whoever taps "Play Bonus Karaoke Round" first is the
+ * inviter (invitedById); the other player must accept before either can
+ * pick a hotel ("picking"), after which ElevenLabs writes the songs
+ * (see ensureKaraokeReady, which runs once both cards are in). The judge is
+ * just a mic: each client measures its own player's sing-along loudness and
+ * submits a score — loudest performer wins (see submitKaraokeLoudnessScore).
+ */
+export type KaraokeDuel = Prisma.KaraokeDuelModel
+/**
+ * Model KaraokeSongAudio
+ * ElevenLabs Music output, cached the same way as PresentationAudio.
+ */
+export type KaraokeSongAudio = Prisma.KaraokeSongAudioModel
+/**
+ * Model KaraokeUsage
+ * Monthly generation-count ceiling (music isn't billed by character count like TTS).
+ */
+export type KaraokeUsage = Prisma.KaraokeUsageModel

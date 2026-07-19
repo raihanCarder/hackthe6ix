@@ -275,6 +275,7 @@ export type DuelWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Duel"> | Date | string
   player1?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   player2?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  bonusKaraoke?: Prisma.XOR<Prisma.KaraokeDuelNullableScalarRelationFilter, Prisma.KaraokeDuelWhereInput> | null
 }
 
 export type DuelOrderByWithRelationInput = {
@@ -293,6 +294,7 @@ export type DuelOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   player1?: Prisma.UserOrderByWithRelationInput
   player2?: Prisma.UserOrderByWithRelationInput
+  bonusKaraoke?: Prisma.KaraokeDuelOrderByWithRelationInput
 }
 
 export type DuelWhereUniqueInput = Prisma.AtLeast<{
@@ -314,6 +316,7 @@ export type DuelWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Duel"> | Date | string
   player1?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   player2?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  bonusKaraoke?: Prisma.XOR<Prisma.KaraokeDuelNullableScalarRelationFilter, Prisma.KaraokeDuelWhereInput> | null
 }, "id">
 
 export type DuelOrderByWithAggregationInput = {
@@ -370,6 +373,7 @@ export type DuelCreateInput = {
   updatedAt?: Date | string
   player1: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer1Input
   player2?: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer2Input
+  bonusKaraoke?: Prisma.KaraokeDuelCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelUncheckedCreateInput = {
@@ -386,6 +390,7 @@ export type DuelUncheckedCreateInput = {
   winnerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelUpdateInput = {
@@ -402,6 +407,7 @@ export type DuelUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   player1?: Prisma.UserUpdateOneRequiredWithoutDuelsAsPlayer1NestedInput
   player2?: Prisma.UserUpdateOneWithoutDuelsAsPlayer2NestedInput
+  bonusKaraoke?: Prisma.KaraokeDuelUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelUncheckedUpdateInput = {
@@ -418,6 +424,7 @@ export type DuelUncheckedUpdateInput = {
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelCreateManyInput = {
@@ -528,6 +535,11 @@ export type DuelSumOrderByAggregateInput = {
   player2Wins?: Prisma.SortOrder
 }
 
+export type DuelScalarRelationFilter = {
+  is?: Prisma.DuelWhereInput
+  isNot?: Prisma.DuelWhereInput
+}
+
 export type DuelCreateNestedManyWithoutPlayer1Input = {
   create?: Prisma.XOR<Prisma.DuelCreateWithoutPlayer1Input, Prisma.DuelUncheckedCreateWithoutPlayer1Input> | Prisma.DuelCreateWithoutPlayer1Input[] | Prisma.DuelUncheckedCreateWithoutPlayer1Input[]
   connectOrCreate?: Prisma.DuelCreateOrConnectWithoutPlayer1Input | Prisma.DuelCreateOrConnectWithoutPlayer1Input[]
@@ -612,6 +624,20 @@ export type DuelUncheckedUpdateManyWithoutPlayer2NestedInput = {
   deleteMany?: Prisma.DuelScalarWhereInput | Prisma.DuelScalarWhereInput[]
 }
 
+export type DuelCreateNestedOneWithoutBonusKaraokeInput = {
+  create?: Prisma.XOR<Prisma.DuelCreateWithoutBonusKaraokeInput, Prisma.DuelUncheckedCreateWithoutBonusKaraokeInput>
+  connectOrCreate?: Prisma.DuelCreateOrConnectWithoutBonusKaraokeInput
+  connect?: Prisma.DuelWhereUniqueInput
+}
+
+export type DuelUpdateOneRequiredWithoutBonusKaraokeNestedInput = {
+  create?: Prisma.XOR<Prisma.DuelCreateWithoutBonusKaraokeInput, Prisma.DuelUncheckedCreateWithoutBonusKaraokeInput>
+  connectOrCreate?: Prisma.DuelCreateOrConnectWithoutBonusKaraokeInput
+  upsert?: Prisma.DuelUpsertWithoutBonusKaraokeInput
+  connect?: Prisma.DuelWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DuelUpdateToOneWithWhereWithoutBonusKaraokeInput, Prisma.DuelUpdateWithoutBonusKaraokeInput>, Prisma.DuelUncheckedUpdateWithoutBonusKaraokeInput>
+}
+
 export type DuelCreateWithoutPlayer1Input = {
   id?: string
   status: string
@@ -625,6 +651,7 @@ export type DuelCreateWithoutPlayer1Input = {
   createdAt?: Date | string
   updatedAt?: Date | string
   player2?: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer2Input
+  bonusKaraoke?: Prisma.KaraokeDuelCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelUncheckedCreateWithoutPlayer1Input = {
@@ -640,6 +667,7 @@ export type DuelUncheckedCreateWithoutPlayer1Input = {
   winnerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelCreateOrConnectWithoutPlayer1Input = {
@@ -665,6 +693,7 @@ export type DuelCreateWithoutPlayer2Input = {
   createdAt?: Date | string
   updatedAt?: Date | string
   player1: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer1Input
+  bonusKaraoke?: Prisma.KaraokeDuelCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelUncheckedCreateWithoutPlayer2Input = {
@@ -680,6 +709,7 @@ export type DuelUncheckedCreateWithoutPlayer2Input = {
   winnerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedCreateNestedOneWithoutSourceDuelInput
 }
 
 export type DuelCreateOrConnectWithoutPlayer2Input = {
@@ -743,6 +773,86 @@ export type DuelUpdateManyWithWhereWithoutPlayer2Input = {
   data: Prisma.XOR<Prisma.DuelUpdateManyMutationInput, Prisma.DuelUncheckedUpdateManyWithoutPlayer2Input>
 }
 
+export type DuelCreateWithoutBonusKaraokeInput = {
+  id?: string
+  status: string
+  player1CardIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player2CardIds?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  turnPlayerId?: string | null
+  rounds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player1Wins?: number
+  player2Wins?: number
+  winnerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  player1: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer1Input
+  player2?: Prisma.UserCreateNestedOneWithoutDuelsAsPlayer2Input
+}
+
+export type DuelUncheckedCreateWithoutBonusKaraokeInput = {
+  id?: string
+  status: string
+  player1Id: string
+  player1CardIds: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player2Id?: string | null
+  player2CardIds?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  turnPlayerId?: string | null
+  rounds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player1Wins?: number
+  player2Wins?: number
+  winnerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DuelCreateOrConnectWithoutBonusKaraokeInput = {
+  where: Prisma.DuelWhereUniqueInput
+  create: Prisma.XOR<Prisma.DuelCreateWithoutBonusKaraokeInput, Prisma.DuelUncheckedCreateWithoutBonusKaraokeInput>
+}
+
+export type DuelUpsertWithoutBonusKaraokeInput = {
+  update: Prisma.XOR<Prisma.DuelUpdateWithoutBonusKaraokeInput, Prisma.DuelUncheckedUpdateWithoutBonusKaraokeInput>
+  create: Prisma.XOR<Prisma.DuelCreateWithoutBonusKaraokeInput, Prisma.DuelUncheckedCreateWithoutBonusKaraokeInput>
+  where?: Prisma.DuelWhereInput
+}
+
+export type DuelUpdateToOneWithWhereWithoutBonusKaraokeInput = {
+  where?: Prisma.DuelWhereInput
+  data: Prisma.XOR<Prisma.DuelUpdateWithoutBonusKaraokeInput, Prisma.DuelUncheckedUpdateWithoutBonusKaraokeInput>
+}
+
+export type DuelUpdateWithoutBonusKaraokeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  player1CardIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player2CardIds?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  turnPlayerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rounds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player1Wins?: Prisma.IntFieldUpdateOperationsInput | number
+  player2Wins?: Prisma.IntFieldUpdateOperationsInput | number
+  winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  player1?: Prisma.UserUpdateOneRequiredWithoutDuelsAsPlayer1NestedInput
+  player2?: Prisma.UserUpdateOneWithoutDuelsAsPlayer2NestedInput
+}
+
+export type DuelUncheckedUpdateWithoutBonusKaraokeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  player1Id?: Prisma.StringFieldUpdateOperationsInput | string
+  player1CardIds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player2Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  player2CardIds?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  turnPlayerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rounds?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  player1Wins?: Prisma.IntFieldUpdateOperationsInput | number
+  player2Wins?: Prisma.IntFieldUpdateOperationsInput | number
+  winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type DuelCreateManyPlayer1Input = {
   id?: string
   status: string
@@ -786,6 +896,7 @@ export type DuelUpdateWithoutPlayer1Input = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   player2?: Prisma.UserUpdateOneWithoutDuelsAsPlayer2NestedInput
+  bonusKaraoke?: Prisma.KaraokeDuelUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelUncheckedUpdateWithoutPlayer1Input = {
@@ -801,6 +912,7 @@ export type DuelUncheckedUpdateWithoutPlayer1Input = {
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelUncheckedUpdateManyWithoutPlayer1Input = {
@@ -831,6 +943,7 @@ export type DuelUpdateWithoutPlayer2Input = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   player1?: Prisma.UserUpdateOneRequiredWithoutDuelsAsPlayer1NestedInput
+  bonusKaraoke?: Prisma.KaraokeDuelUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelUncheckedUpdateWithoutPlayer2Input = {
@@ -846,6 +959,7 @@ export type DuelUncheckedUpdateWithoutPlayer2Input = {
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bonusKaraoke?: Prisma.KaraokeDuelUncheckedUpdateOneWithoutSourceDuelNestedInput
 }
 
 export type DuelUncheckedUpdateManyWithoutPlayer2Input = {
@@ -881,6 +995,7 @@ export type DuelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   player1?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   player2?: boolean | Prisma.Duel$player2Args<ExtArgs>
+  bonusKaraoke?: boolean | Prisma.Duel$bonusKaraokeArgs<ExtArgs>
 }, ExtArgs["result"]["duel"]>
 
 export type DuelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -939,6 +1054,7 @@ export type DuelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type DuelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   player1?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   player2?: boolean | Prisma.Duel$player2Args<ExtArgs>
+  bonusKaraoke?: boolean | Prisma.Duel$bonusKaraokeArgs<ExtArgs>
 }
 export type DuelIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   player1?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -954,6 +1070,7 @@ export type $DuelPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     player1: Prisma.$UserPayload<ExtArgs>
     player2: Prisma.$UserPayload<ExtArgs> | null
+    bonusKaraoke: Prisma.$KaraokeDuelPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1365,6 +1482,7 @@ export interface Prisma__DuelClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   player1<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   player2<T extends Prisma.Duel$player2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Duel$player2Args<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  bonusKaraoke<T extends Prisma.Duel$bonusKaraokeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Duel$bonusKaraokeArgs<ExtArgs>>): Prisma.Prisma__KaraokeDuelClient<runtime.Types.Result.GetResult<Prisma.$KaraokeDuelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1824,6 +1942,25 @@ export type Duel$player2Args<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Duel.bonusKaraoke
+ */
+export type Duel$bonusKaraokeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KaraokeDuel
+   */
+  select?: Prisma.KaraokeDuelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KaraokeDuel
+   */
+  omit?: Prisma.KaraokeDuelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KaraokeDuelInclude<ExtArgs> | null
+  where?: Prisma.KaraokeDuelWhereInput
 }
 
 /**

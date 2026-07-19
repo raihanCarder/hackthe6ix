@@ -43,3 +43,5 @@ e2e-shots/
 
 # keep the env template
 !.env.example
+
+certificates

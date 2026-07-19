@@ -39,6 +39,8 @@ model User {
   duelsAsPlayer1 Duel[]          @relation("DuelPlayer1")
   duelsAsPlayer2 Duel[]          @relation("DuelPlayer2")
   coinPurchases  CoinPurchase[]
+  karaokeDuelsAsPlayer1 KaraokeDuel[] @relation("KaraokeDuelPlayer1")
+  karaokeDuelsAsPlayer2 KaraokeDuel[] @relation("KaraokeDuelPlayer2")
 }
 
 model Stay22ApiCall {
@@ -208,5 +210,61 @@ model Duel {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  bonusKaraoke KaraokeDuel?
+
   @@index([status, createdAt])
+}
+
+/// Bonus mode, unlocked only after finishing a PvP card Duel, against the same
+/// opponent. sourceDuelId pins the pairing to the two players who just
+/// finished that Duel, so both players are known immediately — no open
+/// matchmaking. Whoever taps "Play Bonus Karaoke Round" first is the
+/// inviter (invitedById); the other player must accept before either can
+/// pick a hotel ("picking"), after which ElevenLabs writes the songs
+/// (see ensureKaraokeReady, which runs once both cards are in). The judge is
+/// just a mic: each client measures its own player's sing-along loudness and
+/// submits a score — loudest performer wins (see submitKaraokeLoudnessScore).
+model KaraokeDuel {
+  id                    String   @id @default(cuid())
+  status                String // "pending" | "declined" | "picking" | "generating" | "judging" | "complete"
+  sourceDuelId          String   @unique
+  sourceDuel            Duel     @relation(fields: [sourceDuelId], references: [id])
+  invitedById           String // userId who sent the bonus-round invite; the other participant must accept
+  player1Id             String
+  player1               User     @relation("KaraokeDuelPlayer1", fields: [player1Id], references: [id])
+  player1CardId         String? // SavedCard.id — the one hotel they're singing about
+  player2Id             String
+  player2               User     @relation("KaraokeDuelPlayer2", fields: [player2Id], references: [id])
+  player2CardId         String?
+  player1Lyrics         String?
+  player2Lyrics         String?
+  player1AudioCacheKey  String? // KaraokeSongAudio.cacheKey once composed
+  player2AudioCacheKey  String?
+  player1LoudnessScore  Float? // client-measured mic loudness while singing along, 0-100
+  player2LoudnessScore  Float?
+  winnerId              String?
+  verdict               Json? // { player1Score, player2Score, reasoning }
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+/// ElevenLabs Music output, cached the same way as PresentationAudio.
+model KaraokeSongAudio {
+  cacheKey     String   @id // sha256(modelId, prompt, durationMs, outputFormat)
+  prompt       String
+  modelId      String
+  outputFormat String
+  mimeType     String
+  audio        Bytes
+  durationMs   Int
+  createdAt    DateTime @default(now())
+}
+
+/// Monthly generation-count ceiling (music isn't billed by character count like TTS).
+model KaraokeUsage {
+  period          String   @id // UTC YYYY-MM
+  generationCount Int      @default(0)
+  updatedAt       DateTime @updatedAt
 }

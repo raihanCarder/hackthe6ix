@@ -62,7 +62,10 @@ export const ModelName = {
   PresentationRecap: 'PresentationRecap',
   PresentationAudio: 'PresentationAudio',
   PresentationUsage: 'PresentationUsage',
-  Duel: 'Duel'
+  Duel: 'Duel',
+  KaraokeDuel: 'KaraokeDuel',
+  KaraokeSongAudio: 'KaraokeSongAudio',
+  KaraokeUsage: 'KaraokeUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -271,6 +274,53 @@ export const DuelScalarFieldEnum = {
 } as const
 
 export type DuelScalarFieldEnum = (typeof DuelScalarFieldEnum)[keyof typeof DuelScalarFieldEnum]
+
+
+export const KaraokeDuelScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  sourceDuelId: 'sourceDuelId',
+  invitedById: 'invitedById',
+  player1Id: 'player1Id',
+  player1CardId: 'player1CardId',
+  player2Id: 'player2Id',
+  player2CardId: 'player2CardId',
+  player1Lyrics: 'player1Lyrics',
+  player2Lyrics: 'player2Lyrics',
+  player1AudioCacheKey: 'player1AudioCacheKey',
+  player2AudioCacheKey: 'player2AudioCacheKey',
+  player1LoudnessScore: 'player1LoudnessScore',
+  player2LoudnessScore: 'player2LoudnessScore',
+  winnerId: 'winnerId',
+  verdict: 'verdict',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KaraokeDuelScalarFieldEnum = (typeof KaraokeDuelScalarFieldEnum)[keyof typeof KaraokeDuelScalarFieldEnum]
+
+
+export const KaraokeSongAudioScalarFieldEnum = {
+  cacheKey: 'cacheKey',
+  prompt: 'prompt',
+  modelId: 'modelId',
+  outputFormat: 'outputFormat',
+  mimeType: 'mimeType',
+  audio: 'audio',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type KaraokeSongAudioScalarFieldEnum = (typeof KaraokeSongAudioScalarFieldEnum)[keyof typeof KaraokeSongAudioScalarFieldEnum]
+
+
+export const KaraokeUsageScalarFieldEnum = {
+  period: 'period',
+  generationCount: 'generationCount',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KaraokeUsageScalarFieldEnum = (typeof KaraokeUsageScalarFieldEnum)[keyof typeof KaraokeUsageScalarFieldEnum]
 
 
 export const SortOrder = {

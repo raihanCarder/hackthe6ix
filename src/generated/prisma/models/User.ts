@@ -404,6 +404,8 @@ export type UserWhereInput = {
   duelsAsPlayer1?: Prisma.DuelListRelationFilter
   duelsAsPlayer2?: Prisma.DuelListRelationFilter
   coinPurchases?: Prisma.CoinPurchaseListRelationFilter
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelListRelationFilter
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -437,6 +439,8 @@ export type UserOrderByWithRelationInput = {
   duelsAsPlayer1?: Prisma.DuelOrderByRelationAggregateInput
   duelsAsPlayer2?: Prisma.DuelOrderByRelationAggregateInput
   coinPurchases?: Prisma.CoinPurchaseOrderByRelationAggregateInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelOrderByRelationAggregateInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -473,6 +477,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   duelsAsPlayer1?: Prisma.DuelListRelationFilter
   duelsAsPlayer2?: Prisma.DuelListRelationFilter
   coinPurchases?: Prisma.CoinPurchaseListRelationFilter
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelListRelationFilter
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelListRelationFilter
 }, "id" | "auth0Sub">
 
 export type UserOrderByWithAggregationInput = {
@@ -564,6 +570,8 @@ export type UserCreateInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateInput = {
@@ -597,6 +605,8 @@ export type UserUncheckedCreateInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUpdateInput = {
@@ -630,6 +640,8 @@ export type UserUpdateInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -663,6 +675,8 @@ export type UserUncheckedUpdateInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateManyInput = {
@@ -991,6 +1005,34 @@ export type UserUpdateOneWithoutDuelsAsPlayer2NestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDuelsAsPlayer2Input, Prisma.UserUpdateWithoutDuelsAsPlayer2Input>, Prisma.UserUncheckedUpdateWithoutDuelsAsPlayer2Input>
 }
 
+export type UserCreateNestedOneWithoutKaraokeDuelsAsPlayer1Input = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer1Input>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKaraokeDuelsAsPlayer1Input
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutKaraokeDuelsAsPlayer2Input = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer2Input>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKaraokeDuelsAsPlayer2Input
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutKaraokeDuelsAsPlayer1NestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer1Input>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKaraokeDuelsAsPlayer1Input
+  upsert?: Prisma.UserUpsertWithoutKaraokeDuelsAsPlayer1Input
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer1Input>, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer1Input>
+}
+
+export type UserUpdateOneRequiredWithoutKaraokeDuelsAsPlayer2NestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer2Input>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutKaraokeDuelsAsPlayer2Input
+  upsert?: Prisma.UserUpsertWithoutKaraokeDuelsAsPlayer2Input
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer2Input>, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer2Input>
+}
+
 export type UserCreateWithoutApiCallsInput = {
   id?: string
   auth0Sub: string
@@ -1021,6 +1063,8 @@ export type UserCreateWithoutApiCallsInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutApiCallsInput = {
@@ -1053,6 +1097,8 @@ export type UserUncheckedCreateWithoutApiCallsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutApiCallsInput = {
@@ -1101,6 +1147,8 @@ export type UserUpdateWithoutApiCallsInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutApiCallsInput = {
@@ -1133,6 +1181,8 @@ export type UserUncheckedUpdateWithoutApiCallsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutPackOpensInput = {
@@ -1165,6 +1215,8 @@ export type UserCreateWithoutPackOpensInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutPackOpensInput = {
@@ -1197,6 +1249,8 @@ export type UserUncheckedCreateWithoutPackOpensInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutPackOpensInput = {
@@ -1245,6 +1299,8 @@ export type UserUpdateWithoutPackOpensInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutPackOpensInput = {
@@ -1277,6 +1333,8 @@ export type UserUncheckedUpdateWithoutPackOpensInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutCityClaimsInput = {
@@ -1309,6 +1367,8 @@ export type UserCreateWithoutCityClaimsInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutCityClaimsInput = {
@@ -1341,6 +1401,8 @@ export type UserUncheckedCreateWithoutCityClaimsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutCityClaimsInput = {
@@ -1389,6 +1451,8 @@ export type UserUpdateWithoutCityClaimsInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutCityClaimsInput = {
@@ -1421,6 +1485,8 @@ export type UserUncheckedUpdateWithoutCityClaimsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutCoinPurchasesInput = {
@@ -1453,6 +1519,8 @@ export type UserCreateWithoutCoinPurchasesInput = {
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutCoinPurchasesInput = {
@@ -1485,6 +1553,8 @@ export type UserUncheckedCreateWithoutCoinPurchasesInput = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutCoinPurchasesInput = {
@@ -1533,6 +1603,8 @@ export type UserUpdateWithoutCoinPurchasesInput = {
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutCoinPurchasesInput = {
@@ -1565,6 +1637,8 @@ export type UserUncheckedUpdateWithoutCoinPurchasesInput = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutCardsInput = {
@@ -1597,6 +1671,8 @@ export type UserCreateWithoutCardsInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutCardsInput = {
@@ -1629,6 +1705,8 @@ export type UserUncheckedCreateWithoutCardsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutCardsInput = {
@@ -1677,6 +1755,8 @@ export type UserUpdateWithoutCardsInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutCardsInput = {
@@ -1709,6 +1789,8 @@ export type UserUncheckedUpdateWithoutCardsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutTournamentsInput = {
@@ -1741,6 +1823,8 @@ export type UserCreateWithoutTournamentsInput = {
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutTournamentsInput = {
@@ -1773,6 +1857,8 @@ export type UserUncheckedCreateWithoutTournamentsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutTournamentsInput = {
@@ -1821,6 +1907,8 @@ export type UserUpdateWithoutTournamentsInput = {
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutTournamentsInput = {
@@ -1853,6 +1941,8 @@ export type UserUncheckedUpdateWithoutTournamentsInput = {
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserCreateWithoutDuelsAsPlayer1Input = {
@@ -1885,6 +1975,8 @@ export type UserCreateWithoutDuelsAsPlayer1Input = {
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
   duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutDuelsAsPlayer1Input = {
@@ -1917,6 +2009,8 @@ export type UserUncheckedCreateWithoutDuelsAsPlayer1Input = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
   duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutDuelsAsPlayer1Input = {
@@ -1954,6 +2048,8 @@ export type UserCreateWithoutDuelsAsPlayer2Input = {
   apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
   duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
   coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserUncheckedCreateWithoutDuelsAsPlayer2Input = {
@@ -1986,6 +2082,8 @@ export type UserUncheckedCreateWithoutDuelsAsPlayer2Input = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
   duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
   coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
 }
 
 export type UserCreateOrConnectWithoutDuelsAsPlayer2Input = {
@@ -2034,6 +2132,8 @@ export type UserUpdateWithoutDuelsAsPlayer1Input = {
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
   duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutDuelsAsPlayer1Input = {
@@ -2066,6 +2166,8 @@ export type UserUncheckedUpdateWithoutDuelsAsPlayer1Input = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
   duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUpsertWithoutDuelsAsPlayer2Input = {
@@ -2109,6 +2211,8 @@ export type UserUpdateWithoutDuelsAsPlayer2Input = {
   apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
   duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
   coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
 }
 
 export type UserUncheckedUpdateWithoutDuelsAsPlayer2Input = {
@@ -2141,6 +2245,312 @@ export type UserUncheckedUpdateWithoutDuelsAsPlayer2Input = {
   apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
   duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
   coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
+}
+
+export type UserCreateWithoutKaraokeDuelsAsPlayer1Input = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  bio?: string
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
+  duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer2Input
+}
+
+export type UserUncheckedCreateWithoutKaraokeDuelsAsPlayer1Input = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  bio?: string
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardUncheckedCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
+  duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer2Input
+}
+
+export type UserCreateOrConnectWithoutKaraokeDuelsAsPlayer1Input = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer1Input>
+}
+
+export type UserCreateWithoutKaraokeDuelsAsPlayer2Input = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  bio?: string
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallCreateNestedManyWithoutUserInput
+  duelsAsPlayer1?: Prisma.DuelCreateNestedManyWithoutPlayer1Input
+  duelsAsPlayer2?: Prisma.DuelCreateNestedManyWithoutPlayer2Input
+  coinPurchases?: Prisma.CoinPurchaseCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelCreateNestedManyWithoutPlayer1Input
+}
+
+export type UserUncheckedCreateWithoutKaraokeDuelsAsPlayer2Input = {
+  id?: string
+  auth0Sub: string
+  username: string
+  email?: string | null
+  avatarUrl?: string | null
+  bio?: string
+  wins?: number
+  losses?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currency?: number
+  xp?: number
+  level?: number
+  packsOpened?: number
+  matchesPlayed?: number
+  mvpCount?: number
+  numberOfKids?: number
+  homeCity?: string | null
+  defaultAdults?: number
+  lastLoginAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cards?: Prisma.SavedCardUncheckedCreateNestedManyWithoutUserInput
+  packOpens?: Prisma.PackOpenUncheckedCreateNestedManyWithoutUserInput
+  cityClaims?: Prisma.CityPackClaimUncheckedCreateNestedManyWithoutUserInput
+  tournaments?: Prisma.TournamentUncheckedCreateNestedManyWithoutUserInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedCreateNestedManyWithoutUserInput
+  duelsAsPlayer1?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer1Input
+  duelsAsPlayer2?: Prisma.DuelUncheckedCreateNestedManyWithoutPlayer2Input
+  coinPurchases?: Prisma.CoinPurchaseUncheckedCreateNestedManyWithoutUserInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedCreateNestedManyWithoutPlayer1Input
+}
+
+export type UserCreateOrConnectWithoutKaraokeDuelsAsPlayer2Input = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer2Input>
+}
+
+export type UserUpsertWithoutKaraokeDuelsAsPlayer1Input = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer1Input>
+  create: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer1Input>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutKaraokeDuelsAsPlayer1Input = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer1Input, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer1Input>
+}
+
+export type UserUpdateWithoutKaraokeDuelsAsPlayer1Input = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
+  duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUpdateManyWithoutPlayer2NestedInput
+}
+
+export type UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer1Input = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUncheckedUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer2?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer2NestedInput
+}
+
+export type UserUpsertWithoutKaraokeDuelsAsPlayer2Input = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer2Input>
+  create: Prisma.XOR<Prisma.UserCreateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedCreateWithoutKaraokeDuelsAsPlayer2Input>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutKaraokeDuelsAsPlayer2Input = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutKaraokeDuelsAsPlayer2Input, Prisma.UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer2Input>
+}
+
+export type UserUpdateWithoutKaraokeDuelsAsPlayer2Input = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUpdateManyWithoutUserNestedInput
+  duelsAsPlayer1?: Prisma.DuelUpdateManyWithoutPlayer1NestedInput
+  duelsAsPlayer2?: Prisma.DuelUpdateManyWithoutPlayer2NestedInput
+  coinPurchases?: Prisma.CoinPurchaseUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUpdateManyWithoutPlayer1NestedInput
+}
+
+export type UserUncheckedUpdateWithoutKaraokeDuelsAsPlayer2Input = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth0Sub?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  wins?: Prisma.IntFieldUpdateOperationsInput | number
+  losses?: Prisma.IntFieldUpdateOperationsInput | number
+  currentWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  bestWinStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.IntFieldUpdateOperationsInput | number
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  packsOpened?: Prisma.IntFieldUpdateOperationsInput | number
+  matchesPlayed?: Prisma.IntFieldUpdateOperationsInput | number
+  mvpCount?: Prisma.IntFieldUpdateOperationsInput | number
+  numberOfKids?: Prisma.IntFieldUpdateOperationsInput | number
+  homeCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  defaultAdults?: Prisma.IntFieldUpdateOperationsInput | number
+  lastLoginAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cards?: Prisma.SavedCardUncheckedUpdateManyWithoutUserNestedInput
+  packOpens?: Prisma.PackOpenUncheckedUpdateManyWithoutUserNestedInput
+  cityClaims?: Prisma.CityPackClaimUncheckedUpdateManyWithoutUserNestedInput
+  tournaments?: Prisma.TournamentUncheckedUpdateManyWithoutUserNestedInput
+  apiCalls?: Prisma.Stay22ApiCallUncheckedUpdateManyWithoutUserNestedInput
+  duelsAsPlayer1?: Prisma.DuelUncheckedUpdateManyWithoutPlayer1NestedInput
+  duelsAsPlayer2?: Prisma.DuelUncheckedUpdateManyWithoutPlayer2NestedInput
+  coinPurchases?: Prisma.CoinPurchaseUncheckedUpdateManyWithoutUserNestedInput
+  karaokeDuelsAsPlayer1?: Prisma.KaraokeDuelUncheckedUpdateManyWithoutPlayer1NestedInput
 }
 
 
@@ -2157,6 +2567,8 @@ export type UserCountOutputType = {
   duelsAsPlayer1: number
   duelsAsPlayer2: number
   coinPurchases: number
+  karaokeDuelsAsPlayer1: number
+  karaokeDuelsAsPlayer2: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2168,6 +2580,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   duelsAsPlayer1?: boolean | UserCountOutputTypeCountDuelsAsPlayer1Args
   duelsAsPlayer2?: boolean | UserCountOutputTypeCountDuelsAsPlayer2Args
   coinPurchases?: boolean | UserCountOutputTypeCountCoinPurchasesArgs
+  karaokeDuelsAsPlayer1?: boolean | UserCountOutputTypeCountKaraokeDuelsAsPlayer1Args
+  karaokeDuelsAsPlayer2?: boolean | UserCountOutputTypeCountKaraokeDuelsAsPlayer2Args
 }
 
 /**
@@ -2236,6 +2650,20 @@ export type UserCountOutputTypeCountCoinPurchasesArgs<ExtArgs extends runtime.Ty
   where?: Prisma.CoinPurchaseWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountKaraokeDuelsAsPlayer1Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KaraokeDuelWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountKaraokeDuelsAsPlayer2Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KaraokeDuelWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2268,6 +2696,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   duelsAsPlayer1?: boolean | Prisma.User$duelsAsPlayer1Args<ExtArgs>
   duelsAsPlayer2?: boolean | Prisma.User$duelsAsPlayer2Args<ExtArgs>
   coinPurchases?: boolean | Prisma.User$coinPurchasesArgs<ExtArgs>
+  karaokeDuelsAsPlayer1?: boolean | Prisma.User$karaokeDuelsAsPlayer1Args<ExtArgs>
+  karaokeDuelsAsPlayer2?: boolean | Prisma.User$karaokeDuelsAsPlayer2Args<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2356,6 +2786,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   duelsAsPlayer1?: boolean | Prisma.User$duelsAsPlayer1Args<ExtArgs>
   duelsAsPlayer2?: boolean | Prisma.User$duelsAsPlayer2Args<ExtArgs>
   coinPurchases?: boolean | Prisma.User$coinPurchasesArgs<ExtArgs>
+  karaokeDuelsAsPlayer1?: boolean | Prisma.User$karaokeDuelsAsPlayer1Args<ExtArgs>
+  karaokeDuelsAsPlayer2?: boolean | Prisma.User$karaokeDuelsAsPlayer2Args<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2372,6 +2804,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     duelsAsPlayer1: Prisma.$DuelPayload<ExtArgs>[]
     duelsAsPlayer2: Prisma.$DuelPayload<ExtArgs>[]
     coinPurchases: Prisma.$CoinPurchasePayload<ExtArgs>[]
+    karaokeDuelsAsPlayer1: Prisma.$KaraokeDuelPayload<ExtArgs>[]
+    karaokeDuelsAsPlayer2: Prisma.$KaraokeDuelPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2798,6 +3232,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   duelsAsPlayer1<T extends Prisma.User$duelsAsPlayer1Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$duelsAsPlayer1Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DuelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   duelsAsPlayer2<T extends Prisma.User$duelsAsPlayer2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$duelsAsPlayer2Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DuelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coinPurchases<T extends Prisma.User$coinPurchasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$coinPurchasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoinPurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  karaokeDuelsAsPlayer1<T extends Prisma.User$karaokeDuelsAsPlayer1Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$karaokeDuelsAsPlayer1Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KaraokeDuelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  karaokeDuelsAsPlayer2<T extends Prisma.User$karaokeDuelsAsPlayer2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$karaokeDuelsAsPlayer2Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KaraokeDuelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3431,6 +3867,54 @@ export type User$coinPurchasesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.CoinPurchaseScalarFieldEnum | Prisma.CoinPurchaseScalarFieldEnum[]
+}
+
+/**
+ * User.karaokeDuelsAsPlayer1
+ */
+export type User$karaokeDuelsAsPlayer1Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KaraokeDuel
+   */
+  select?: Prisma.KaraokeDuelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KaraokeDuel
+   */
+  omit?: Prisma.KaraokeDuelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KaraokeDuelInclude<ExtArgs> | null
+  where?: Prisma.KaraokeDuelWhereInput
+  orderBy?: Prisma.KaraokeDuelOrderByWithRelationInput | Prisma.KaraokeDuelOrderByWithRelationInput[]
+  cursor?: Prisma.KaraokeDuelWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KaraokeDuelScalarFieldEnum | Prisma.KaraokeDuelScalarFieldEnum[]
+}
+
+/**
+ * User.karaokeDuelsAsPlayer2
+ */
+export type User$karaokeDuelsAsPlayer2Args<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KaraokeDuel
+   */
+  select?: Prisma.KaraokeDuelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KaraokeDuel
+   */
+  omit?: Prisma.KaraokeDuelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KaraokeDuelInclude<ExtArgs> | null
+  where?: Prisma.KaraokeDuelWhereInput
+  orderBy?: Prisma.KaraokeDuelOrderByWithRelationInput | Prisma.KaraokeDuelOrderByWithRelationInput[]
+  cursor?: Prisma.KaraokeDuelWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KaraokeDuelScalarFieldEnum | Prisma.KaraokeDuelScalarFieldEnum[]
 }
 
 /**

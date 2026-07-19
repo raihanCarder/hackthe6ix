@@ -395,7 +395,10 @@ export const ModelName = {
   PresentationRecap: 'PresentationRecap',
   PresentationAudio: 'PresentationAudio',
   PresentationUsage: 'PresentationUsage',
-  Duel: 'Duel'
+  Duel: 'Duel',
+  KaraokeDuel: 'KaraokeDuel',
+  KaraokeSongAudio: 'KaraokeSongAudio',
+  KaraokeUsage: 'KaraokeUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -411,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationRecap" | "presentationAudio" | "presentationUsage" | "duel"
+    modelProps: "user" | "stay22ApiCall" | "hotelSnapshot" | "packOpen" | "cityPackClaim" | "coinPurchase" | "savedCard" | "tournament" | "presentationRecap" | "presentationAudio" | "presentationUsage" | "duel" | "karaokeDuel" | "karaokeSongAudio" | "karaokeUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1303,6 +1306,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    KaraokeDuel: {
+      payload: Prisma.$KaraokeDuelPayload<ExtArgs>
+      fields: Prisma.KaraokeDuelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KaraokeDuelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KaraokeDuelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        findFirst: {
+          args: Prisma.KaraokeDuelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KaraokeDuelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        findMany: {
+          args: Prisma.KaraokeDuelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>[]
+        }
+        create: {
+          args: Prisma.KaraokeDuelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        createMany: {
+          args: Prisma.KaraokeDuelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KaraokeDuelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>[]
+        }
+        delete: {
+          args: Prisma.KaraokeDuelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        update: {
+          args: Prisma.KaraokeDuelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        deleteMany: {
+          args: Prisma.KaraokeDuelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KaraokeDuelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KaraokeDuelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>[]
+        }
+        upsert: {
+          args: Prisma.KaraokeDuelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeDuelPayload>
+        }
+        aggregate: {
+          args: Prisma.KaraokeDuelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKaraokeDuel>
+        }
+        groupBy: {
+          args: Prisma.KaraokeDuelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeDuelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KaraokeDuelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeDuelCountAggregateOutputType> | number
+        }
+      }
+    }
+    KaraokeSongAudio: {
+      payload: Prisma.$KaraokeSongAudioPayload<ExtArgs>
+      fields: Prisma.KaraokeSongAudioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KaraokeSongAudioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KaraokeSongAudioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        findFirst: {
+          args: Prisma.KaraokeSongAudioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KaraokeSongAudioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        findMany: {
+          args: Prisma.KaraokeSongAudioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>[]
+        }
+        create: {
+          args: Prisma.KaraokeSongAudioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        createMany: {
+          args: Prisma.KaraokeSongAudioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KaraokeSongAudioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>[]
+        }
+        delete: {
+          args: Prisma.KaraokeSongAudioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        update: {
+          args: Prisma.KaraokeSongAudioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        deleteMany: {
+          args: Prisma.KaraokeSongAudioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KaraokeSongAudioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KaraokeSongAudioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>[]
+        }
+        upsert: {
+          args: Prisma.KaraokeSongAudioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeSongAudioPayload>
+        }
+        aggregate: {
+          args: Prisma.KaraokeSongAudioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKaraokeSongAudio>
+        }
+        groupBy: {
+          args: Prisma.KaraokeSongAudioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeSongAudioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KaraokeSongAudioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeSongAudioCountAggregateOutputType> | number
+        }
+      }
+    }
+    KaraokeUsage: {
+      payload: Prisma.$KaraokeUsagePayload<ExtArgs>
+      fields: Prisma.KaraokeUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KaraokeUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KaraokeUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.KaraokeUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KaraokeUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        findMany: {
+          args: Prisma.KaraokeUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>[]
+        }
+        create: {
+          args: Prisma.KaraokeUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        createMany: {
+          args: Prisma.KaraokeUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KaraokeUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.KaraokeUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        update: {
+          args: Prisma.KaraokeUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.KaraokeUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KaraokeUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KaraokeUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.KaraokeUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KaraokeUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.KaraokeUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKaraokeUsage>
+        }
+        groupBy: {
+          args: Prisma.KaraokeUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KaraokeUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KaraokeUsageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1532,6 +1757,53 @@ export const DuelScalarFieldEnum = {
 } as const
 
 export type DuelScalarFieldEnum = (typeof DuelScalarFieldEnum)[keyof typeof DuelScalarFieldEnum]
+
+
+export const KaraokeDuelScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  sourceDuelId: 'sourceDuelId',
+  invitedById: 'invitedById',
+  player1Id: 'player1Id',
+  player1CardId: 'player1CardId',
+  player2Id: 'player2Id',
+  player2CardId: 'player2CardId',
+  player1Lyrics: 'player1Lyrics',
+  player2Lyrics: 'player2Lyrics',
+  player1AudioCacheKey: 'player1AudioCacheKey',
+  player2AudioCacheKey: 'player2AudioCacheKey',
+  player1LoudnessScore: 'player1LoudnessScore',
+  player2LoudnessScore: 'player2LoudnessScore',
+  winnerId: 'winnerId',
+  verdict: 'verdict',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KaraokeDuelScalarFieldEnum = (typeof KaraokeDuelScalarFieldEnum)[keyof typeof KaraokeDuelScalarFieldEnum]
+
+
+export const KaraokeSongAudioScalarFieldEnum = {
+  cacheKey: 'cacheKey',
+  prompt: 'prompt',
+  modelId: 'modelId',
+  outputFormat: 'outputFormat',
+  mimeType: 'mimeType',
+  audio: 'audio',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type KaraokeSongAudioScalarFieldEnum = (typeof KaraokeSongAudioScalarFieldEnum)[keyof typeof KaraokeSongAudioScalarFieldEnum]
+
+
+export const KaraokeUsageScalarFieldEnum = {
+  period: 'period',
+  generationCount: 'generationCount',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KaraokeUsageScalarFieldEnum = (typeof KaraokeUsageScalarFieldEnum)[keyof typeof KaraokeUsageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1793,6 +2065,9 @@ export type GlobalOmitConfig = {
   presentationAudio?: Prisma.PresentationAudioOmit
   presentationUsage?: Prisma.PresentationUsageOmit
   duel?: Prisma.DuelOmit
+  karaokeDuel?: Prisma.KaraokeDuelOmit
+  karaokeSongAudio?: Prisma.KaraokeSongAudioOmit
+  karaokeUsage?: Prisma.KaraokeUsageOmit
 }
 
 /* Types for Logging */

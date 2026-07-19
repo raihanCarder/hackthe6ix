@@ -211,9 +211,13 @@ const NAV_ITEMS: NavItem[] = [
     label: "Play",
     icon: IconPlay,
     match: (p) =>
+     
       p.startsWith("/play") ||
+     
       p.startsWith("/tournament/") ||
-      p.startsWith("/duel"),
+     
+      p.startsWith("/duel") ||
+      p.startsWith("/karaoke"),
   },
 ];
 

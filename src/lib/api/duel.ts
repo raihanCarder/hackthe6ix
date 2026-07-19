@@ -5,6 +5,7 @@ import type { NormalizedAccommodation } from "@/lib/engine/types";
 import { computeCardStats, overallRating } from "@/lib/game/cardStats";
 import { computeDuelRewards, type DuelRound } from "@/lib/game/duelRewards";
 import { callStat, cancelWaitingDuel, requireDuelParticipant, startOrJoinDuel } from "@/lib/duel";
+import { findKaraokeDuelBySource } from "@/lib/karaoke/duel";
 import { prisma } from "@/lib/db";
 
 export const startDuelSchema = z.object({
@@ -96,6 +97,16 @@ export async function getDuelView(user: User, duelId: string) {
       ? computeDuelRewards(rounds, duel.winnerId, user.id, isPlayer1, myCardIds ?? [])
       : null;
 
+  const karaokeDuelRow =
+    duel.status === "complete" && duel.player2Id ? await findKaraokeDuelBySource(duel.id) : null;
+  const karaokeDuel = karaokeDuelRow
+    ? {
+        id: karaokeDuelRow.id,
+        status: karaokeDuelRow.status,
+        invitedByMe: karaokeDuelRow.invitedById === user.id,
+      }
+    : null;
+
   return {
     id: duel.id,
     status: duel.status,
@@ -123,5 +134,6 @@ export async function getDuelView(user: User, duelId: string) {
     })),
     cards,
     rewards,
+    karaokeDuel,
   };
 }
