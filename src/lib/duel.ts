@@ -23,12 +23,10 @@ export async function startOrJoinDuel(
 ): Promise<{ duelId: string; matched: boolean }> {
   await assertOwnsSquad(user.id, cardIds);
 
-  // Someone may have already matched into our waiting row since the last call.
-  const inFlight = await prisma.duel.findFirst({
-    where: { status: { in: ["waiting", "active"] }, OR: [{ player1Id: user.id }, { player2Id: user.id }] },
-    orderBy: { createdAt: "desc" },
+  const existing = await prisma.duel.findFirst({
+    where: { player1Id: user.id, status: "waiting" },
   });
-  if (inFlight?.status === "active") return { duelId: inFlight.id, matched: true };
+  if (existing) return { duelId: existing.id, matched: false };
 
   const { duel, matched } = await prisma.$transaction(async (tx) => {
     const rows = await tx.$queryRaw<{ id: string; player1Id: string }[]>`
@@ -50,12 +48,8 @@ export async function startOrJoinDuel(
           turnPlayerId: waiting.player1Id,
         },
       });
-      // Our own stale waiting row (created by an earlier race) is now redundant.
-      if (inFlight) await tx.duel.deleteMany({ where: { id: inFlight.id, status: "waiting" } });
       return { duel: joined, matched: true };
     }
-
-    if (inFlight) return { duel: inFlight, matched: false };
 
     const created = await tx.duel.create({
       data: { status: "waiting", player1Id: user.id, player1CardIds: asJson(cardIds) },

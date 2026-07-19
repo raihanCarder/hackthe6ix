@@ -45,22 +45,17 @@ export function DuelClient() {
     };
   }, []);
 
-  // Waiting room: retry matchmaking (not just read status) so two waiting
-  // rows created by a start-search race can still find each other.
+  // Waiting room: listen for a matched opponent and jump into the duel.
   useEffect(() => {
     if (step !== "waiting" || !duelId) return;
     cancelledRef.current = false;
 
     async function checkStatus() {
-      const response = await fetch("/api/duel/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardIds: squad }),
-      });
+      const response = await fetch(`/api/duel/${duelId}`);
       if (!response.ok || cancelledRef.current) return;
       const data = await response.json();
-      if (data.matched && !cancelledRef.current) {
-        router.push(`/duel/${data.duelId}`);
+      if (data.status === "active" && !cancelledRef.current) {
+        router.push(`/duel/${duelId}`);
       }
     }
 
@@ -70,7 +65,7 @@ export function DuelClient() {
       cancelledRef.current = true;
       clearInterval(interval);
     };
-  }, [step, duelId, squad, router]);
+  }, [step, duelId, router]);
 
   function toggleCard(id: string) {
     setSquad((prev) => {

@@ -7,7 +7,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Migrations need a direct connection; Accelerate's prisma+postgres:// URL can't run them.
-    url: process.env.POSTGRES_URL || env("DATABASE_URL"),
+    url: env("DATABASE_URL"),
   },
 });
