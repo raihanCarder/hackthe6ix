@@ -13,8 +13,7 @@ interface CitySuggestion {
   label: string;
 }
 
-const field =
-  "w-full rounded border border-chalk/25 bg-pitch-950 px-3 py-2 text-chalk placeholder:text-chalk-dim/60";
+const field = "input-field";
 
 export default function SettingsPage() {
   const [form, setForm] = useState<Settings | null>(null);
@@ -93,7 +92,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-      <p className="eyebrow">Manager settings</p>
+      <p className="eyebrow">Account settings</p>
       <h1 className="font-display mt-2 text-3xl text-chalk">Personal info</h1>
       <p className="mt-2 text-sm text-chalk-dim">
         Used to prefill your trip searches with the right party size.
@@ -151,7 +150,7 @@ export default function SettingsPage() {
           )}
         </label>
         <div className="sm:col-span-2">
-          <button type="submit" disabled={busy} className="btn-gold w-full rounded-lg px-6 py-3">
+          <button type="submit" disabled={busy} className="btn-primary w-full rounded-lg px-6 py-3">
             {busy ? "Saving…" : "Save settings"}
           </button>
         </div>

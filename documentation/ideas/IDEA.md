@@ -154,16 +154,16 @@ When a saved card is viewed from history, show the stored snapshot. When the use
 
 ## Card Stats
 
-Convert live Stay22 attributes into football-card stats:
+Convert live Stay22 attributes into hotel-card stats:
 
 | Stay22 Attribute | Card Stat |
 | --- | --- |
-| Guest rating | VIBE |
-| Review count | LEGACY |
+| Guest rating, shrunk toward neutral by review count | COMFORT |
+| Guests, bedrooms, beds | AMENITIES |
+| Star rating | LUXURY |
 | Relative trip price | VALUE |
-| Free cancellation, instant booking, supplier count | FLEX |
-| Guests, bedrooms, beds | SQUAD |
-| Property type rarity and cosmetic seed | CHAOS |
+| Distance from destination | LOCATION |
+| Free cancellation, instant booking, supplier count | SERVICE |
 
 Rarity levels:
 

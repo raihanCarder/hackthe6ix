@@ -62,8 +62,7 @@ export async function getTournamentReplay(user: User, tournamentId: string) {
       const hotel = hotelById.get(propertyId) as NormalizedAccommodation | undefined;
       if (!hotel) return null;
       const card = userCardByProperty.get(propertyId);
-      const cosmeticSeed = card?.cosmeticSeed ?? `npc:${tournament.seed}:${propertyId}`;
-      const stats = computeCardStats(hotel, prices, cosmeticSeed);
+      const stats = computeCardStats(hotel, prices);
       const engineStats = rankById.get(propertyId);
       return {
         propertyId,

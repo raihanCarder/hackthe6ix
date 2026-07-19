@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { QUESTION_BANK } from "@/lib/engine/questionnaire";
+import { geminiQuestionTimeoutMs } from "@/lib/gemini/config";
 import type {
   MetricAvailability,
   PreferenceQuestion,
@@ -26,6 +27,18 @@ interface GeminiQuestionContext {
   candidates: PreferenceQuestion[];
 }
 
+const RATE_LIMIT_BACKOFF_MS = 5 * 60_000;
+const TRANSIENT_BACKOFF_MS = 30_000;
+const MAX_CACHE_ENTRIES = 100;
+const globalGeminiQuestions = globalThis as unknown as {
+  geminiQuestionCache?: Map<string, PreferenceQuestion>;
+  geminiRetryAfter?: number;
+  geminiQuestionLastWarningAt?: number;
+};
+const questionCache = globalGeminiQuestions.geminiQuestionCache
+  ?? new Map<string, PreferenceQuestion>();
+globalGeminiQuestions.geminiQuestionCache = questionCache;
+
 /**
  * Ask Gemini to select and reword one approved question. Metric effects and
  * IDs always come from QUESTION_BANK; model output can never alter scoring.
@@ -35,6 +48,11 @@ export async function generateAdaptiveQuestion(
 ): Promise<PreferenceQuestion | null> {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey || context.candidates.length === 0) return null;
+  if ((globalGeminiQuestions.geminiRetryAfter ?? 0) > Date.now()) return null;
+
+  const cacheKey = buildCacheKey(context);
+  const cached = questionCache.get(cacheKey);
+  if (cached) return cached;
 
   const model = process.env.GEMINI_MODEL?.trim() || "gemini-3.5-flash";
   const prompt = buildPrompt(context);
@@ -52,15 +70,18 @@ export async function generateAdaptiveQuestion(
           generationConfig: {
             responseMimeType: "application/json",
             temperature: 0.35,
-            maxOutputTokens: 600,
+            maxOutputTokens: 400,
+            thinkingConfig: { thinkingLevel: "minimal" },
           },
         }),
         cache: "no-store",
-        signal: AbortSignal.timeout(12_000),
+        signal: AbortSignal.timeout(geminiQuestionTimeoutMs()),
       },
     );
     if (!response.ok) {
-      console.warn(`Gemini questionnaire request failed with status ${response.status}`);
+      globalGeminiQuestions.geminiRetryAfter = Date.now()
+        + (response.status === 429 ? RATE_LIMIT_BACKOFF_MS : TRANSIENT_BACKOFF_MS);
+      warnOnce(`Gemini questionnaire request failed with status ${response.status}`);
       return null;
     }
 
@@ -80,7 +101,7 @@ export async function generateAdaptiveQuestion(
     const labels = new Map(generated.optionLabels.map((option) => [option.optionId, option.label]));
     if (approved.options.some((option) => !labels.has(option.id))) return null;
 
-    return {
+    const question = {
       ...approved,
       text: generated.text,
       options: approved.options.map((option) => ({
@@ -88,8 +109,15 @@ export async function generateAdaptiveQuestion(
         label: labels.get(option.id) as string,
       })),
     };
+    if (questionCache.size >= MAX_CACHE_ENTRIES) {
+      const oldestKey = questionCache.keys().next().value;
+      if (oldestKey) questionCache.delete(oldestKey);
+    }
+    questionCache.set(cacheKey, question);
+    return question;
   } catch (error) {
-    console.warn(
+    globalGeminiQuestions.geminiRetryAfter = Date.now() + TRANSIENT_BACKOFF_MS;
+    warnOnce(
       "Gemini questionnaire generation failed; using deterministic fallback",
       error instanceof Error ? error.message : "unknown error",
     );
@@ -108,8 +136,6 @@ function buildPrompt(context: GeminiQuestionContext): string {
   const metricSummary = context.availability.map((metric) => ({
     metric: metric.metric,
     status: metric.status,
-    coverage: Math.round(metric.coverage * 100),
-    variation: Math.round(metric.variation * 100) / 100,
   }));
   const candidates = context.candidates.map((question) => ({
     id: question.id,
@@ -117,14 +143,13 @@ function buildPrompt(context: GeminiQuestionContext): string {
     options: question.options.map((option) => ({
       id: option.id,
       originalLabel: option.label,
-      effects: option.effects,
     })),
   }));
 
   return [
     "You personalize a short hotel-preference interview.",
     "Choose exactly one candidate question. Rephrase its text and every option label for this traveler.",
-    "Keep each option semantically equivalent to its original label and scoring effects.",
+    "Keep each option semantically equivalent to its original label.",
     "Do not add hotel facts, prices, amenities, safety claims, or new preferences.",
     "Use previous answers to make the next question feel relevant and avoid repeating what is already known.",
     "Return only JSON: {questionId, text, optionLabels:[{optionId,label}]}",
@@ -143,4 +168,32 @@ function buildPrompt(context: GeminiQuestionContext): string {
       candidates,
     }),
   ].join("\n");
+}
+
+function buildCacheKey(context: GeminiQuestionContext): string {
+  return JSON.stringify({
+    trip: {
+      destination: context.trip.destinationLabel,
+      checkin: context.trip.checkin,
+      checkout: context.trip.checkout,
+      adults: context.trip.adults,
+      children: context.trip.children,
+      rooms: context.trip.rooms,
+    },
+    availability: context.availability.map(({ metric, status }) => [metric, status]),
+    answers: context.answers.map(({ questionId, optionIds }) => [questionId, optionIds]),
+    candidates: context.candidates.map(({ id, options }) => [
+      id,
+      options.map((option) => option.id),
+    ]),
+  });
+}
+
+function warnOnce(message: string, detail?: string): void {
+  const now = Date.now();
+  if (now - (globalGeminiQuestions.geminiQuestionLastWarningAt ?? 0) < TRANSIENT_BACKOFF_MS) {
+    return;
+  }
+  globalGeminiQuestions.geminiQuestionLastWarningAt = now;
+  console.warn(message, detail ?? "");
 }

@@ -9,7 +9,7 @@ This document consolidates `ideas/IDEA.md`, `ideas/ALGORITHM_DESIGN.md`, `ideas/
 | Primary game format | **16-team group + knockout tournament**, individual hotel matchups (per `ideas/GAMEPLAY_PACK_IDEAS.md`). The 3-card squad quick-match from `ideas/IDEA.md` is dropped from the MVP. |
 | Winner determination | **Hybrid**: the recommendation engine (per `ideas/ALGORITHM_DESIGN.md`) always determines the tournament champion / final recommendation; early-round match drama uses seeded RNG for spectacle. |
 | Database | **Supabase Postgres** via Prisma. |
-| Stretch features | **None in MVP** — `ideas/ideas_dana.md` items (ElevenLabs, Backboard.io, Unifold) stay out of the architecture. |
+| Presentation audio | **Optional ElevenLabs adapter** — deterministic templates narrate trusted stored results; captions and text-only fallback are always available. Backboard.io and Unifold remain out of scope. |
 
 Product in one line: *hotels compete for your booking* — live Stay22 search results become collectible cards, battle in a World Cup-style bracket, and the champion is a real, auditable recommendation with a tracked Stay22 booking link.
 
@@ -19,6 +19,7 @@ Product in one line: *hotels compete for your booking* — live Stay22 search re
 - Prisma → Supabase Postgres
 - Auth0 (`@auth0/nextjs-auth0`) — Auth0 is the identity source of truth; no local passwords
 - Stay22 API called **server-side only** (key never reaches the client)
+- ElevenLabs text-to-speech called **server-side only** as an optional presentation adapter
 - Deploy target: Vercel
 - Default currency: CAD
 
@@ -59,6 +60,8 @@ src/
       bracket.ts                    # 16-team selection, stratified sampling, group seeding
       matchSim.ts                   # hybrid match outcomes + highlight generation
       rewards.ts                    # XP, currency, streaks
+    presentation/                   # structured facts → deterministic captions + cached optional audio
+    elevenlabs/                     # server-only TTS client and account-limit checks
     db.ts                           # Prisma client singleton
     userSync.ts                     # upsert local User by auth0Sub
   prisma/schema.prisma
@@ -94,11 +97,12 @@ Never persist: API keys, raw dumps without request context.
    - Group stage: round-robin points table per group; top 2 advance to quarterfinals; knockout to the final.
    - 5–7 highlight events per match generated from real attributes only (templates from `ideas/IDEA.md`: Cancellation Shield, Transfer Window, First-Touch Finish, LEGACY attack…). Rarity/cosmetics affect visuals only.
 8. **Champion = recommendation** — champion screen shows engine evidence (win probability, main advantages, caveats from the structured explanation), then **rehydrates live** from Stay22 for current price, policies, supplier, and the tracked **Book MVP** CTA. Unavailable → themed "Transfer Pending" state.
-9. **Rewards + history** — update user stats, card XP/trophies; tournament fully replayable from stored `engineResult` + `bracket` JSON.
+9. **Optional commentary** — a global provider narrates approved events from landing through the champion screen. Trusted stored results become structured presentation events and deterministic captions. ElevenLabs synthesizes cached speech; Gemini may select only among approved lines. Neither receives authority to choose or invent facts.
+10. **Rewards + history** — update user stats, card XP/trophies; tournament fully replayable from stored `engineResult` + `bracket` JSON.
 
 ## API surface
 
-All Stay22 access and engine runs happen in route handlers (server). Routes validate inputs with zod, check the Auth0 session, and never echo credentials. `POST /api/tournaments` executes steps 5–7 in one request and persists the complete result — the bracket UI then plays it back client-side (no long-lived server state, demo-safe).
+All Stay22, engine, and ElevenLabs access happens in route handlers (server). Routes validate inputs with zod, check the Auth0 session, and never echo credentials. `POST /api/tournaments` executes steps 5–7 in one request and persists the complete result — the bracket UI then plays it back client-side. Presentation routes resolve lightweight cues against that stored replay before rendering captions or audio.
 
 Authentication setup, routes, and dashboard callback URLs are documented in [`AUTH.md`](./AUTH.md).
 

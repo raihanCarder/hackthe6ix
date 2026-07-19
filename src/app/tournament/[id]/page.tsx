@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { HotelCard } from "@/components/HotelCard";
+import { usePresentation } from "@/components/PresentationCommentary";
 import type { ContenderPayload } from "@/components/types";
 import type { NormalizedAccommodation, MetricContribution } from "@/lib/engine/types";
 import type { GroupResult, MatchResult } from "@/lib/game/matchSim";
@@ -58,6 +59,7 @@ const ROUND_LABELS: Record<string, string> = {
 
 export default function TournamentPage() {
   const { id } = useParams<{ id: string }>();
+  const { announce } = usePresentation();
   const [data, setData] = useState<TournamentPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openMatch, setOpenMatch] = useState<MatchResult | null>(null);
@@ -69,21 +71,49 @@ export default function TournamentPage() {
         const payload = await r.json();
         if (!r.ok) throw new Error(payload.error ?? "Tournament not found");
         setData(payload);
+        announce({
+          source: "tournament",
+          tournamentId: id,
+          cue: { kind: "competition.intro" },
+        });
       })
       .catch((e) => setError(e.message));
-  }, [id]);
+  }, [announce, id]);
 
   useEffect(() => {
     if (!data) return;
-    const timers = [setTimeout(() => setStage(1), 1400), setTimeout(() => setStage(2), 2800)];
+    const timers = [
+      setTimeout(() => setStage(1), 1400),
+      setTimeout(() => {
+        setStage(2);
+        announce({
+          source: "tournament",
+          tournamentId: data.id,
+          cue: { kind: "competition.champion" },
+        });
+      }, 2800),
+    ];
     return () => timers.forEach(clearTimeout);
-  }, [data]);
+  }, [announce, data]);
 
   const byId = useMemo(
     () => new Map((data?.contenders ?? []).map((c) => [c.propertyId, c])),
     [data],
   );
   const name = (propertyId: string) => byId.get(propertyId)?.hotel.name ?? "Unknown";
+
+  function showMatch(match: MatchResult) {
+    setOpenMatch(match);
+    announce({
+      source: "tournament",
+      tournamentId: data?.id ?? id,
+      cue: {
+        kind: "matchup.introduction",
+        homeId: match.homeId,
+        awayId: match.awayId,
+      },
+    });
+  }
 
   if (error) {
     return (
@@ -105,7 +135,7 @@ export default function TournamentPage() {
   const isWorld = data.mode === "world";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-10 pb-36 sm:px-6">
       <p className="eyebrow">
         {isWorld
           ? "Global cup · casual play"
@@ -174,7 +204,7 @@ export default function TournamentPage() {
                 {group.matches.map((match, i) => (
                   <button
                     key={i}
-                    onClick={() => setOpenMatch(match)}
+                    onClick={() => showMatch(match)}
                     className="btn-chalk font-score rounded px-2 py-1 text-[11px]"
                     title={`${name(match.homeId)} vs ${name(match.awayId)}`}
                   >
@@ -205,7 +235,7 @@ export default function TournamentPage() {
                 {round.matches.map((match, i) => (
                   <button
                     key={i}
-                    onClick={() => setOpenMatch(match)}
+                    onClick={() => showMatch(match)}
                     className="panel rounded-lg p-3 text-left transition hover:border-gold/40"
                   >
                     {[
@@ -306,17 +336,31 @@ export default function TournamentPage() {
                   </div>
                 )}
                 {!isWorld && champion.evidence && champion.evidence.mainAdvantages.length > 0 && (
-                  <p className="mt-3 text-sm text-chalk-dim">
-                    Decisive edge over the runner-up:{" "}
-                    <span className="text-chalk">
-                      {champion.evidence.mainAdvantages
-                        .map((a) => METRIC_LABELS[a.metric] ?? a.metric)
-                        .join(", ")}
-                    </span>
-                    {champion.safestAlternative?.name && (
-                      <> · Safest alternative: <span className="text-chalk">{champion.safestAlternative.name}</span></>
-                    )}
-                  </p>
+                  <div className="mt-3 text-sm text-chalk-dim">
+                    <p>
+                      Decisive edge over the runner-up:{" "}
+                      <span className="text-chalk">
+                        {champion.evidence.mainAdvantages
+                          .map((a) => METRIC_LABELS[a.metric] ?? a.metric)
+                          .join(", ")}
+                      </span>
+                      {champion.safestAlternative?.name && (
+                        <> · Safest alternative: <span className="text-chalk">{champion.safestAlternative.name}</span></>
+                      )}
+                    </p>
+                    <button
+                      onClick={() =>
+                        announce({
+                          source: "tournament",
+                          tournamentId: data.id,
+                          cue: { kind: "hotel.advantage", advantageIndex: 0 },
+                        })
+                      }
+                      className="mt-2 text-xs text-gold-bright underline-offset-2 hover:underline"
+                    >
+                      Commentate the leading advantage
+                    </button>
+                  </div>
                 )}
                 {champion.explanation.caveats.length > 0 && (
                   <p className="mt-2 text-[11px] text-chalk-dim">
@@ -331,7 +375,7 @@ export default function TournamentPage() {
                     href={champion.hotel.bookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-gold rounded-lg px-8 py-3 text-lg"
+                    className="btn-primary rounded-lg px-8 py-3 text-lg"
                   >
                     Book the champion →
                   </a>
@@ -393,7 +437,23 @@ export default function TournamentPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setOpenMatch(null)} className="btn-chalk mt-5 w-full rounded-lg px-4 py-2">
+              <button
+                onClick={() =>
+                  announce({
+                    source: "tournament",
+                    tournamentId: data.id,
+                    cue: {
+                      kind: "match.winner",
+                      homeId: openMatch.homeId,
+                      awayId: openMatch.awayId,
+                    },
+                  })
+                }
+                className="btn-gold mt-5 w-full rounded-lg px-4 py-2"
+              >
+                Announce the winner
+              </button>
+              <button onClick={() => setOpenMatch(null)} className="btn-chalk mt-2 w-full rounded-lg px-4 py-2">
                 Back to the bracket
               </button>
             </motion.div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HotelCard } from "@/components/HotelCard";
+import { JourneyCommentaryCue, usePresentation } from "@/components/PresentationCommentary";
 import type { CardPayload } from "@/components/types";
 import type { PreferenceQuestion, TravelerAnswer } from "@/lib/engine/types";
 
@@ -13,6 +14,7 @@ type Step = "mode" | "card" | "questions" | "simulating";
 
 export function PlayClient() {
   const router = useRouter();
+  const { announce } = usePresentation();
   const [step, setStep] = useState<Step>("mode");
   const [mode, setMode] = useState<Mode | null>(null);
   const [cards, setCards] = useState<CardPayload[] | null>(null);
@@ -47,6 +49,13 @@ export function PlayClient() {
     setMode(next);
     setStep("card");
     setError(null);
+    announce({
+      source: "journey",
+      cue: {
+        kind: "journey.moment",
+        moment: next === "trip" ? "play.trip_selected" : "play.global_selected",
+      },
+    });
     if (cards === null) {
       fetch("/api/cards")
         .then(async (r) => {
@@ -80,6 +89,10 @@ export function PlayClient() {
       return;
     }
     setStep("questions");
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "questionnaire.started" },
+    });
     await fetchNextQuestion([]);
   }
 
@@ -116,12 +129,25 @@ export function PlayClient() {
       { questionId: question.id, optionIds: [optionId] },
     ];
     setAnswers(next);
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "questionnaire.answer" },
+    });
     await fetchNextQuestion(next);
+  }
+
+  function selectCard(card: CardPayload) {
+    setSelected(card);
+    announce({ source: "card", cardId: card.id, cue: { kind: "card.selection" } });
   }
 
   async function kickOff(finalAnswers: TravelerAnswer[]) {
     if (!selected || !mode) return;
     setStep("simulating");
+    announce({
+      source: "journey",
+      cue: { kind: "journey.moment", moment: "tournament.simulating" },
+    });
     try {
       const response = await fetch("/api/tournaments", {
         method: "POST",
@@ -140,6 +166,7 @@ export function PlayClient() {
   if (step === "mode") {
     return (
       <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+        <JourneyCommentaryCue moment="play.mode_selection" />
         <p className="eyebrow text-center">Matchday · gamemode selection</p>
         <h1 className="font-display mt-2 text-center text-3xl text-chalk sm:text-4xl">
           Pick your competition
@@ -162,7 +189,7 @@ export function PlayClient() {
               interview drives a real recommendation engine — the winner is a genuine pick for
               your trip.
             </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Trip Cup</span>
+            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Trip Cup</span>
           </motion.button>
 
           <motion.button
@@ -176,7 +203,7 @@ export function PlayClient() {
               Your card takes on 15 opponents from 15 different countries around the world. No
               interview, no wait — just bragging rights.
             </p>
-            <span className="btn-gold mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
+            <span className="btn-primary mt-6 inline-block rounded-lg px-6 py-2.5">Play Global Cup</span>
           </motion.button>
         </div>
       </div>
@@ -210,7 +237,7 @@ export function PlayClient() {
           <div className="panel mt-8 rounded-xl p-10 text-center">
             <p className="font-display text-lg text-chalk">No cards yet.</p>
             <p className="mt-2 text-sm text-chalk-dim">Open a pack to build your squad first.</p>
-            <Link href="/packs" className="btn-gold mt-5 inline-block rounded-lg px-6 py-2.5">
+            <Link href="/packs" className="btn-primary mt-5 inline-block rounded-lg px-6 py-2.5">
               Open a pack
             </Link>
           </div>
@@ -222,9 +249,9 @@ export function PlayClient() {
                 return (
                   <button
                     key={card.id}
-                    onClick={() => setSelected(card)}
+                    onClick={() => selectCard(card)}
                     className={`rounded-xl text-left transition ${
-                      isSelected ? "ring-2 ring-gold-bright" : "hover:-translate-y-1"
+                      isSelected ? "ring-2 ring-cyan-bright" : "hover:-translate-y-1"
                     }`}
                   >
                     <HotelCard
@@ -243,7 +270,7 @@ export function PlayClient() {
             <button
               onClick={enterTournament}
               disabled={!selected}
-              className="btn-gold mt-6 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
+              className="btn-primary mt-6 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
             >
               {selected ? `Enter ${selected.hotel.name} into the tournament` : "Select a card to continue"}
             </button>

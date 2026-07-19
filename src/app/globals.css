@@ -1,28 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  /* Night match under floodlights */
-  --pitch-950: #071510;
-  --pitch-900: #0a1f16;
-  --pitch-850: #0d2a1d;
-  --pitch-800: #123524;
-  --pitch-700: #1a4a30;
-  --turf: #2fb05c;
-  --turf-bright: #45d878;
-  --chalk: #eef6ee;
-  --chalk-dim: #9db8a6;
+  /* Near-black dashboard, teal/emerald card foils, cyan primary accent */
+  --pitch-950: #04070a;
+  --pitch-900: #070b0d;
+  --pitch-850: #0b1013;
+  --pitch-800: #10171b;
+  --pitch-700: #16232a;
+  --turf: #1f6b52;
+  --turf-bright: #2ee6a6;
+  --chalk: #eef4f2;
+  --chalk-dim: #8ea19d;
   --gold: #e8b33b;
   --gold-bright: #ffd25e;
   --whistle-red: #e5533c;
   --scoreboard: #ffd25e;
+  --cyan: #0891b2;
+  --cyan-bright: #22d3ee;
 
   /* Card stat symbols — one accent per stat so the row reads at a glance */
-  --stat-vibe: var(--gold-bright);
-  --stat-legacy: #7fb8ff;
+  --stat-comfort: #7fb8ff;
   --stat-value: var(--turf-bright);
-  --stat-flex: #ffab5e;
-  --stat-squad: #4dd0c7;
-  --stat-chaos: #c084fc;
+  --stat-location: var(--cyan-bright);
+  --stat-luxury: var(--gold-bright);
+  --stat-amenities: #ffab5e;
+  --stat-service: #4dd0c7;
 
   --background: var(--pitch-900);
   --foreground: var(--chalk);
@@ -56,10 +58,10 @@ body {
       90deg,
       transparent 0,
       transparent 120px,
-      rgba(255, 255, 255, 0.015) 120px,
-      rgba(255, 255, 255, 0.015) 240px
+      rgba(255, 255, 255, 0.012) 120px,
+      rgba(255, 255, 255, 0.012) 240px
     ),
-    radial-gradient(ellipse 120% 60% at 50% -10%, #14432a 0%, transparent 60%),
+    radial-gradient(ellipse 120% 60% at 50% -10%, #0d2b28 0%, transparent 60%),
     var(--pitch-900);
   color: var(--foreground);
   font-family: var(--font-archivo), system-ui, sans-serif;
@@ -75,7 +77,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Broadcast eyebrow label */
+/* Dashboard eyebrow label */
 .eyebrow {
   font-family: var(--font-oswald), sans-serif;
   text-transform: uppercase;
@@ -84,27 +86,38 @@ body {
   color: var(--chalk-dim);
 }
 
-/* Chalk line, like a pitch marking */
+/* Divider line */
 .chalk-line {
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(238, 246, 238, 0.35), transparent);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(238, 244, 242, 0.18),
+    transparent
+  );
 }
 
 /* Hotel card foil treatments per rarity */
 .foil-common {
-  --foil-a: #35503f;
-  --foil-b: #22382c;
-  --foil-ring: rgba(238, 246, 238, 0.18);
+  --foil-a: #2b4a3d;
+  --foil-b: #17251f;
+  --foil-ring: rgba(238, 244, 242, 0.35);
+  --foil-pill-bg: rgba(238, 244, 242, 0.92);
+  --foil-pill-fg: #16211d;
 }
 .foil-rare {
-  --foil-a: #1d4f7c;
-  --foil-b: #14324e;
-  --foil-ring: rgba(96, 174, 255, 0.55);
+  --foil-a: #1e6249;
+  --foil-b: #123324;
+  --foil-ring: rgba(238, 244, 242, 0.4);
+  --foil-pill-bg: rgba(238, 244, 242, 0.92);
+  --foil-pill-fg: #16211d;
 }
 .foil-epic {
-  --foil-a: #5b2d8c;
-  --foil-b: #371b57;
-  --foil-ring: rgba(190, 120, 255, 0.6);
+  --foil-a: #106a56;
+  --foil-b: #0a3f34;
+  --foil-ring: rgba(46, 230, 166, 0.85);
+  --foil-pill-bg: var(--turf-bright);
+  --foil-pill-fg: #052b1f;
 }
 .foil-legendary {
   --foil-a: #8c6414;
@@ -140,7 +153,7 @@ body {
   --card-bg-b: #b9b9b4;
   --card-metal-a: #e6e6e1;
   --card-metal-b: #c9c9c4;
-  --card-metal-c: #ababA6;
+  --card-metal-c: #ababa6;
   --card-panel-a: color-mix(in srgb, var(--card-line) 86%, white 14%);
   --card-panel-b: color-mix(in srgb, var(--card-line) 68%, black 32%);
   --card-foil: rgba(255, 255, 250, 0.18);
@@ -191,8 +204,17 @@ body {
 
 .card-face {
   background:
-    radial-gradient(circle at 50% 16%, color-mix(in srgb, var(--card-metal-a) 86%, white 10%), transparent 31%),
-    linear-gradient(180deg, var(--card-metal-a) 0%, var(--card-metal-b) 58%, var(--card-metal-c) 100%);
+    radial-gradient(
+      circle at 50% 16%,
+      color-mix(in srgb, var(--card-metal-a) 86%, white 10%),
+      transparent 31%
+    ),
+    linear-gradient(
+      180deg,
+      var(--card-metal-a) 0%,
+      var(--card-metal-b) 58%,
+      var(--card-metal-c) 100%
+    );
   border: 0;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.55),
@@ -238,7 +260,16 @@ body {
 .hotel-card {
   aspect-ratio: 2 / 3.35;
   container-type: inline-size;
-  clip-path: polygon(9% 0, 91% 0, 100% 11%, 100% 87%, 89% 100%, 11% 100%, 0 87%, 0 11%);
+  clip-path: polygon(
+    9% 0,
+    91% 0,
+    100% 11%,
+    100% 87%,
+    89% 100%,
+    11% 100%,
+    0 87%,
+    0 11%
+  );
   isolation: isolate;
   overflow: hidden;
 }
@@ -249,7 +280,12 @@ body {
   inset: 0;
   clip-path: inherit;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--card-line) 72%, white 28%), var(--card-line) 60%, color-mix(in srgb, var(--card-line) 88%, black 12%)),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--card-line) 72%, white 28%),
+      var(--card-line) 60%,
+      color-mix(in srgb, var(--card-line) 88%, black 12%)
+    ),
     var(--card-line);
   z-index: 0;
 }
@@ -258,11 +294,34 @@ body {
   content: "";
   position: absolute;
   inset: clamp(0.12rem, 0.82cqw, 0.18rem);
-  clip-path: polygon(9% 0, 91% 0, 100% 11%, 100% 87%, 89% 100%, 11% 100%, 0 87%, 0 11%);
+  clip-path: polygon(
+    9% 0,
+    91% 0,
+    100% 11%,
+    100% 87%,
+    89% 100%,
+    11% 100%,
+    0 87%,
+    0 11%
+  );
   background:
-    linear-gradient(90deg, transparent 0 45%, rgba(255, 255, 255, 0.08) 45% 46.5%, transparent 46.5%),
-    radial-gradient(circle at 45% 18%, color-mix(in srgb, var(--card-metal-a) 42%, white 10%), transparent 35%),
-    linear-gradient(162deg, var(--card-metal-a), var(--card-metal-b) 54%, var(--card-metal-c));
+    linear-gradient(
+      90deg,
+      transparent 0 45%,
+      rgba(255, 255, 255, 0.08) 45% 46.5%,
+      transparent 46.5%
+    ),
+    radial-gradient(
+      circle at 45% 18%,
+      color-mix(in srgb, var(--card-metal-a) 42%, white 10%),
+      transparent 35%
+    ),
+    linear-gradient(
+      162deg,
+      var(--card-metal-a),
+      var(--card-metal-b) 54%,
+      var(--card-metal-c)
+    );
   z-index: 1;
 }
 
@@ -270,8 +329,18 @@ body {
   position: absolute;
   inset: clamp(0.32rem, 2.2cqw, 0.46rem);
   z-index: 2;
-  clip-path: polygon(8% 0, 92% 0, 100% 10%, 100% 87%, 88% 100%, 12% 100%, 0 87%, 0 10%);
-  border: 1px solid color-mix(in srgb, var(--card-line-soft) 70%, transparent 30%);
+  clip-path: polygon(
+    8% 0,
+    92% 0,
+    100% 10%,
+    100% 87%,
+    88% 100%,
+    12% 100%,
+    0 87%,
+    0 10%
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--card-line-soft) 70%, transparent 30%);
   box-shadow:
     inset 0 0 0 1px rgba(0, 0, 0, 0.08),
     inset 0 6px 12px rgba(255, 255, 255, 0.04);
@@ -282,7 +351,16 @@ body {
   inset: clamp(0.28rem, 1.85cqw, 0.4rem);
   display: flex;
   flex-direction: column;
-  clip-path: polygon(7% 0, 93% 0, 100% 9%, 100% 88%, 88% 100%, 12% 100%, 0 88%, 0 9%);
+  clip-path: polygon(
+    7% 0,
+    93% 0,
+    100% 9%,
+    100% 88%,
+    88% 100%,
+    12% 100%,
+    0 88%,
+    0 9%
+  );
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 18%),
     linear-gradient(155deg, var(--card-panel-a), var(--card-panel-b) 66%),
@@ -345,7 +423,8 @@ body {
 .hotel-rarity-pill {
   min-width: min(7.9rem, 43cqw);
   max-width: 49%;
-  border: 1px solid color-mix(in srgb, var(--card-line-soft) 76%, transparent 24%);
+  border: 1px solid
+    color-mix(in srgb, var(--card-line-soft) 76%, transparent 24%);
   border-radius: 999px;
   background: var(--card-pill-bg);
   color: var(--card-pill-fg);
@@ -361,7 +440,8 @@ body {
   margin-top: clamp(0.62rem, 4.35cqw, 0.95rem);
   aspect-ratio: 1.7 / 1;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--card-line-soft) 72%, transparent 28%);
+  border: 1px solid
+    color-mix(in srgb, var(--card-line-soft) 72%, transparent 28%);
   border-radius: 10% / 17%;
   background-position: center;
   background-repeat: no-repeat;
@@ -376,7 +456,10 @@ body {
 
 .hotel-art-photo {
   background-color: color-mix(in srgb, var(--card-metal-c) 72%, black 28%);
-  background-size: 100% 100%, contain, cover;
+  background-size:
+    100% 100%,
+    contain,
+    cover;
 }
 
 .hotel-art-generated::before,
@@ -388,8 +471,18 @@ body {
 
 .hotel-art-generated::before {
   background:
-    linear-gradient(90deg, transparent 0 21%, rgba(221, 186, 95, 0.22) 21% 54%, transparent 54%),
-    linear-gradient(180deg, transparent 0 52%, rgba(1, 25, 18, 0.7) 52% 72%, rgba(0, 0, 0, 0.28) 72%);
+    linear-gradient(
+      90deg,
+      transparent 0 21%,
+      rgba(221, 186, 95, 0.22) 21% 54%,
+      transparent 54%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 52%,
+      rgba(1, 25, 18, 0.7) 52% 72%,
+      rgba(0, 0, 0, 0.28) 72%
+    );
   mix-blend-mode: multiply;
 }
 
@@ -442,7 +535,12 @@ body {
 .hotel-divider {
   height: 1px;
   margin: clamp(0.54rem, 3.5cqw, 0.78rem) -0.3rem 0;
-  background: linear-gradient(90deg, transparent, var(--card-line-soft), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--card-line-soft),
+    transparent
+  );
 }
 
 .hotel-name-wrap {
@@ -516,7 +614,10 @@ body {
   background: linear-gradient(180deg, var(--gold-bright), var(--gold));
   color: #241a05;
   font-family: var(--font-archivo-black), sans-serif;
-  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
   box-shadow: 0 6px 20px -8px rgba(232, 179, 59, 0.7);
 }
 .btn-gold:hover {
@@ -533,30 +634,32 @@ body {
 }
 
 .btn-chalk {
-  border: 1px solid rgba(238, 246, 238, 0.3);
+  border: 1px solid rgba(238, 244, 242, 0.22);
   color: var(--chalk);
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 .btn-chalk:hover {
-  background: rgba(238, 246, 238, 0.08);
-  border-color: rgba(238, 246, 238, 0.5);
+  background: rgba(238, 244, 242, 0.08);
+  border-color: rgba(238, 244, 242, 0.4);
 }
 
 .panel {
-  background: rgba(7, 21, 16, 0.72);
-  border: 1px solid rgba(238, 246, 238, 0.12);
+  background: rgba(7, 12, 14, 0.72);
+  border: 1px solid rgba(238, 244, 242, 0.1);
   backdrop-filter: blur(6px);
 }
 
 .stat-bar {
-  background: rgba(238, 246, 238, 0.12);
+  background: rgba(238, 244, 242, 0.12);
 }
 .stat-bar > div {
-  background: linear-gradient(90deg, var(--turf), var(--turf-bright));
+  background: linear-gradient(90deg, var(--cyan), var(--cyan-bright));
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--cyan-bright);
   outline-offset: 2px;
 }
 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Archivo, Archivo_Black, Oswald } from "next/font/google";
 import "./globals.css";
-import { Nav } from "@/components/Nav";
+import { Chrome } from "@/components/Chrome";
+import { PresentationProvider } from "@/components/PresentationCommentary";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -34,13 +35,10 @@ export default function RootLayout({
       lang="en"
       className={`${archivo.variable} ${archivoBlack.variable} ${oswald.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <footer className="px-6 py-8 text-center text-xs text-chalk-dim">
-          Check-In Champions · Hack the 6ix · powered by live Stay22 data — the champion is a real,
-          bookable recommendation.
-        </footer>
+      <body className="min-h-full">
+        <PresentationProvider>
+         <Chrome>{children}</Chrome>
+        </PresentationProvider>
       </body>
     </html>
   );

@@ -20,12 +20,18 @@ function clampStat(value: number): number {
   return Math.max(1, Math.min(99, Math.round(value)));
 }
 
-function locationDisplayScore(hotel: NormalizedAccommodation, fallback: number): number {
+function locationDisplayScore(
+  hotel: NormalizedAccommodation,
+  fallback: number,
+): number {
   if (hotel.distanceKm === null) return fallback;
   return clampStat(99 - Math.min(18, hotel.distanceKm) * 4.5);
 }
 
-function displayStats(hotel: NormalizedAccommodation, stats: CardStats): DisplayStat[] {
+function displayStats(
+  hotel: NormalizedAccommodation,
+  stats: CardStats,
+): DisplayStat[] {
   return [
     { label: "Luxury", value: stats.vibe },
     { label: "Amenities", value: stats.flex },
@@ -56,7 +62,10 @@ function seededHue(seed: string): number {
   return h;
 }
 
-function artStyle(hotel: NormalizedAccommodation, cosmeticSeed: string): CSSProperties {
+function artStyle(
+  hotel: NormalizedAccommodation,
+  cosmeticSeed: string,
+): CSSProperties {
   const hue = seededHue(`${hotel.id}:${cosmeticSeed}`);
   const fallback =
     `linear-gradient(180deg, hsla(${hue}, 48%, 55%, 0.42), hsla(${hue + 36}, 46%, 15%, 0.84)), ` +
@@ -67,13 +76,14 @@ function artStyle(hotel: NormalizedAccommodation, cosmeticSeed: string): CSSProp
   }
 
   return {
-    backgroundImage:
-      `url(${JSON.stringify(hotel.thumbnailUrl)}), ${fallback}`,
+    backgroundImage: `url(${JSON.stringify(hotel.thumbnailUrl)}), ${fallback}`,
   };
 }
 
 function priceLabel(hotel: NormalizedAccommodation): string {
-  return hotel.nightlyPrice !== null ? `$${hotel.nightlyPrice}/night` : "Price at booking";
+  return hotel.nightlyPrice !== null
+    ? `$${hotel.nightlyPrice}/night`
+    : "Price at booking";
 }
 
 export function HotelCard({
@@ -93,12 +103,19 @@ export function HotelCard({
 }) {
   const name = hotelName(hotel);
   const statRows = displayStats(hotel, stats);
-  const location = compact ? compactLocation(hotel.address) : hotel.address ?? compactLocation(hotel.address);
+  const location = compact
+    ? compactLocation(hotel.address)
+    : (hotel.address ?? compactLocation(hotel.address));
   const hasThumbnail = Boolean(hotel.thumbnailUrl);
 
   return (
-    <article className={`hotel-card hotel-card-${rarity} card-face relative w-full select-none`}>
-      <div className="card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden />
+    <article
+      className={`hotel-card hotel-card-${rarity} card-face relative w-full select-none`}
+    >
+      <div
+        className="card-sheen pointer-events-none absolute inset-0 z-20"
+        aria-hidden
+      />
       <div className="hotel-card-frame">
         <div className="hotel-card-inner">
           <div className="flex items-start justify-between gap-3">
@@ -106,7 +123,9 @@ export function HotelCard({
               <div className="hotel-overall font-score font-bold text-card-primary">
                 {overall}
               </div>
-              <div className="hotel-overall-label font-display text-chalk">OVR</div>
+              <div className="hotel-overall-label font-display text-chalk">
+                OVR
+              </div>
             </div>
             <span className="hotel-rarity-pill font-score shrink-0 truncate px-4 py-1 text-[10px] font-bold uppercase">
               {RARITY_LABEL[rarity]}
@@ -136,7 +155,9 @@ export function HotelCard({
           </div>
 
           <div className="hotel-meta flex items-end justify-between gap-2 border-b border-card-line">
-            <p className="min-w-0 truncate font-bold text-chalk-dim">{location}</p>
+            <p className="min-w-0 truncate font-bold text-chalk-dim">
+              {location}
+            </p>
             <p className="font-score shrink-0 whitespace-nowrap font-bold text-card-primary">
               {priceLabel(hotel)}
             </p>
@@ -144,7 +165,10 @@ export function HotelCard({
 
           <dl className="hotel-stats grid grid-cols-2">
             {statRows.map((stat) => (
-              <div key={stat.label} className="hotel-stat-row grid items-baseline">
+              <div
+                key={stat.label}
+                className="hotel-stat-row grid items-baseline"
+              >
                 <dt className="font-score text-right font-bold leading-none text-card-primary">
                   {stat.value}
                 </dt>
@@ -163,15 +187,22 @@ export function HotelCard({
 export function CardBack() {
   return (
     <div className="hotel-card hotel-card-back card-back relative w-full overflow-hidden select-none">
-      <div className="card-sheen pointer-events-none absolute inset-0 z-20" aria-hidden />
+      <div
+        className="card-sheen pointer-events-none absolute inset-0 z-20"
+        aria-hidden
+      />
       <div className="hotel-card-frame">
         <div className="hotel-card-inner flex flex-col items-center justify-center gap-4 text-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-card-line bg-black/25 shadow-[0_0_24px_rgba(232,179,59,0.24)]">
             <span className="font-display text-2xl text-card-primary">CC</span>
           </div>
           <div>
-            <p className="font-display text-lg leading-none text-chalk">Check-In</p>
-            <p className="font-display text-lg leading-none text-chalk">Champions</p>
+            <p className="font-display text-lg leading-none text-chalk">
+              Check-In
+            </p>
+            <p className="font-display text-lg leading-none text-chalk">
+              Champions
+            </p>
             <p className="eyebrow mt-3 !text-[10px]">Trip pack</p>
           </div>
         </div>

@@ -225,7 +225,7 @@ export async function getNextSearchQuestion(
     trip: search.trip,
     availability,
     answers,
-    candidates,
+    candidates: candidates.slice(0, 4),
   });
   return {
     complete: false as const,

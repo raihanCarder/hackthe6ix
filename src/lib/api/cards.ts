@@ -16,7 +16,7 @@ export async function getUserCollection(user: User) {
   return {
     cards: cards.map((card) => {
       const hotel = card.snapshot.normalizedData as unknown as NormalizedAccommodation;
-      const stats = computeCardStats(hotel, null, card.cosmeticSeed);
+      const stats = computeCardStats(hotel, null);
       return {
         id: card.id,
         propertyId: card.stay22PropertyId,

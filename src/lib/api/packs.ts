@@ -119,7 +119,7 @@ export async function openPack(user: User, searchId: string, requestedScope: "tr
     cost,
     cards: created.cards.map((card) => {
       const hotel = hotelById.get(card.stay22PropertyId)!;
-      const stats = computeCardStats(hotel, prices, card.cosmeticSeed);
+      const stats = computeCardStats(hotel, prices);
       return {
         id: card.id,
         propertyId: card.stay22PropertyId,
@@ -131,6 +131,21 @@ export async function openPack(user: User, searchId: string, requestedScope: "tr
       };
     }),
   };
+}
+
+export async function listPackOpens(user: User) {
+  const packs = await prisma.packOpen.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
+  return packs.map((pack) => ({
+    packId: pack.id,
+    scope: pack.scope,
+    city: pack.city,
+    cost: pack.cost,
+    cardCount: (pack.generatedCardIds as unknown as string[]).length,
+    createdAt: pack.createdAt.toISOString(),
+  }));
 }
 
 export async function getPackReplay(user: User, packId: string) {
@@ -161,7 +176,7 @@ export async function getPackReplay(user: User, packId: string) {
       .filter((c) => c !== undefined)
       .map((card) => {
         const hotel = card.snapshot.normalizedData as unknown as NormalizedAccommodation;
-        const stats = computeCardStats(hotel, prices, card.cosmeticSeed);
+        const stats = computeCardStats(hotel, prices);
         return {
           id: card.id,
           propertyId: card.stay22PropertyId,
