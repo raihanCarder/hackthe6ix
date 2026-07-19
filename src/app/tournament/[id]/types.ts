@@ -5,6 +5,7 @@ import type { GroupResult, MatchResult } from "@/lib/game/matchSim";
 export interface TournamentPayload {
   id: string;
   mode: "trip" | "world";
+  createdAt: string;
   seed: string;
   trip: { destinationLabel: string; checkin: string; checkout: string; adults: number; children: number };
   searchId: string;
