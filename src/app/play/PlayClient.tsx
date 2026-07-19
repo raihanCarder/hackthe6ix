@@ -19,6 +19,7 @@ export function PlayClient() {
   const [mode, setMode] = useState<Mode | null>(null);
   const [cards, setCards] = useState<CardPayload[] | null>(null);
   const [selected, setSelected] = useState<CardPayload | null>(null);
+  const [visibleCount, setVisibleCount] = useState(8);
   const [error, setError] = useState<string | null>(null);
 
   // Trip Cup questionnaire state
@@ -244,11 +245,13 @@ export function PlayClient() {
         ) : (
           <>
             <div className="hotel-card-grid mt-8">
-              {cards.map((card) => {
+              {cards.slice(0, visibleCount).map((card) => {
                 const isSelected = selected?.id === card.id;
                 return (
-                  <button
+                  <motion.button
                     key={card.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
                     onClick={() => selectCard(card)}
                     className={`rounded-xl text-left transition ${
                       isSelected ? "ring-2 ring-cyan-bright" : "hover:-translate-y-1"
@@ -262,15 +265,24 @@ export function PlayClient() {
                       cosmeticSeed={card.cosmeticSeed}
                       compact
                     />
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
 
+            {visibleCount < cards.length && (
+              <button
+                onClick={() => setVisibleCount((c) => c + 8)}
+                className="btn-chalk mt-6 w-full rounded-lg px-6 py-3 text-sm"
+              >
+                Show more ({cards.length - visibleCount} more)
+              </button>
+            )}
+
             <button
               onClick={enterTournament}
               disabled={!selected}
-              className="btn-primary mt-6 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
+              className="btn-primary mt-4 w-full rounded-lg px-6 py-3 text-lg disabled:opacity-40"
             >
               {selected ? `Enter ${selected.hotel.name} into the tournament` : "Select a card to continue"}
             </button>
