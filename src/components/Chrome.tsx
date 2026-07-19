@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AccountMenu } from "@/components/AccountMenu";
+import { BrandLink } from "@/components/BrandLink";
 import { SignInModal } from "@/components/SignInModal";
 import { Sidebar, Topbar } from "@/components/Sidebar";
 import {
@@ -26,12 +27,7 @@ function MarketingHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-chalk/10 bg-pitch-900/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-        <Link
-          href="/"
-          className="font-display text-sm leading-tight tracking-tight sm:text-base"
-        >
-          <span className="text-cyan-bright">CHECK-IN CHAMPIONS</span>
-        </Link>
+        <BrandLink imageClassName="h-8 w-8" />
 
         <nav className="ml-auto flex items-center gap-4">
           {profile && (

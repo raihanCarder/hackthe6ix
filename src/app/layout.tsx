@@ -23,6 +23,13 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: "Check-In Champions",
   description: "Hotels compete for your booking. Open a trip pack, run the bracket, book the champion.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export default function RootLayout({
