@@ -69,14 +69,6 @@ function IconPlay({ className }: { className?: string }) {
   );
 }
 
-function IconDuel({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M3 3l6 6M17 3l-6 6M3 17c3-1 5-3 6-6M17 17c-3-1-5-3-6-6" />
-    </svg>
-  );
-}
-
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: IconDashboard, match: (p) => p === "/dashboard" },
   { href: "/packs", label: "New trip", icon: IconTrip, match: (p) => p.startsWith("/packs") },
@@ -92,13 +84,7 @@ const NAV_ITEMS: NavItem[] = [
     href: "/play",
     label: "Play",
     icon: IconPlay,
-    match: (p) => p.startsWith("/play") || p.startsWith("/tournament"),
-  },
-  {
-    href: "/duel",
-    label: "Duel",
-    icon: IconDuel,
-    match: (p) => p.startsWith("/duel"),
+    match: (p) => p.startsWith("/play") || p.startsWith("/tournament") || p.startsWith("/duel"),
   },
 ];
 

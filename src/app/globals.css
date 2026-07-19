@@ -712,6 +712,29 @@ body {
   cursor: not-allowed;
 }
 
+.btn-cyan {
+  background: linear-gradient(180deg, var(--cyan-bright), var(--cyan));
+  color: #04191f;
+  font-family: var(--font-archivo-black), sans-serif;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
+  box-shadow: 0 6px 20px -8px rgba(34, 211, 238, 0.6);
+}
+.btn-cyan:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.btn-cyan:active {
+  transform: translateY(0);
+}
+.btn-cyan:disabled {
+  filter: grayscale(0.6) brightness(0.7);
+  transform: none;
+  cursor: not-allowed;
+}
+
 .btn-chalk {
   border: 1px solid rgba(238, 244, 242, 0.22);
   color: var(--chalk);
