@@ -1,5 +1,4 @@
 import { ProtectedLink } from "@/components/ProtectedLink";
-import { JourneyCommentaryCue } from "@/components/PresentationCommentary";
 import { LandingStats } from "@/app/LandingStats";
 import { HotelCard } from "@/components/HotelCard";
 import type { NormalizedAccommodation } from "@/lib/engine/types";
@@ -63,7 +62,6 @@ function sample(name: string, address: string, nightlyPrice: number): Normalized
 export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <JourneyCommentaryCue moment="welcome" />
       <section className="grid gap-10 py-14 sm:py-20 lg:grid-cols-2 lg:items-center">
         <div>
           <p className="eyebrow">Stay22 live inventory</p>
